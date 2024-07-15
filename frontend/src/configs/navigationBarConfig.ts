@@ -1,0 +1,57 @@
+import { ROLE_ADMIN, ROLE_USER, UserRoleType } from "./userRole";
+import { routes } from "./routes";
+
+type SubNavigationItem = {
+  name: string;
+  link: string;
+  userRole: UserRoleType;
+};
+
+type GlobalNavigationBarType = {
+  name: string;
+  link: string;
+  userRole: UserRoleType;
+  items: SubNavigationItem[];
+};
+
+export const globalNavigationBar: GlobalNavigationBarType[] = [
+  {
+    name: "daily report",
+    link: routes.REPORT.INDEX,
+    userRole: ROLE_USER,
+    items: [
+      {
+        name: "U136",
+        link: routes.REPORT.U136.INDEX,
+        userRole: ROLE_USER,
+      },
+      {
+        name: "U113",
+        link: routes.REPORT.U113.INDEX,
+        userRole: ROLE_USER,
+      },
+      {
+        name: "U120",
+        link: routes.REPORT.U120.INDEX,
+        userRole: ROLE_USER,
+      },
+    ],
+  },
+  {
+    name: "user",
+    link: routes.USER.MANAGEMENT.INDEX,
+    userRole: ROLE_ADMIN,
+    items: [
+      {
+        name: "User management",
+        link: routes.USER.MANAGEMENT.INDEX,
+        userRole: ROLE_ADMIN,
+      },
+      {
+        name: "Add user",
+        link: routes.USER.ADD.INDEX,
+        userRole: ROLE_ADMIN,
+      },
+    ],
+  },
+];
