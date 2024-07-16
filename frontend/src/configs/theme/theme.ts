@@ -59,6 +59,8 @@ const font = {
   },
 };
 
+export type OneColorType = typeof color.light;
+
 export type ColorType = typeof color;
 export type FontType = typeof font;
 

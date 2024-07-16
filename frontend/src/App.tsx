@@ -1,9 +1,10 @@
-import "./App.css";
+import HeaderContainer from "@components/header/HeaderContainer";
 import LoginPage from "./pages/LoginPage";
 
 function App() {
   return (
     <>
+      <HeaderContainer />
       <LoginPage />
     </>
   );

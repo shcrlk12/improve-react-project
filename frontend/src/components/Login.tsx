@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import Input from "@karden/utils/Input/Input";
-import Button from "@karden/utils/button/Button";
+import InputType1 from "@karden/utils/Input/InputType1";
+import PrimaryButton from "@karden/utils/button/PrimaryButton";
 
 const Section = styled.div`
   display: flex;
@@ -42,14 +42,18 @@ const Login = () => {
           <LoginHeader>Login</LoginHeader>
           <InputContainer>
             <InputLabel>Email</InputLabel>
-            <Input type="email" name="username" placeholder="email" />
+            <InputType1 type="email" name="username" placeholder="email" />
           </InputContainer>
           <InputContainer>
             <InputLabel>password</InputLabel>
-            <Input type="password" name="password " placeholder="password" />
+            <InputType1
+              type="password"
+              name="password "
+              placeholder="password"
+            />
           </InputContainer>
           <LoginButtonContainer>
-            <Button type="submit" isPrimary={true} text="Log in" width="100%" />
+            <PrimaryButton type="submit" text="Log in" width="100%" />
           </LoginButtonContainer>
         </form>
       </LoginContainer>

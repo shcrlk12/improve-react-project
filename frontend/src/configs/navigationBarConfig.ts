@@ -1,13 +1,13 @@
 import { ROLE_ADMIN, ROLE_USER, UserRoleType } from "./userRole";
 import { routes } from "./routes";
 
-type SubNavigationItem = {
+export type SubNavigationItem = {
   name: string;
   link: string;
   userRole: UserRoleType;
 };
 
-type GlobalNavigationBarType = {
+export type GlobalNavigationBarType = {
   name: string;
   link: string;
   userRole: UserRoleType;

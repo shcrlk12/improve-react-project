@@ -22,7 +22,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-
+    "types": ["react", "node"],
     "baseUrl": ".",
     "outDir": "./dist/",
     "paths": {
@@ -31,7 +31,9 @@
         "@style/*": ["src/style/*"],
         "@pages/*": ["src/pages/*"],
         "@reducers/*": ["src/reducers/*"],
+        "@config/*": ["src/configs/*"],
         "@src/*": ["src/*"],
+
       }
   },
   "include": ["src"]
