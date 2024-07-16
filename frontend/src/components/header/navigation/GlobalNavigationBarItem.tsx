@@ -1,8 +1,12 @@
 import { GlobalNavigationBarType } from "@src/configs/navigationBarConfig";
 import styled from "styled-components";
-import LocalNavigationBarContainer from "./LocalNavigationBarContainer";
+import LocalNavigationBar from "./LocalNavigationBar";
 import { UserRoleType } from "@src/configs/userRole";
+import { useState } from "react";
 
+/**
+ * Style
+ */
 export const StyledGlobalNavigationBarItem = styled.div`
   position: relative;
   margin-right: 36px;
@@ -15,28 +19,56 @@ export const Name = styled.span`
   height: 100%;
 
   padding: 0 14px;
-  border-left: 1px solid ${({ theme }) => theme.color.light.primary};
+  border-left: 1px solid ${({ theme }) => theme.color.primary};
 
   * {
     background-color: inherit;
   }
 `;
 
+/**
+ * Type
+ */
 type GlobalNavigationBarItemProps = {
   navigationItem: GlobalNavigationBarType;
   userRole: UserRoleType;
 };
 
+/**
+ * Component
+ */
 const GlobalNavigationBarItem = ({
   navigationItem,
   userRole,
 }: GlobalNavigationBarItemProps) => {
+  const [enterGNB, setEnterGNB] = useState<boolean>(false);
+  const [enterLNB, setEnterLNB] = useState<boolean>(false);
+
+  const onGNBMouseEnter = () => {
+    setEnterGNB(true);
+  };
+  const onGNBMouseLeave = () => {
+    setEnterGNB(false);
+  };
+  const onLNBMouseEnter = () => {
+    setEnterLNB(true);
+  };
+  const onLNBMouseLeave = () => {
+    setEnterLNB(false);
+  };
+
   return (
-    <StyledGlobalNavigationBarItem>
+    <StyledGlobalNavigationBarItem
+      onMouseEnter={onGNBMouseEnter}
+      onMouseLeave={onGNBMouseLeave}
+    >
       <Name>{navigationItem.name}</Name>
-      <LocalNavigationBarContainer
+      <LocalNavigationBar
         navigationItems={navigationItem.items}
         userRole={userRole}
+        onMouseEnter={onLNBMouseEnter}
+        onMouseLeave={onLNBMouseLeave}
+        isShow={enterGNB || enterLNB}
       />
     </StyledGlobalNavigationBarItem>
   );

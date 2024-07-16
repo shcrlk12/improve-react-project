@@ -5,7 +5,11 @@ import logo from "@images/logo/UnisonLogo140px.png";
 import styled from "styled-components";
 import { isAuthenticated } from "@src/utils/user";
 import GlobalNavigationBar from "./navigation/GlobalNavigationBar";
+import PrimaryButton from "@karden/utils/button/PrimaryButton";
 
+/**
+ * Style
+ */
 const StyledHeader = styled.div`
   height: 55px;
   box-sizing: border-box;
@@ -48,18 +52,32 @@ const RightHeaderContainer = styled.div`
   align-items: center;
 `;
 
+/**
+ * Type
+ */
 type HeaderProps = {
   title: string;
   globalNavigationBar: GlobalNavigationBarType[];
   userRole: UserRoleType;
+  logoOnClick: React.MouseEventHandler<HTMLImageElement>;
+  logoutOnClick: React.MouseEventHandler<HTMLButtonElement>;
 };
 
-const Header = ({ title, globalNavigationBar, userRole }: HeaderProps) => {
+/**
+ * Component
+ */
+const Header = ({
+  title,
+  globalNavigationBar,
+  userRole,
+  logoOnClick,
+  logoutOnClick,
+}: HeaderProps) => {
   return (
     <StyledHeader>
       <HeaderInner>
         <LeftHeaderContainer>
-          <Logo src={logo} alt="unison logo" onClick={() => {}} />
+          <Logo src={logo} alt="unison logo" onClick={logoOnClick} />
           <PageTitle>{title}</PageTitle>
         </LeftHeaderContainer>
         {isAuthenticated(userRole) && (
@@ -68,6 +86,7 @@ const Header = ({ title, globalNavigationBar, userRole }: HeaderProps) => {
               globalNavigationBar={globalNavigationBar}
               userRole={userRole}
             />
+            <PrimaryButton text="Logout" onClick={logoutOnClick} />
           </RightHeaderContainer>
         )}
       </HeaderInner>

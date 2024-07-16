@@ -1,5 +1,3 @@
-import { DefaultTheme } from "styled-components";
-
 const color = {
   light: {
     primary: "#16a6f3",
@@ -59,12 +57,18 @@ const font = {
   },
 };
 
-export type OneColorType = typeof color.light;
+export type LightColorType = typeof color.light;
+export type DarkColorType = typeof color.dark;
 
 export type ColorType = typeof color;
 export type FontType = typeof font;
 
-const theme: DefaultTheme = {
+type ThemeType = {
+  color: ColorType;
+  font: FontType;
+};
+
+const theme: ThemeType = {
   color,
   font,
 };

@@ -4,6 +4,9 @@ import { isAuthorization } from "@src/utils/user";
 import styled from "styled-components";
 import GlobalNavigationBarItem from "./GlobalNavigationBarItem";
 
+/**
+ * Style
+ */
 const StyledGlobalNavigationBarList = styled.div`
   height: 40px;
   margin: 0;
@@ -13,11 +16,17 @@ const StyledGlobalNavigationBarList = styled.div`
   margin-right: 100px;
 `;
 
+/**
+ * Type
+ */
 type GlobalNavigationBarProps = {
   globalNavigationBar: GlobalNavigationBarType[];
   userRole: UserRoleType;
 };
 
+/**
+ * Component
+ */
 const GlobalNavigationBar = ({
   globalNavigationBar,
   userRole,

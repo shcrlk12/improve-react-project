@@ -1,9 +1,9 @@
 import "styled-components";
-import { ColorType, FontType } from "./theme";
+import { DarkColorType, FontType, LightColorType } from "./theme";
 
 declare module "styled-components" {
   export interface DefaultTheme {
-    color: ColorType;
+    color: LightColorType | DarkColorType;
     font: FontType;
   }
 }

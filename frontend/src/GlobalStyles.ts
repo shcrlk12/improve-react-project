@@ -5,7 +5,11 @@ const GlobalStyles = createGlobalStyle`
   ${reset}
 
 :root{
-	background-color: ${({ theme }) => theme.color.light.background}
+	background-color: ${({ theme }) => theme.color.background}
+}
+
+a{
+	text-decoration: none;
 }
 `;
 
