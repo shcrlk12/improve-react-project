@@ -5,7 +5,7 @@ import logo from "@images/logo/UnisonLogo140px.png";
 import styled from "styled-components";
 import { isAuthenticated } from "@src/utils/user";
 import GlobalNavigationBar from "./navigation/GlobalNavigationBar";
-import PrimaryButton from "@karden/utils/button/PrimaryButton";
+import { PrimaryButton } from "@karden/utils/button";
 
 /**
  * Style
@@ -16,7 +16,7 @@ const StyledHeader = styled.div`
   border-bottom: solid 1px #e5e8eb;
   box-shadow: 1px 1px 1px #c4d8f0;
   padding: 0 20px;
-  margin-bottom: 44px;
+  margin-bottom: 2px;
 `;
 
 const HeaderInner = styled.div`
@@ -64,7 +64,10 @@ type HeaderProps = {
 };
 
 /**
- * Component
+ * Header component for rendering the web header.
+ *
+ * @author Karden
+ * @created 2024-07-17
  */
 const Header = ({
   title,

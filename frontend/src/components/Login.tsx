@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import InputType1 from "@karden/utils/Input/InputType1";
-import PrimaryButton from "@karden/utils/button/PrimaryButton";
+import { PrimaryButton } from "@karden/utils/button";
 
+/**
+ * Styled
+ */
 const Section = styled.div`
   display: flex;
   justify-content: center;
@@ -34,6 +37,15 @@ const LoginButtonContainer = styled.div`
   padding-top: 15px;
 `;
 
+/**
+ * Component for user login using email and password.
+ *
+ * This component renders a form with input fields for email and password,
+ * allowing users to log in to the application.
+ *
+ * @author Karden
+ * @created 2024-07-17
+ */
 const Login = () => {
   return (
     <Section>
@@ -53,7 +65,12 @@ const Login = () => {
             />
           </InputContainer>
           <LoginButtonContainer>
-            <PrimaryButton type="submit" text="Log in" width="100%" />
+            <PrimaryButton
+              type="submit"
+              text="Log in"
+              width="100%"
+              onClick={() => {}}
+            />
           </LoginButtonContainer>
         </form>
       </LoginContainer>

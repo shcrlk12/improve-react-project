@@ -21,8 +21,8 @@ export const globalNavigationBar: GlobalNavigationBarType[] = [
     userRole: ROLE_USER,
     items: [
       {
-        name: "U136",
-        link: routes.REPORT.U136.INDEX,
+        name: "U151",
+        link: routes.REPORT.U151.INDEX,
         userRole: ROLE_USER,
       },
       {

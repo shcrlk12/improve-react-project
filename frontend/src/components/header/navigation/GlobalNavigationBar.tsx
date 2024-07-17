@@ -25,7 +25,13 @@ type GlobalNavigationBarProps = {
 };
 
 /**
- * Component
+ * Render global navigation bar using the dynamic configuration below
+ * and verify user roles to determine navigation bar display
+ *
+ * @see /src/configs/navigationBarConfig.ts
+ *
+ * @author Karden
+ * @created 2024-07-17
  */
 const GlobalNavigationBar = ({
   globalNavigationBar,

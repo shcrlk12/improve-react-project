@@ -1,3 +1,6 @@
+/**
+ * Configuration for common settings.
+ */
 export const config = {
-  apiServer: "",
+  apiServer: "127.0.0.1",
 };

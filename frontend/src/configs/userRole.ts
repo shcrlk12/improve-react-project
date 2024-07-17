@@ -8,3 +8,9 @@ export type UserRoleType =
   | typeof ROLE_USER
   | typeof ROLE_MANAGER
   | typeof ROLE_ADMIN;
+
+export type UserType = {
+  userRole: UserRoleType;
+  name: string;
+  id: string;
+};

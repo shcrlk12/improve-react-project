@@ -35,7 +35,11 @@ type GlobalNavigationBarItemProps = {
 };
 
 /**
- * Component
+ * Render local navigation bar
+ * and verify user roles to determine navigation bar display
+ *
+ * @author Karden
+ * @created 2024-07-17
  */
 const GlobalNavigationBarItem = ({
   navigationItem,

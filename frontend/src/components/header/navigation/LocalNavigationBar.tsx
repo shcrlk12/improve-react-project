@@ -71,7 +71,12 @@ type LocalNavigationBarContainerProps = {
 };
 
 /**
- * Component
+ *
+ * Render Local navigation container and items
+ * and verify user roles to determine navigation bar display
+ *
+ * @author Karden
+ * @created 2024-07-17
  */
 const LocalNavigationBar = ({
   navigationItems,

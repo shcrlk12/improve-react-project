@@ -1,4 +1,7 @@
 const color = {
+  /**
+   * Used for the **light mode**
+   * */
   light: {
     primary: "#16a6f3",
     darkPrimary: "#08689b",
@@ -16,6 +19,9 @@ const color = {
     success: "#6ce359",
     wanring: "#f58447",
   },
+  /**
+   * Used for the **dark mode**
+   * */
   dark: {
     primary: "#16a6f3",
     darkPrimary: "#08689b",
