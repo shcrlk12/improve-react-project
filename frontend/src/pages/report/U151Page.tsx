@@ -7,12 +7,14 @@ import DailyReportContainer from "@components/report/DailyReportContainer";
  * @author Karden
  * @created 2024-07-17
  */
-const U136Page = () => {
+const U151Page = () => {
   return (
     <>
-      <DailyReportContainer />
+      <DailyReportContainer
+        selectedSite={"a6fbb507-ee97-4277-ae6b-b8d3da2d9f64"}
+      />
     </>
   );
 };
 
-export default U136Page;
+export default U151Page;

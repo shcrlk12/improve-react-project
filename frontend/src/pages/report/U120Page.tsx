@@ -10,7 +10,9 @@ import DailyReportContainer from "@components/report/DailyReportContainer";
 const U120Page = () => {
   return (
     <>
-      <DailyReportContainer />
+      <DailyReportContainer
+        selectedSite={"095adeed-4989-456a-ba45-7bde19ec15fc"}
+      />
     </>
   );
 };

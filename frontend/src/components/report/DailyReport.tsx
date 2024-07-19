@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import { PrimaryButton } from "@karden/utils/button";
 import { TextArea1 } from "@karden/utils/Input";
+import { SitesType, turbineConfig } from "@config/config";
+import { Dispatch, MouseEventHandler, SetStateAction } from "react";
+import CalendarPopup from "./../calendar/CalendarPopup";
+
 /**
  * Styled
  */
@@ -9,6 +13,8 @@ const StyledDailyReport = styled.div`
   flex-direction: column;
   gap: 20px;
   align-items: center;
+  width: 450px;
+  margin: auto;
 `;
 
 const SiteHeaderContainer = styled.div`
@@ -21,18 +27,21 @@ const HeaderItem = styled.div`
 
   font-size: ${({ theme }) => theme.font.size.large};
   font-weight: ${({ theme }) => theme.font.weight.bold};
-
-  &::after {
+  cursor: pointer;
+  &.selected::after {
     content: "";
     height: 3px;
     width: 70%;
     border-radius: 2px;
-    background: ${({ theme }) => theme.color.primary};
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
     margin: auto;
+
+    animation-name: selected-site;
+    animation-duration: 0.6s;
+    animation-fill-mode: forwards;
   }
 `;
 
@@ -40,7 +49,7 @@ const SignificantContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-
+  width: 100%;
   padding-bottom: 20px;
   border-bottom: 2px solid ${({ theme }) => theme.color.primary};
 `;
@@ -63,10 +72,16 @@ const SignificantButtonContainer = styled.div`
 /**
  * Period styled
  */
+const CalendarPopupContainer = styled.div`
+  display: flex;
+  justify-content: end;
+`;
+
 const PeriodContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 100%;
 `;
 
 const PeriodHeader = styled.div`
@@ -75,17 +90,23 @@ const PeriodHeader = styled.div`
   width: 100%;
 `;
 
-const PeriodSelection = styled.div`
-  display: flex;
-`;
-
-const PeriodSelectionTitle = styled.div``;
-const PeriodSelectionDate = styled.div``;
+// const PeriodSelectionTitle = styled.div``;
+// const PeriodSelectionDate = styled.div``;
 
 /**
  * Preview styled
  */
 const PreviewContainer = styled.div``;
+
+/**
+ * Type
+ */
+type DailyReportType = {
+  selectedSite: string;
+  selectedDate: Date;
+  setSelectedDate: Dispatch<SetStateAction<Date>>;
+  handleSiteClick: MouseEventHandler<HTMLDivElement>;
+};
 
 /**
  * This is the daily report component.
@@ -96,18 +117,40 @@ const PreviewContainer = styled.div``;
  * @author Karden
  * @created 2024-07-17
  */
-const DailyReport = () => {
+const DailyReport = ({
+  selectedSite,
+  selectedDate,
+  setSelectedDate,
+  handleSiteClick,
+}: DailyReportType) => {
+  const createHeaderItem = () => {
+    const newArr: JSX.Element[] = [];
+
+    let key: keyof SitesType;
+    for (key in turbineConfig.sites) {
+      newArr.push(
+        <HeaderItem
+          key={key}
+          className={selectedSite === key ? "selected" : undefined}
+          onClick={handleSiteClick}
+        >
+          <div className="hidden-element">{key}</div>
+          {turbineConfig.sites[key]}
+        </HeaderItem>
+      );
+    }
+    return newArr;
+  };
   return (
     <StyledDailyReport>
-      <SiteHeaderContainer>
-        <HeaderItem>U151</HeaderItem>
-        <HeaderItem>U113</HeaderItem>
-        <HeaderItem>U120</HeaderItem>
-      </SiteHeaderContainer>
+      <SiteHeaderContainer>{createHeaderItem()}</SiteHeaderContainer>
       <SignificantContainer>
         <SignificantHeader>특이사항</SignificantHeader>
         <SignificantEditor>
-          <TextArea1 text="[44299] PCS fault status ON 알람 관련 냉각수 플럭싱 및 PCS 리액터 교체작업 진행 중" />
+          <TextArea1
+            text="[44299] PCS fault status ON 알람 관련 냉각수 플럭싱 및 PCS 리액터 교체작업 진행 중"
+            onChange={() => {}}
+          />
         </SignificantEditor>
         <SignificantButtonContainer>
           <PrimaryButton
@@ -126,26 +169,19 @@ const DailyReport = () => {
       </SignificantContainer>
       <PeriodContainer>
         <PeriodHeader>기간 선택</PeriodHeader>
-        <PeriodSelection>
-          <PeriodSelectionTitle>생성 일자:</PeriodSelectionTitle>
-          <PeriodSelectionDate>
-            <select name="period-year" id="period-year">
-              <option value="2024">2024</option>
-            </select>
-            -
-            <select name="period-month" id="period-month">
-              <option value="7">7</option>
-            </select>
-            -
-            <select name="period-date" id="period-date">
-              <option value="17">17</option>
-            </select>
-          </PeriodSelectionDate>
-        </PeriodSelection>
+        <CalendarPopupContainer>
+          <CalendarPopup date={selectedDate} setDate={setSelectedDate} />
+        </CalendarPopupContainer>
       </PeriodContainer>
       <PreviewContainer>Preview test</PreviewContainer>
       <SignificantButtonContainer>
-        <PrimaryButton type="submit" text="미리보기 생성" onClick={() => {}} />
+        <PrimaryButton
+          type="submit"
+          text="미리보기 생성"
+          onClick={() => {
+            console.log(selectedDate.toDateString());
+          }}
+        />
       </SignificantButtonContainer>
     </StyledDailyReport>
   );

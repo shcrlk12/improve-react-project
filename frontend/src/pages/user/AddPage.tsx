@@ -1,4 +1,4 @@
-import UserDetailContainer from "@components/UserDetailContainer";
+import UserDetailContainer from "@components/user/UserDetailContainer";
 
 /**
  * Renders the user adding page.

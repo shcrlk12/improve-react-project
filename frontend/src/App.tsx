@@ -1,7 +1,7 @@
 import HeaderContainer from "@components/header/HeaderContainer";
 import LoginPage from "@pages/LoginPage";
 import { Navigate, Route, Routes } from "react-router";
-import U136Page from "@pages/report/U136Page";
+import U136Page from "@pages/report/U151Page";
 import U120Page from "@pages/report/U120Page";
 import U113Page from "@pages/report/U113Page";
 import { routes } from "@config/routes";

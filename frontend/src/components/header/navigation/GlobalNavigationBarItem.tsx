@@ -60,11 +60,16 @@ const GlobalNavigationBarItem = ({
   const onLNBMouseLeave = () => {
     setEnterLNB(false);
   };
+  const closeLocalNavigationBar = () => {
+    setEnterGNB(false);
+    setEnterLNB(false);
+  };
 
   return (
     <StyledGlobalNavigationBarItem
       onMouseEnter={onGNBMouseEnter}
       onMouseLeave={onGNBMouseLeave}
+      onClick={closeLocalNavigationBar}
     >
       <Name>{navigationItem.name}</Name>
       <LocalNavigationBar

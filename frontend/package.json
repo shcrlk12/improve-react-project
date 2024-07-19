@@ -10,7 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@karden/utils": "^0.0.15",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@karden/utils": "^0.0.16",
+    "@mui/x-date-pickers": "^7.10.0",
     "@types/react-dom": "^18.2.22",
     "@types/react-redux": "^7.1.33",
     "@types/react-router": "^5.1.20",

@@ -11,6 +11,19 @@ const GlobalStyles = createGlobalStyle`
 a{
 	text-decoration: none;
 }
-`;
 
+.hidden-element{
+	display:none;
+}
+
+@keyframes selected-site {
+  0% {
+
+  }
+  100% {
+	background: ${({ theme }) => theme.color.primary};
+
+  }
+}
+`;
 export default GlobalStyles;

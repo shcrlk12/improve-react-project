@@ -7,7 +7,7 @@ import styled from "styled-components";
 /**
  * Style
  */
-const StyledLocalNavigationBar = styled.div<{ display: boolean }>`
+const StyledLocalNavigationBar = styled.div<{ display: string }>`
   position: absolute;
   top: 40px;
   left: -15px;
@@ -23,7 +23,7 @@ const StyledLocalNavigationBar = styled.div<{ display: boolean }>`
 
   box-sizing: border-box;
 
-  display: ${(props) => (props.display ? "block" : "none")};
+  display: ${(props) => (props.display == "true" ? "block" : "none")};
 `;
 
 const LocalNavigationBarInnter = styled.ul`
@@ -87,7 +87,7 @@ const LocalNavigationBar = ({
 }: LocalNavigationBarContainerProps) => {
   return (
     <StyledLocalNavigationBar
-      display={isShow}
+      display={isShow ? "true" : "false"}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >

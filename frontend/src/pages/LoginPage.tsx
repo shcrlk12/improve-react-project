@@ -1,4 +1,4 @@
-import LoginContainer from "@components/LoginContainer";
+import LoginContainer from "@components/login/LoginContainer";
 
 /**
  * Renders the login page.

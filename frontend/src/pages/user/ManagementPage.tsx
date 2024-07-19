@@ -1,4 +1,4 @@
-import UserListContainer from "@components/UserListContainer";
+import UserListContainer from "@components/user/list/UserListContainer";
 
 /**
  * Renders the user management page.
