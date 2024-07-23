@@ -1,6 +1,7 @@
 package com.unison.monitoring.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.unison.monitoring.error.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,8 +21,8 @@ public class AppAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         Map<String, Object> data = new HashMap<>();
 
-//        data.put("code", SecurityExceptionCode.AUTHENTICATION_ENTRY_POINT.getCode());
-//        data.put("message", SecurityExceptionCode.AUTHENTICATION_ENTRY_POINT.getMessage());
+        data.put("code", ErrorCode.AUTHENTICATION_ENTRY_POINT.getCode());
+        data.put("message", ErrorCode.AUTHENTICATION_ENTRY_POINT.getMessage());
 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

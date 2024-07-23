@@ -11,10 +11,11 @@ public enum ErrorCode {
     DEFAULT("E000", "Unknown error"),
 
     /*E001 ~ E099*/
-    USERNAME_NOT_FOUND("E001", "User not found"),
 
     /*E101 ~ E199*/
-    BAD_CREDENTIALS("E101", "Bad credentials"),
+    USERNAME_NOT_FOUND("E101", "User not found"),
+    BAD_CREDENTIALS("E102", "Bad credentials"),
+    AUTHENTICATION_ENTRY_POINT("E103", "Failed Authentication"),
 
     /*E201 ~ E299*/
     INTERNAL_SERVER_ERROR("E003", "Internal server error");
