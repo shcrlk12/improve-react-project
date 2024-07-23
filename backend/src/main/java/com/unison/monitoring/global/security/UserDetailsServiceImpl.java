@@ -22,8 +22,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         Member member = optionalMember.orElseThrow(() -> new UsernameNotFoundException("User name not found"));
 
-        memberRepository.save(member);
-
         return new UserDetailImpl(member);
     }
 }

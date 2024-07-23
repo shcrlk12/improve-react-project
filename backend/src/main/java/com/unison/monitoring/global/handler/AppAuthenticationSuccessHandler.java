@@ -7,6 +7,7 @@ import com.unison.monitoring.api.member.MemberRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,6 +28,7 @@ public class AppAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
                           Authentication authentication) throws IOException, ServletException {
     }
     @Override
+    @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException
     {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -39,7 +41,6 @@ public class AppAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
         Member member = memberRepository.findById(userDetails.getUsername()).get();
 
         member.setLastLoginTime(LocalDateTime.now());
-        memberRepository.save(member);
 
         data.put("status", HttpServletResponse.SC_OK);
         data.put("username",  userDetails.getUsername());

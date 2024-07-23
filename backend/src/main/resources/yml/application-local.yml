@@ -23,12 +23,6 @@ spring:
     show-sql: true
     defer-datasource-initialization: true
 
-logging:
-  level:
-    org:
-      springframework:
-        security: TRACE
-
   sql:
     init:
       mode: always
