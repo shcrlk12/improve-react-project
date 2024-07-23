@@ -1,0 +1,47 @@
+# 로컬 테스트 용
+spring:
+  config:
+    activate:
+      on-profile: local # 환경 이름 설정
+
+  application:
+    name: monitoring-local
+
+  security:
+    debug: true
+
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://127.0.0.1:1433;databaseName=Monitoring;encrypt=true;trustServerCertificate=true;
+    username: sa
+    password:
+    initialization-mode: always #data.sql 실행
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # create-drop - 어플리케이션이 종료할때 테이블 삭제
+    show-sql: true
+    defer-datasource-initialization: true
+
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
+
+  sql:
+    init:
+      mode: always
+
+server:
+  port: 6789
+  servlet:
+    session:
+      timeout: 43200
+
+## custom setting
+cors:
+  ip: 127.0.0.1
+  port: 5151
+  domain: localhost
+

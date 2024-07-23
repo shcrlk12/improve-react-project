@@ -1,0 +1,10 @@
+# 개발 서버 테스트 용
+spring:
+  config:
+    activate:
+      on-profile: dev # 환경 이름 설정
+
+  application:
+    name: monitoring-dev
+
+
