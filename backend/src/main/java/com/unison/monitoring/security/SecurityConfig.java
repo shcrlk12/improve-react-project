@@ -1,9 +1,13 @@
-package com.unison.monitoring.global.security;
+package com.unison.monitoring.security;
 
 
-import com.unison.monitoring.global.config.CorsProperties;
-import com.unison.monitoring.global.filter.CookieAttributeFilter;
+import com.unison.monitoring.config.CorsProperties;
+import com.unison.monitoring.filter.CookieAttributeFilter;
 import com.unison.monitoring.global.handler.*;
+import com.unison.monitoring.handler.AppAccessDeniedHandler;
+import com.unison.monitoring.handler.AppAuthenticationEntryPoint;
+import com.unison.monitoring.handler.AppAuthenticationFailureHandler;
+import com.unison.monitoring.handler.AppLogoutSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -14,13 +18,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 

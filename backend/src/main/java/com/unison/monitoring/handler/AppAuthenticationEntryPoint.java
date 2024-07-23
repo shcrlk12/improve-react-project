@@ -1,4 +1,4 @@
-package com.unison.monitoring.global.handler;
+package com.unison.monitoring.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

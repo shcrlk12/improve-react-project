@@ -1,4 +1,4 @@
-package com.unison.monitoring.global.config;
+package com.unison.monitoring.config;
 
 import lombok.Getter;
 import lombok.Setter;

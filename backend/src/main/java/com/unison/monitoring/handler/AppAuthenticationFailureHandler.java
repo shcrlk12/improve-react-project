@@ -1,15 +1,13 @@
-package com.unison.monitoring.global.handler;
+package com.unison.monitoring.handler;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unison.monitoring.global.error.ErrorCode;
+import com.unison.monitoring.error.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import static com.unison.monitoring.global.util.ErrorCodeMatcher.getErrorCode;
+import static com.unison.monitoring.util.ErrorCodeMatcher.getErrorCode;
 
 @Component
 public class AppAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {

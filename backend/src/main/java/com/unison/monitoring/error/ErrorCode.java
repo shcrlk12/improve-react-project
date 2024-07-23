@@ -1,4 +1,4 @@
-package com.unison.monitoring.global.error;
+package com.unison.monitoring.error;
 
 
 /**

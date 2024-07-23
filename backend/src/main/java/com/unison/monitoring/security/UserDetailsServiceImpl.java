@@ -1,4 +1,4 @@
-package com.unison.monitoring.global.security;
+package com.unison.monitoring.security;
 
 import com.unison.monitoring.api.member.Member;
 import com.unison.monitoring.api.member.MemberRepository;

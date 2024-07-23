@@ -1,4 +1,4 @@
-package com.unison.monitoring.global.handler;
+package com.unison.monitoring.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

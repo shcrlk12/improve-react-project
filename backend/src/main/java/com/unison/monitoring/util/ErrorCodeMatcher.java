@@ -1,8 +1,7 @@
-package com.unison.monitoring.global.util;
+package com.unison.monitoring.util;
 
-import com.unison.monitoring.global.error.ErrorCode;
+import com.unison.monitoring.error.ErrorCode;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class ErrorCodeMatcher {
     public static ErrorCode getErrorCode(Exception exception){
