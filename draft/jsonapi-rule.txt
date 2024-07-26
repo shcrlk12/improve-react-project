@@ -1,0 +1,106 @@
+리소스 오브젝트
+필수요소 id, type 포함한것 or lid
+선택요소 attributes, relationships, links, meta
+
+document: json 응답 및 요청
+member: 요소
+
+included는 relationship에 있는놈의 실체 데이터
+
+7.1
+최상위 JSON API에는
+아래 넷중 하나는 포함해야 한다
+data: primary data
+errors: an array of error objects
+meta: a meta object that contains non-standard meta-information.
+a member defined by an applied extension.
+
+- data랑 error 는 같은 문서에 존재하면 안된다.
+
+
+jsonapi: an object describing the server’s implementation.
+links: a links object related to the primary data.
+included: an array of resource objects that are related to the primary data and/or each other
+
+
+- data키가 포함되지 않으면 included 키도 있으면 안된다.
+
+links object는 아래 멤버를 포함 할 수 있다.
+self: the link that generated the current response document. If a document has extensions or profiles applied to it, this link SHOULD be represented by a link object with the type target attribute specifying the JSON:API media type with all applicable parameters.
+related: a related resource link when the primary data represents a resource relationship.
+describedby: a link to a description document (e.g. OpenAPI or JSON Schema) for the current document.
+
+
+data: 
+a single resource object, a single resource identifier object, or null, for requests that target single resources
+an array of resource objects, an array of resource identifier objects, or an empty array ([]), for requests that target resource collections
+
+
+리소스 오브젝트
+id, type
+리소스 객체가 클라이언트에서 생성되지 않는경우 id 는 필수가 아니다.
+
+resource object MAY contain any of these top-level members:
+
+attributes: an attributes object representing some of the resource’s data.
+relationships: a relationships object describing relationships between the resource and other JSON:API resources.
+links: a links object containing links related to the resource.
+meta: a meta object containing non-standard meta-information about a resource that can not be represented as an attribute or relationship.
+
+{
+  "type": "articles",
+  "id": "1",
+  "attributes": {
+    "title": "Rails is Omakase"
+  },
+  "relationships": {
+    "author": {
+      "links": {
+        "self": "/articles/1/relationships/author",
+        "related": "/articles/1/author"
+      },
+      "data": { "type": "people", "id": "9" }
+    }
+  }
+}
+
+id, type, lid 는 string타입이다.
+id, type쌍은 반드시 하나이다.
+
+relationship을 지원해야 한다. 
+GET /articles/1/relationships/comments HTTP/1.1
+- 
+
+파라미터 - include, field[Type], sort (multiple 지원, 기본 오름차순, - 내림차순, sort 지원하지 않는 경우 400 bad request 반환)
+include로 포함 시킬 수 있다.
+GET /articles/1?include=comments.author,ratings HTTP/1.1
+
+페이지네이션 link 오브젝트 안에 first, last prev next 데이터 
+
+
+리소스 생성
+요청 Post, 
+type 필요
+
+클라이언트 generated id 는 uuid여야함.
+
+응답. 201 created
+Location 헤더에 생성된 리소스의 위치를 담아야함.
+
+리소스 업데이트
+요청 PATCH
+1개의 리소스 오브젝트 포함.
+서버가 요청을 거부하면 403 forbidden
+
+
+관계 업데이트
+PATCH 로
+블로그 게시글(Article) 하나가 특정 작성자(Author)와 연결되어 있다고 가정해보겠습니다. 만약 이 게시글의 작성자를 바꾸고 싶다면 어떻게 할까요?
+이럴때 관계 업데이트를 한다.
+여러 태그 변경해야할때,
+
+
+삭제
+Delete
+출처 jsonapi org
+https://jsonapi.org/format/

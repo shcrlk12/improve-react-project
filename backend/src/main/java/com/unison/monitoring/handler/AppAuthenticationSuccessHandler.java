@@ -2,7 +2,7 @@ package com.unison.monitoring.handler;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unison.monitoring.api.member.Member;
+import com.unison.monitoring.api.member.model.MemberEntity;
 import com.unison.monitoring.api.member.MemberRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,9 +38,9 @@ public class AppAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
 
         String role = userDetails.getAuthorities().toString();
 
-        Member member = memberRepository.findById(userDetails.getUsername()).get();
+        MemberEntity memberEntity = memberRepository.findById(userDetails.getUsername()).get();
 
-        member.setLastLoginTime(LocalDateTime.now());
+        memberEntity.setLastLoginTime(LocalDateTime.now());
 
         data.put("status", HttpServletResponse.SC_OK);
         data.put("username",  userDetails.getUsername());

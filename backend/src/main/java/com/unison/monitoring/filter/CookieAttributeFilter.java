@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Collection;
 
+//TODO I need to check action of this class
+//if this class not working in my app, then delete this class
 @Component
 public class CookieAttributeFilter implements Filter {
 
@@ -18,16 +20,6 @@ public class CookieAttributeFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         chain.doFilter(request, response);
 //        addSameSite(httpServletResponse , "None");
-    }
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void destroy() {
-        // TODO Auto-generated method stub
     }
 
     private void addSameSite(HttpServletResponse response, String sameSite) {

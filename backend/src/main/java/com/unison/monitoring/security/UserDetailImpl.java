@@ -1,7 +1,7 @@
 package com.unison.monitoring.security;
 
 
-import com.unison.monitoring.api.member.Member;
+import com.unison.monitoring.api.member.model.MemberEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,15 +13,15 @@ import java.util.Optional;
 
 public class UserDetailImpl implements UserDetails {
 
-    private final Member member;
+    private final MemberEntity memberEntity;
 
-    public UserDetailImpl(Member member){
-        this.member = member;
+    public UserDetailImpl(MemberEntity memberEntity){
+        this.memberEntity = memberEntity;
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(member.getRole()));
+        authorities.add(new SimpleGrantedAuthority(memberEntity.getRole()));
 
         return authorities;
     }
@@ -29,12 +29,12 @@ public class UserDetailImpl implements UserDetails {
     @Override
     public String getPassword() {
 
-        return Optional.ofNullable(member).map(Member::getPw).orElse("");
+        return Optional.ofNullable(memberEntity).map(MemberEntity::getPw).orElse("");
     }
 
     @Override
     public String getUsername() {
-        return Optional.ofNullable(member).map(Member::getId).orElse("");
+        return Optional.ofNullable(memberEntity).map(MemberEntity::getId).orElse("");
 
     }
 }

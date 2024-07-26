@@ -1,4 +1,4 @@
-package com.unison.monitoring.api.member;
+package com.unison.monitoring.api.member.model;
 
 
 import jakarta.persistence.*;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicUpdate
-public class Member {
+public class MemberEntity {
     @Id
     private String id;
 

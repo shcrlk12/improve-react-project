@@ -62,9 +62,8 @@ public class SecurityConfig{
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/wind-farm/daily/register"),
-                                        AntPathRequestMatcher.antMatcher("/api/wind-farm/daily/reset")
-                                ).hasAnyRole("MANAGER", "ADMIN")
+                                        AntPathRequestMatcher.antMatcher("/api/users/**")
+                                ).hasAnyRole("USER", "MANAGER", "ADMIN")
                                 .requestMatchers(
                                         AntPathRequestMatcher.antMatcher("/api/login/**")
                                 ).hasAnyRole("USER", "MANAGER", "ADMIN")
