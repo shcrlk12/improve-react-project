@@ -19,7 +19,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop # create-drop - 어플리케이션이 종료할때 테이블 삭제
+      ddl-auto: create # create-drop - 어플리케이션이 종료할때 테이블 삭제
     show-sql: true
     defer-datasource-initialization: true
 
