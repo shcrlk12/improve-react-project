@@ -1,0 +1,9 @@
+# 배포 용
+spring:
+  config:
+    activate:
+      on-profile: prod # 환경 이름 설정
+
+  application:
+    name: monitoring-prod
+
