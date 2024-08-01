@@ -5,6 +5,6 @@ spring:
       on-profile: dev # 환경 이름 설정
 
   application:
-    name: monitoring-dev
+    name: batch-dev
 
 

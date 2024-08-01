@@ -1,87 +1,73 @@
 package com.unison.batch.service;
 
 
-import com.unison.batch.jsonapiorg.JsonApiOrgHttpHeaders;
-import com.unison.batch.jsonapiorg.Resource;
-import com.unison.batch.jsonapiorg.request.ApiRequests;
-import com.unison.batch.jsonapiorg.response.ApiResponse;
-import com.unison.batch.model.ReportData;
-import com.unison.batch.model.TimeDto;
-import com.unison.batch.util.DateTimeUtils;
+import com.unison.batch.jsonapi.JsonApiOrgHttpHeaders;
+import com.unison.batch.jsonapi.Resource;
+import com.unison.batch.jsonapi.request.ApiRequests;
+import com.unison.batch.jsonapi.response.ApiResponse;
+import com.unison.batch.domain.ReportData;
+import com.unison.batch.dto.TimeDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.Extensions;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import javax.sql.DataSource;
+import java.io.PrintWriter;
 import java.net.URI;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 
-//@RestClientTest( value = {U113UploadBatchService.class} )
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class U113UploadBatchServiceTests {
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private R2dbcEntityTemplate r2dbcEntityTemplate;
-
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    @MockBean(answer = Answers.RETURNS_DEEP_STUBS)
     private WebClient webClient;
 
-    @InjectMocks
+    @Autowired
     private U113UploadBatchService u113UploadBatchService;
 
     @DisplayName("10 분 데이터 조회 테스트")
     @Test
     public void testGetReportData() {
         // Given
-        LocalDateTime startDate = LocalDateTime.of(2024, 7, 30, 0, 0, 0);
-        LocalDateTime endDate = LocalDateTime.of(2024, 7, 31, 0, 0, 0);
+        LocalDateTime startDate = LocalDateTime.of(2024, 5, 2, 0, 0, 0);
+        LocalDateTime endDate = LocalDateTime.of(2024, 5, 3, 0, 0, 0);
 
         // When
-
-        ReportData testData1 = new ReportData("2024-11-13 13:00:00", "1440", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0");
-        ReportData testData2 = new ReportData("2024-11-13 13:10:00", "1440", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0");
-        ReportData testData3 = new ReportData("2024-11-13 13:20:00", "1440", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0");
-
-        when(r2dbcEntityTemplate.getDatabaseClient().sql(any(String.class))
-                .bind(anyInt(), any(Integer.class))
-                .bind(anyInt(), any(Integer.class))
-                .bind(anyInt(), any(LocalDateTime.class))
-                .bind(anyInt(), any(LocalDateTime.class))
-                .fetch()
-                .all()
-                .map(any())
-                .collectList())
-                .thenReturn(Mono.just(List.of(testData1, testData2, testData3)));
 
         Mono<List<ReportData>> actualData = u113UploadBatchService.getReportData(startDate, endDate);
 
         // Then
         StepVerifier.create(actualData)
                 .expectNextMatches(data ->
-                    data.size() == 3 &&
-                    data.get(0).getMeasureDate().equals("2024-11-13 13:00:00") &&
-                    data.get(0).getFullPerformance().equals("1440") &&
-                    data.get(0).getPartialPerformance().equals("0")
+                    data.size() == 144
                 )
                 .expectComplete()
                 .verify();
@@ -103,12 +89,12 @@ public class U113UploadBatchServiceTests {
                 .headers(new JsonApiOrgHttpHeaders())
                 .body(apiResponse);
 
-
         when(webClient.get()
                 .uri(URI.create("/api/data/last-update"))
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<ApiResponse<TimeDto.Response>>() {})
         ).thenReturn(Mono.just(responseEntity));
+
 
         //When
         Mono<LocalDateTime> actualData = u113UploadBatchService.retrieveLastUploadDate();

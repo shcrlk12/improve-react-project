@@ -1,6 +1,6 @@
-package com.unison.batch.jsonapiorg.request;
+package com.unison.batch.jsonapi.request;
 
-import com.unison.batch.jsonapiorg.Resource;
+import com.unison.batch.jsonapi.Resource;
 import lombok.*;
 
 import java.util.List;

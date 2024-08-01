@@ -1,4 +1,4 @@
-package com.unison.batch.jsonapiorg;
+package com.unison.batch.jsonapi;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

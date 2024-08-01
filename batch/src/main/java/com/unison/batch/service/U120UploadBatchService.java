@@ -1,8 +1,7 @@
 package com.unison.batch.service;
 
-import com.unison.batch.jsonapiorg.request.ApiRequest;
-import com.unison.batch.jsonapiorg.request.ApiRequests;
-import com.unison.batch.model.ReportData;
+import com.unison.batch.jsonapi.request.ApiRequests;
+import com.unison.batch.domain.ReportData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

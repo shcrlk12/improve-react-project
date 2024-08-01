@@ -3,28 +3,24 @@ spring:
   config:
     activate:
       on-profile: local # 환경 이름 설정
-  r2dbc:
-    url: r2dbc:pool:mssql://127.0.0.1:1433/WPPIS_DB_U120
-    username: sa
-    password:
-    pool:
-      enabled: true
-      max-size: 20
-      validation-query: SELECT 1
-      initial-size: 5
-      max-idle-time: 30m
-  data:
-    r2dbc:
-      repositories:
-        enabled: true
 
   application:
     name: batch-local
 
   datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://127.0.0.1:1433;databaseName=WPPIS_DB_TEST;encrypt=true;trustServerCertificate=true;
+    username: sa
+    password:
     initialization-mode: always #data.sql 실행
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     show-sql: true
+
+  sql:
+    init:
+      mode: always
+#      schema-locations: classpath:/sql/schema.sql
+#      data-locations: classpath:/sql/data.sql

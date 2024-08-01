@@ -1,13 +1,13 @@
-package com.unison.batch.jsonapiorg;
+package com.unison.batch.jsonapi;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)  // Null 값이 포함되지 않도록 설정
-public class Relationship {
-    private Links links;
-    private ResourceLinkage data;  // 링크된 리소스
+public class ResourceLinkage {
+    private String type;
+    private String id;
 
     // 기본 생성자, getters, setters, equals, hashCode, toString
 }

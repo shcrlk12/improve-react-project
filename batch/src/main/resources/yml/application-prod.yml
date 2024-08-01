@@ -5,5 +5,5 @@ spring:
       on-profile: prod # 환경 이름 설정
 
   application:
-    name: monitoring-prod
+    name: batch-dev
 

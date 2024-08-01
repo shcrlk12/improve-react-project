@@ -1,8 +1,8 @@
 package com.unison.batch.mapper;
 
-import com.unison.batch.jsonapiorg.Resource;
-import com.unison.batch.model.ReportData;
-import com.unison.batch.model.ReportDataDto;
+import com.unison.batch.jsonapi.Resource;
+import com.unison.batch.domain.ReportData;
+import com.unison.batch.dto.ReportDataDto;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -22,11 +22,11 @@ public class MapperTests {
         List<ReportData> testDataList = new ArrayList<>(Arrays.asList(testData1, testData2, testData3));
 
         //When
-        List<Resource<ReportDataDto.Request>> resource = Mapper.reportDataToResource(testDataList);
+        List<Resource<ReportDataDto.Request>> resource = Mapper.reportDataToResource("u113", testDataList);
 
         //Then
         assertEquals(resource.get(1).getId(), "2024-11-13 13:10:00");
-        assertEquals(resource.get(1).getType(), "data");
+        assertEquals(resource.get(1).getType(), "u113-data");
         assertEquals(resource.get(1).getAttributes().getFullPerformance(), "1440");
         assertEquals(resource.size(), 3);
     }

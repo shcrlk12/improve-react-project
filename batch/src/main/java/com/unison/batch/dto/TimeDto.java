@@ -1,4 +1,4 @@
-package com.unison.batch.model;
+package com.unison.batch.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

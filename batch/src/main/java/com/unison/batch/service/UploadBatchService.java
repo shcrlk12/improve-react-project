@@ -1,7 +1,7 @@
 package com.unison.batch.service;
 
-import com.unison.batch.jsonapiorg.request.ApiRequests;
-import com.unison.batch.model.ReportData;
+import com.unison.batch.jsonapi.request.ApiRequests;
+import com.unison.batch.domain.ReportData;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;

@@ -1,9 +1,9 @@
-package com.unison.batch.jsonapiorg.response;
+package com.unison.batch.jsonapi.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.unison.batch.jsonapiorg.JsonApi;
-import com.unison.batch.jsonapiorg.Links;
-import com.unison.batch.jsonapiorg.Resource;
+import com.unison.batch.jsonapi.JsonApi;
+import com.unison.batch.jsonapi.Links;
+import com.unison.batch.jsonapi.Resource;
 import lombok.*;
 
 import java.util.List;

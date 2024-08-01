@@ -1,4 +1,4 @@
-package com.unison.batch.jsonapiorg;
+package com.unison.batch.jsonapi;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

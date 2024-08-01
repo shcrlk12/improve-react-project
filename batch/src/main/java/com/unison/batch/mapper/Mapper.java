@@ -1,8 +1,8 @@
 package com.unison.batch.mapper;
 
-import com.unison.batch.jsonapiorg.Resource;
-import com.unison.batch.model.ReportData;
-import com.unison.batch.model.ReportDataDto;
+import com.unison.batch.jsonapi.Resource;
+import com.unison.batch.domain.ReportData;
+import com.unison.batch.dto.ReportDataDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,13 +10,13 @@ import java.util.List;
 public class Mapper {
 
 
-    public static List<Resource<ReportDataDto.Request>> reportDataToResource(List<ReportData> reportDataList){
+    public static List<Resource<ReportDataDto.Request>> reportDataToResource(String turbineType, List<ReportData> reportDataList){
         List<Resource<ReportDataDto.Request>> result = new ArrayList<>();
 
         for (ReportData reportData : reportDataList) {
             Resource<ReportDataDto.Request> resource = Resource.<ReportDataDto.Request>builder()
                     .id(reportData.getMeasureDate())
-                    .type(ReportDataDto.TYPE)
+                    .type(turbineType + "-" + ReportDataDto.TYPE)
                     .attributes(ReportDataDto.Request.builder()
                             .fullPerformance(reportData.getFullPerformance())
                             .partialPerformance(reportData.getPartialPerformance())
