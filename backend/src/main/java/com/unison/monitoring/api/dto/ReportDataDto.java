@@ -1,4 +1,4 @@
-package com.unison.batch.dto;
+package com.unison.monitoring.api.dto;
 
 
 import lombok.Builder;

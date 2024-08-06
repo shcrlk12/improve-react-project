@@ -1,5 +1,7 @@
 package com.unison.batch.service;
 
+import com.unison.batch.config.ApiServerProperties;
+import com.unison.batch.dto.LastUpdateDto;
 import com.unison.batch.jsonapi.request.ApiRequests;
 import com.unison.batch.jsonapi.response.ApiResponse;
 import com.unison.batch.dto.TimeDto;
@@ -16,6 +18,7 @@ import java.net.URI;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,24 +26,30 @@ public class U113UploadBatchService implements UploadBatchService {
     private final JdbcTemplate jdbcTemplate;
 
     private final WebClient webClient;
+
     @Override
-    public Mono<LocalDateTime> retrieveLastUploadDate() {
+    public Mono<LastUpdateDto.Response> retrieveLastUploadDate() {
 
         return webClient.get()
-                .uri(URI.create("/api/data/last-update"))
+                .uri("/api/data/last-update")
                 .retrieve()
                 .toEntity(new ParameterizedTypeReference<ApiResponse<TimeDto.Response>>() {})
                 .map(responseEntity ->
-                    DateTimeUtils.parseLocalDateTime("yyyy-MM-dd HH:mm:ss", responseEntity.getBody().getData().getAttributes().getTime())
+                        LastUpdateDto.Response.builder()
+                                .uuid(UUID.fromString(responseEntity.getBody().getData().getId()))
+                                .lastUpdateTime(DateTimeUtils.parseISOLocalDateTime(responseEntity.getBody().getData().getAttributes().getTime()))
+                                .build()
                 );
     }
 
     @Override
     public void uploadData(ApiRequests<?> request) {
         webClient.post()
-                .uri(URI.create("/api/data"))
-                .body(request , ApiRequests.class)
-                .retrieve();
+                .uri("/api/data")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .subscribe();  // 비동기 방식으로 처리
     }
 
     @Override

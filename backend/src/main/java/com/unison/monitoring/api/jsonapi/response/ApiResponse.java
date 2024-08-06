@@ -1,9 +1,9 @@
-package com.unison.batch.jsonapi.response;
+package com.unison.monitoring.api.jsonapi.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.unison.batch.jsonapi.JsonApi;
-import com.unison.batch.jsonapi.Links;
-import com.unison.batch.jsonapi.Resource;
+import com.unison.monitoring.api.jsonapi.JsonApi;
+import com.unison.monitoring.api.jsonapi.Links;
+import com.unison.monitoring.api.jsonapi.Resource;
 import lombok.*;
 
 import java.util.List;
@@ -19,8 +19,8 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)  // Null 값이 포함되지 않도록 설정
-public class ApiResponses<T> {
-    private List<Resource<T>> data; // Optional at least one
+public class ApiResponse<T> {
+    private Resource<T> data; // Optional at least one
     private List<Error> errors;  // Optional at least one
     private Map<String, Object> meta;  // Optional at least one
     private Links links;  // Optional

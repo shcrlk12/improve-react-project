@@ -1,4 +1,4 @@
-package com.unison.monitoring.api.jsonapiorg;
+package com.unison.monitoring.api.jsonapi;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

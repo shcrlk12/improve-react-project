@@ -65,22 +65,8 @@ public class SecurityConfig{
                                         AntPathRequestMatcher.antMatcher("/api/users/**")
                                 ).hasAnyRole("USER", "MANAGER", "ADMIN")
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/login/**")
-                                ).hasAnyRole("USER", "MANAGER", "ADMIN")
-                                .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/wind-farm/**")
-                                ).hasAnyRole("USER","MANAGER", "ADMIN")
-                                .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/memo/**")
-                                ).hasAnyRole("MANAGER", "ADMIN")
-                                .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/reports/**")
-                                ).hasAnyRole("USER", "MANAGER", "ADMIN")
-                                .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/user/**")
-                                ).hasAnyRole("ADMIN")
-                                .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/h2-console/**")
+                                        AntPathRequestMatcher.antMatcher("/api/login/**"),
+                                        AntPathRequestMatcher.antMatcher("/api/data/**")
                                 ).permitAll()
                 ).formLogin((formLogin) ->
                         formLogin

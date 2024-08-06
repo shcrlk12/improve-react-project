@@ -1,7 +1,6 @@
 package com.unison.monitoring.api.member.service;
 
-import com.unison.monitoring.api.member.model.Member;
-import com.unison.monitoring.api.member.model.MemberEntity;
+import com.unison.monitoring.api.domain.Member;
 
 public interface MemberCRUDService {
 

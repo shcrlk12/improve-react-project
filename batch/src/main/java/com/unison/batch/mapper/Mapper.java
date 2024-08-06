@@ -3,6 +3,7 @@ package com.unison.batch.mapper;
 import com.unison.batch.jsonapi.Resource;
 import com.unison.batch.domain.ReportData;
 import com.unison.batch.dto.ReportDataDto;
+import com.unison.batch.util.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +16,8 @@ public class Mapper {
 
         for (ReportData reportData : reportDataList) {
             Resource<ReportDataDto.Request> resource = Resource.<ReportDataDto.Request>builder()
-                    .id(reportData.getMeasureDate())
-                    .type(turbineType + "-" + ReportDataDto.TYPE)
+                    .id(DateTimeUtils.parseLocalDateTime(reportData.getMeasureDate()).toString())
+                    .type(turbineType + "_" + ReportDataDto.TYPE)
                     .attributes(ReportDataDto.Request.builder()
                             .fullPerformance(reportData.getFullPerformance())
                             .partialPerformance(reportData.getPartialPerformance())

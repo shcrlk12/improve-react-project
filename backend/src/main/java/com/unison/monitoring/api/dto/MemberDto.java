@@ -1,4 +1,4 @@
-package com.unison.monitoring.api.member.model;
+package com.unison.monitoring.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
@@ -6,6 +6,7 @@ import lombok.Getter;
 
 
 public class MemberDto {
+    public static String TYPE = "user";
     @Builder
     @Getter
     public static class Request{

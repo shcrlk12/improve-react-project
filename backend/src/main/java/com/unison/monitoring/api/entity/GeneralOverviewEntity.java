@@ -1,39 +1,33 @@
-package com.unison.monitoring.api.member.model;
-
+package com.unison.monitoring.api.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
-@Table(name = "Member")
+@Table(name = "GeneralOverview")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicUpdate
-public class MemberEntity {
+public class GeneralOverviewEntity {
     @Id
-    private String id;
-
-    @Column(nullable = false, length = 64)
-    //SHA-256
-    private String pw;
+    private UUID uuid;
 
     @Column(nullable = false)
-    private String role;
-
-    @Column(nullable = false, length = 30)
-    private String name;
+    private String siteName;
 
     @Column(nullable = true)
-    @Setter
-    private LocalDateTime lastLoginTime;
+    private String description;
 
     @Column(nullable = false)
     @ColumnDefault("1")
@@ -50,11 +44,4 @@ public class MemberEntity {
     @Column(nullable = false)
     @ColumnDefault("'System'")
     private String createdBy;
-
-    @UpdateTimestamp
-    @Column(nullable = true)
-    private LocalDateTime updatedAt;
-
-    @Column(nullable = true)
-    private String updatedBy;
 }

@@ -22,10 +22,13 @@ spring:
       ddl-auto: create # create-drop - 어플리케이션이 종료할때 테이블 삭제
     show-sql: true
     defer-datasource-initialization: true
-
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000 # jpa n+1 문제 예방을 위함.
   sql:
     init:
       mode: always
+      data-locations: classpath:/sql/data.sql
 
 server:
   port: 6789

@@ -1,10 +1,10 @@
 package com.unison.monitoring.api.member.service;
 
-import com.unison.monitoring.api.member.model.Member;
+import com.unison.monitoring.api.domain.Member;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemberService implements MemberCRUDService{
+public class MemberServiceImpl implements MemberCRUDService{
     @Override
     public void createMember(Member member) {
 

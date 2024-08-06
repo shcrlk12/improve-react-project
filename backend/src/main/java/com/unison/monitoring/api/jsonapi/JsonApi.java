@@ -1,10 +1,9 @@
-package com.unison.monitoring.api.jsonapiorg;
+package com.unison.monitoring.api.jsonapi;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;

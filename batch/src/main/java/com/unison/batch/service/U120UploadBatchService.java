@@ -1,5 +1,6 @@
 package com.unison.batch.service;
 
+import com.unison.batch.dto.LastUpdateDto;
 import com.unison.batch.jsonapi.request.ApiRequests;
 import com.unison.batch.domain.ReportData;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class U120UploadBatchService implements UploadBatchService {
     @Override
-    public Mono<LocalDateTime> retrieveLastUploadDate() {
+    public Mono<LastUpdateDto.Response> retrieveLastUploadDate() {
         return null;
     }
 

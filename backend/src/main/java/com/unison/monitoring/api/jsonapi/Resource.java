@@ -1,14 +1,16 @@
-package com.unison.monitoring.api.jsonapiorg;
+package com.unison.monitoring.api.jsonapi;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.Map;
 
 
 @Builder
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)  // Null 값이 포함되지 않도록 설정
 public class Resource<T> {
     private String type;

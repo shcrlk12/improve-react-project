@@ -2,7 +2,7 @@ package com.unison.monitoring.handler;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unison.monitoring.api.member.model.MemberEntity;
+import com.unison.monitoring.api.entity.MemberEntity;
 import com.unison.monitoring.api.member.MemberRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

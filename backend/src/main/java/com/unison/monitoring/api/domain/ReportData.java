@@ -1,20 +1,17 @@
-package com.unison.batch.domain;
+package com.unison.monitoring.api.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
 
-
-/**
- * 10Min data object
- */
-@RequiredArgsConstructor
 @Getter
+@Builder
+@RequiredArgsConstructor
 public class ReportData {
-    public static UUID uuid;
-
-    private final String measureDate;
+    private final UUID uuid;
+    private final String measuredDate;
     private final String fullPerformance;
     private final String partialPerformance;
     private final String outOfElectrical;

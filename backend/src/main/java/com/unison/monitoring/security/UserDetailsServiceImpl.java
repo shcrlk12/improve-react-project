@@ -1,6 +1,6 @@
 package com.unison.monitoring.security;
 
-import com.unison.monitoring.api.member.model.MemberEntity;
+import com.unison.monitoring.api.entity.MemberEntity;
 import com.unison.monitoring.api.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

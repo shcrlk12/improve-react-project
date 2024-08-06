@@ -1,6 +1,8 @@
-package com.unison.batch.dto;
+package com.unison.monitoring.api.dto;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 public class TimeDto {
     public final static String TYPE = "times";
@@ -8,7 +10,6 @@ public class TimeDto {
     @Setter
     @Getter
     @RequiredArgsConstructor
-    @NoArgsConstructor(force = true)
     public static class Response{
         private final String time;
     }

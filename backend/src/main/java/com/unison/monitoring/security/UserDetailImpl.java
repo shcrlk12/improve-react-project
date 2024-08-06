@@ -1,7 +1,7 @@
 package com.unison.monitoring.security;
 
 
-import com.unison.monitoring.api.member.model.MemberEntity;
+import com.unison.monitoring.api.entity.MemberEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

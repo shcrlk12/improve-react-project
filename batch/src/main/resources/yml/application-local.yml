@@ -18,9 +18,22 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
-
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000 # jpa n+1 문제 예방을 위함.
   sql:
     init:
       mode: always
 #      schema-locations: classpath:/sql/schema.sql
 #      data-locations: classpath:/sql/data.sql
+server:
+  port: 5151
+  servlet:
+    session:
+      timeout: 43200
+
+#custom
+api-server:
+  ip: 127.0.0.1
+  port: 6789
+  domain: localhost

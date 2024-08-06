@@ -1,7 +1,7 @@
-package com.unison.monitoring.api.member;
+package com.unison.monitoring.api.mapper;
 
-import com.unison.monitoring.api.member.model.Member;
-import com.unison.monitoring.api.member.model.MemberDto;
+import com.unison.monitoring.api.domain.Member;
+import com.unison.monitoring.api.dto.MemberDto;
 
 
 public class MemberMapper {
