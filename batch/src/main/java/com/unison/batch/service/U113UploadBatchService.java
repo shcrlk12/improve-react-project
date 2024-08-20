@@ -1,6 +1,5 @@
 package com.unison.batch.service;
 
-import com.unison.batch.config.ApiServerProperties;
 import com.unison.batch.dto.LastUpdateDto;
 import com.unison.batch.jsonapi.request.ApiRequests;
 import com.unison.batch.jsonapi.response.ApiResponse;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.net.URI;
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.List;
