@@ -1,0 +1,31 @@
+
+subprojects {
+    apply plugin: 'java'
+
+    group 'com.unison'
+    version '1.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+project(":monitoring"){
+    dependencies {
+        implementation project(':common')
+    }
+}
+
+project(":batch"){
+    dependencies {
+        implementation project(':common')
+    }
+}

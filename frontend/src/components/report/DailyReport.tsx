@@ -4,6 +4,7 @@ import { TextArea1 } from "@karden/utils/Input";
 import { SitesType, turbineConfig } from "@config/config";
 import { Dispatch, MouseEventHandler, SetStateAction } from "react";
 import CalendarPopup from "./../calendar/CalendarPopup";
+import PreviewContainer from "./../preview/PreviewContainer";
 
 /**
  * Styled
@@ -13,7 +14,7 @@ const StyledDailyReport = styled.div`
   flex-direction: column;
   gap: 20px;
   align-items: center;
-  width: 450px;
+  width: 900px;
   margin: auto;
 `;
 
@@ -94,11 +95,6 @@ const PeriodHeader = styled.div`
 // const PeriodSelectionDate = styled.div``;
 
 /**
- * Preview styled
- */
-const PreviewContainer = styled.div``;
-
-/**
  * Type
  */
 type DailyReportType = {
@@ -141,6 +137,7 @@ const DailyReport = ({
     }
     return newArr;
   };
+
   return (
     <StyledDailyReport>
       <SiteHeaderContainer>{createHeaderItem()}</SiteHeaderContainer>
@@ -173,7 +170,7 @@ const DailyReport = ({
           <CalendarPopup date={selectedDate} setDate={setSelectedDate} />
         </CalendarPopupContainer>
       </PeriodContainer>
-      <PreviewContainer>Preview test</PreviewContainer>
+      <PreviewContainer />
       <SignificantButtonContainer>
         <PrimaryButton
           type="submit"

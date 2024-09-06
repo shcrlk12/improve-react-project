@@ -8,6 +8,10 @@ const GlobalStyles = createGlobalStyle`
 	background-color: ${({ theme }) => theme.color.background}
 }
 
+*{
+  box-sizing: border-box;
+}
+
 a{
 	text-decoration: none;
 }

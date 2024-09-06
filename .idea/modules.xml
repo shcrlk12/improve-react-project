@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/auto-generate-daily-report.iml" filepath="$PROJECT_DIR$/.idea/auto-generate-daily-report.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/auto-generate-report.common.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common/auto-generate-report.common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common/auto-generate-report.common.test.iml" filepath="$PROJECT_DIR$/.idea/modules/common/auto-generate-report.common.test.iml" />
     </modules>
   </component>
 </project>

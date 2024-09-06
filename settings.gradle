@@ -1,0 +1,5 @@
+rootProject.name = 'auto-generate-report'
+
+include 'common'
+include 'batch'
+include 'monitoring'

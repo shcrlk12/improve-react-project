@@ -41,6 +41,7 @@ const PopupContainer = styled.div`
   flex-direction: column;
   align-items: center;
   padding-bottom: 5px;
+  z-index: 9999;
 `;
 
 const ButtonWrapper = styled.div`

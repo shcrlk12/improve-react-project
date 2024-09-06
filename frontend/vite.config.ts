@@ -29,6 +29,7 @@ export default defineConfig({
       "@config": path.resolve(__dirname, "src/configs"),
       "@src": path.resolve(__dirname, "src"),
     },
-    extensions: [".js", ".jsx", ".ts", ".tsx"],
+    extensions: [".mdx", ".js", ".jsx", ".ts", ".tsx"],
   },
+  server: { watch: { usePolling: true } },
 });

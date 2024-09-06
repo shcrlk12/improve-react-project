@@ -2,7 +2,7 @@ package com.unison.batch.mapper;
 
 import com.unison.batch.jsonapi.Resource;
 import com.unison.batch.domain.ReportData;
-import com.unison.batch.dto.ReportDataDto;
+import com.unison.common.dto.ReportDataDto;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
