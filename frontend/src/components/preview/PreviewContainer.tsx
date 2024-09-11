@@ -2,6 +2,8 @@ import Preview from "./Preview";
 import { PowerCurveGraphProps } from "@components/graph/PowerCurveGraph";
 import { DailyRWPGraphProps } from "@components/graph/DailyRWPGraph";
 import { AlarmTableProps } from "./table/AlarmTable";
+import EventTextBox from "./EventTextBox";
+import { useState } from "react";
 
 const PreviewContainer = () => {
   const powerCurveGraphProps = {} as PowerCurveGraphProps;
@@ -568,67 +570,25 @@ const PreviewContainer = () => {
       });
     });
 
-  const alarmTableProps = {} as AlarmTableProps;
-
-  alarmTableProps.data = {
-    nodes: [
-      {
-        id: 1,
-        time: new Date(2024, 7, 23, 0, 56, 23),
-        erorrCode: 20011,
-        errorContent: "Low wind speed",
-        note: null,
-      },
-      {
-        id: 2,
-        time: new Date(2024, 7, 23, 1, 0, 48),
-        erorrCode: 20027,
-        errorContent: "Cable twist 2 turns CW",
-        note: null,
-      },
-      {
-        id: 3,
-        time: new Date(2024, 7, 23, 2, 56, 56),
-        erorrCode: 20011,
-        errorContent: "Low wind speed",
-        note: null,
-      },
-      {
-        id: 4,
-        time: new Date(2024, 7, 23, 3, 45, 12),
-        erorrCode: 20011,
-        errorContent: "Low wind speed",
-        note: null,
-      },
-      {
-        id: 5,
-        time: new Date(2024, 7, 23, 11, 7, 24),
-        erorrCode: 20011,
-        errorContent: "HYD. Rotor brake storage pressure low",
-        note: null,
-      },
-      {
-        id: 6,
-        time: new Date(2024, 7, 23, 11, 7, 25),
-        erorrCode: 20011,
-        errorContent: "HYD. Rotor brake main pressure low",
-        note: null,
-      },
-      {
-        id: 7,
-        time: new Date(2024, 7, 23, 23, 11, 33),
-        erorrCode: 20026,
-        errorContent: "Yaw misalignment high",
-        note: null,
-      },
-    ],
-  };
-
+  const [EventTextBox, setEventTextBox] = useState([
+    {
+      title: "1. 주요 이벤트 현황",
+      content:
+        "1. [20011] HYD. Rotor brake storage pressure low 알람 PCS 점검 (백규열 주임) - 21:56 ~ 22:01",
+    },
+    {
+      title: "2. 주요 에러 발생현황 및 조치사항",
+    },
+    {
+      title: "3. 현장이슈 발생현황",
+    },
+  ]);
   return (
     <Preview
       powerCurveGraphProps={powerCurveGraphProps}
       dailyRWPGraphProps={dailyRWPGraphProps}
-      alarmTableProps={alarmTableProps}
+      eventTextBoxProps={EventTextBox}
+      setEventTextBoxProps={setEventTextBox}
     />
   );
 };

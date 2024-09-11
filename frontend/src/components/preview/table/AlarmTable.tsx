@@ -11,6 +11,17 @@ import {
 } from "@table-library/react-table-library/types/table";
 import { format } from "date-fns";
 
+import {
+  Table,
+  Header,
+  HeaderRow,
+  Body,
+  Row,
+  HeaderCell,
+  Cell,
+} from "@table-library/react-table-library/table";
+import { useReactTable } from "@tanstack/react-table";
+
 export type AlarmTableProps = {
   data: Data<TableNode>;
 };
@@ -37,7 +48,6 @@ const AlarmTable: React.FC<{ alarmTableProps: AlarmTableProps }> = ({
       label: "내용",
       renderCell: (item) => item.errorContent,
       resize: true,
-      width: "50px",
     },
     {
       label: "비고",
@@ -76,7 +86,33 @@ const AlarmTable: React.FC<{ alarmTableProps: AlarmTableProps }> = ({
   return (
     <>
       <div style={{ width: "100%" }}>
-        <CompactTable columns={COLUMNS} data={data} theme={theme} />
+        <Table data={data} theme={theme}>
+          {(tableList: typeof data.nodes) => (
+            <>
+              <Header>
+                <HeaderRow>
+                  <HeaderCell resize>발생시간</HeaderCell>
+                  <HeaderCell resize>에러코드</HeaderCell>
+                  <HeaderCell resize>내용</HeaderCell>
+                  <HeaderCell>비고</HeaderCell>
+                </HeaderRow>
+              </Header>
+
+              <Body>
+                {tableList.map((item) => (
+                  <Row key={item.id} item={item}>
+                    <Cell stiff>
+                      {format(item.time, "yyyy-MM-dd HH:mm:ss")}
+                    </Cell>
+                    <Cell>{item.erorrCode}</Cell>
+                    <Cell>{item.errorContent}</Cell>
+                    <Cell>{item.note}</Cell>
+                  </Row>
+                ))}
+              </Body>
+            </>
+          )}
+        </Table>
       </div>
     </>
   );

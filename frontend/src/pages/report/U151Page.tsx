@@ -1,7 +1,7 @@
 import DailyReportContainer from "@components/report/DailyReportContainer";
 
 /**
- * Renders the U136 report page.
+ * Renders the U151 report page.
  * Simply renders the DailyReportContainer component.
  *
  * @author Karden

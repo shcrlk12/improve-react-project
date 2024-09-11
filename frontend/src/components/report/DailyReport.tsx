@@ -2,7 +2,13 @@ import styled from "styled-components";
 import { PrimaryButton } from "@karden/utils/button";
 import { TextArea1 } from "@karden/utils/Input";
 import { SitesType, turbineConfig } from "@config/config";
-import { Dispatch, MouseEventHandler, SetStateAction } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  MouseEventHandler,
+  SetStateAction,
+  useState,
+} from "react";
 import CalendarPopup from "./../calendar/CalendarPopup";
 import PreviewContainer from "./../preview/PreviewContainer";
 
@@ -46,10 +52,16 @@ const HeaderItem = styled.div`
   }
 `;
 
+const MainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
 const SignificantContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+
   width: 100%;
   padding-bottom: 20px;
   border-bottom: 2px solid ${({ theme }) => theme.color.primary};
@@ -138,48 +150,59 @@ const DailyReport = ({
     return newArr;
   };
 
+  const [remark, setRemark] = useState<string>(
+    "[44299] PCS fault status ON 알람 관련 냉각수 플럭싱 및 PCS 리액터 교체작업 진행 중"
+  );
+
+  const [isShowPreview, setIsShowPreview] = useState<boolean>(false);
   return (
     <StyledDailyReport>
       <SiteHeaderContainer>{createHeaderItem()}</SiteHeaderContainer>
-      <SignificantContainer>
-        <SignificantHeader>특이사항</SignificantHeader>
-        <SignificantEditor>
-          <TextArea1
-            text="[44299] PCS fault status ON 알람 관련 냉각수 플럭싱 및 PCS 리액터 교체작업 진행 중"
-            onChange={() => {}}
-          />
-        </SignificantEditor>
-        <SignificantButtonContainer>
-          <PrimaryButton
-            type="submit"
-            text="저장"
-            width="30%"
-            onClick={() => {}}
-          />
-          <PrimaryButton
-            type="submit"
-            text="편집"
-            width="30%"
-            onClick={() => {}}
-          />
-        </SignificantButtonContainer>
-      </SignificantContainer>
-      <PeriodContainer>
-        <PeriodHeader>기간 선택</PeriodHeader>
-        <CalendarPopupContainer>
-          <CalendarPopup date={selectedDate} setDate={setSelectedDate} />
-        </CalendarPopupContainer>
-      </PeriodContainer>
-      <PreviewContainer />
-      <SignificantButtonContainer>
-        <PrimaryButton
-          type="submit"
-          text="미리보기 생성"
-          onClick={() => {
-            console.log(selectedDate.toDateString());
-          }}
-        />
-      </SignificantButtonContainer>
+      <MainContainer style={{ width: "450px" }}>
+        <SignificantContainer>
+          <SignificantHeader>특이사항</SignificantHeader>
+          <SignificantEditor>
+            <TextArea1
+              text={remark}
+              onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+                setRemark(event.currentTarget.value);
+              }}
+              rows={8}
+            />
+          </SignificantEditor>
+          <SignificantButtonContainer>
+            <PrimaryButton
+              type="submit"
+              text="저장"
+              width="30%"
+              onClick={() => {}}
+            />
+            <PrimaryButton
+              type="submit"
+              text="편집"
+              width="30%"
+              onClick={() => {}}
+            />
+          </SignificantButtonContainer>
+        </SignificantContainer>
+        <PeriodContainer>
+          <PeriodHeader>기간 선택</PeriodHeader>
+          <CalendarPopupContainer>
+            <CalendarPopup date={selectedDate} setDate={setSelectedDate} />
+          </CalendarPopupContainer>
+          <SignificantButtonContainer>
+            <PrimaryButton
+              type="submit"
+              text="미리보기 생성"
+              onClick={() => {
+                setIsShowPreview(true);
+                console.log(selectedDate.toDateString());
+              }}
+            />
+          </SignificantButtonContainer>
+        </PeriodContainer>
+      </MainContainer>
+      {isShowPreview && <PreviewContainer />}
     </StyledDailyReport>
   );
 };
