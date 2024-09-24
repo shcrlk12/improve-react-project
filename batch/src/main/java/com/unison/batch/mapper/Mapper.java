@@ -1,8 +1,8 @@
 package com.unison.batch.mapper;
 
-import com.unison.batch.jsonapi.Resource;
-import com.unison.batch.domain.ReportData;
+import com.unison.common.domain.ReportData;
 import com.unison.common.dto.ReportDataDto;
+import com.unison.common.jsonapi.Resource;
 import com.unison.common.util.DateTimeUtils;
 
 import java.util.ArrayList;

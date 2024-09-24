@@ -37,3 +37,6 @@ api-server:
   ip: 127.0.0.1
   port: 6789
   domain: localhost
+
+site:
+  type: u113

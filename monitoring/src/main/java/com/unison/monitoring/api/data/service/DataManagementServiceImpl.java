@@ -1,9 +1,9 @@
 package com.unison.monitoring.api.data.service;
 
+import com.unison.common.domain.ReportData;
 import com.unison.common.util.DateTimeUtils;
 import com.unison.monitoring.api.entity.DataEntity;
 import com.unison.monitoring.api.data.DataRepository;
-import com.unison.monitoring.api.domain.ReportData;
 import com.unison.monitoring.api.entity.GeneralOverviewEntity;
 import com.unison.monitoring.api.entity.GeneralOverviewRepository;
 import jakarta.transaction.Transactional;
@@ -35,7 +35,7 @@ public class DataManagementServiceImpl implements DataManagementService{
         //find uuid of report data
         Optional<ReportData> optionalReportData = reportDataList.stream().findFirst();
         ReportData firstReportData = optionalReportData.orElseThrow(Exception::new);
-        Optional<GeneralOverviewEntity> optionalGeneralOverview = generalOverviewRepository.findById(firstReportData.getUuid());
+        Optional<GeneralOverviewEntity> optionalGeneralOverview = generalOverviewRepository.findById(ReportData.uuid);
 
         if(optionalGeneralOverview.isPresent()) {
             for (ReportData reportData : reportDataList) {
@@ -43,7 +43,7 @@ public class DataManagementServiceImpl implements DataManagementService{
                 dataEntityList.add(
                         DataEntity.builder()
                                 .id(DataEntity.Id.builder()
-                                        .timestamp(DateTimeUtils.parseISOLocalDateTime(reportData.getMeasuredDate()))
+                                        .timestamp(DateTimeUtils.parseISOLocalDateTime(reportData.getMeasureDate()))
                                         .generalOverview(optionalGeneralOverview.get())
                                         .build())
                                 .fullPerformance(reportData.getFullPerformance())

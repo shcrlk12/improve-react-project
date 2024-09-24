@@ -66,8 +66,10 @@ public class SecurityConfig{
                                 ).hasAnyRole("USER", "MANAGER", "ADMIN")
                                 .requestMatchers(
                                         AntPathRequestMatcher.antMatcher("/api/login/**"),
-                                        AntPathRequestMatcher.antMatcher("/api/data/**")
+                                        AntPathRequestMatcher.antMatcher("/api/data/**"),
+                                        AntPathRequestMatcher.antMatcher("/api/docx/**")
                                 ).permitAll()
+
                 ).formLogin((formLogin) ->
                         formLogin
                                 .loginPage("/api/login")

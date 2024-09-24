@@ -5,38 +5,24 @@ import com.unison.batch.jsonapi.JsonApiOrgHttpHeaders;
 import com.unison.batch.jsonapi.Resource;
 import com.unison.batch.jsonapi.request.ApiRequests;
 import com.unison.batch.jsonapi.response.ApiResponse;
-import com.unison.batch.domain.ReportData;
+import com.unison.common.domain.ReportData;
 import com.unison.common.dto.TimeDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import javax.sql.DataSource;
-import java.io.PrintWriter;
 import java.net.URI;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -62,7 +48,7 @@ public class U113UploadBatchServiceTests {
 
         // When
 
-        Mono<List<ReportData>> actualData = u113UploadBatchService.getReportData(startDate, endDate);
+        List<ReportData> actualData = u113UploadBatchService.getReportData(startDate, endDate);
 
         // Then
         StepVerifier.create(actualData)

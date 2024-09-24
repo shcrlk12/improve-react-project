@@ -1,57 +1,22 @@
 package com.unison.batch.service;
 
-import com.unison.batch.dto.LastUpdateDto;
-import com.unison.batch.jsonapi.request.ApiRequests;
-import com.unison.batch.jsonapi.response.ApiResponse;
-import com.unison.batch.domain.ReportData;
-import com.unison.common.dto.TimeDto;
+import com.unison.common.domain.ReportData;
 import com.unison.common.util.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class U113UploadBatchService implements UploadBatchService {
     private final JdbcTemplate jdbcTemplate;
 
-    private final WebClient webClient;
-
     @Override
-    public Mono<LastUpdateDto.Response> retrieveLastUploadDate() {
-
-        return webClient.get()
-                .uri("/api/data/last-update")
-                .retrieve()
-                .toEntity(new ParameterizedTypeReference<ApiResponse<TimeDto.Response>>() {})
-                .map(responseEntity ->
-                        LastUpdateDto.Response.builder()
-                                .uuid(UUID.fromString(responseEntity.getBody().getData().getId()))
-                                .lastUpdateTime(DateTimeUtils.parseISOLocalDateTime(responseEntity.getBody().getData().getAttributes().getTime()))
-                                .build()
-                );
-    }
-
-    @Override
-    public void uploadData(ApiRequests<?> request) {
-        webClient.post()
-                .uri("/api/data")
-                .bodyValue(request)
-                .retrieve()
-                .bodyToMono(Void.class)
-                .subscribe();  // 비동기 방식으로 처리
-    }
-
-    @Override
-    public Mono<List<ReportData>> getReportData(LocalDateTime startDate, LocalDateTime endDate) {
+    public List<ReportData> getReportData(LocalDateTime startDate, LocalDateTime endDate) {
         String sql = "SELECT " +
                 "measure_date, " +
                 "st_fullPerTm, " +
@@ -72,7 +37,7 @@ public class U113UploadBatchService implements UploadBatchService {
                 "AND measure_date >= ? AND measure_date < ? " +
                 "ORDER BY measure_date ASC";
 
-        return Mono.just(jdbcTemplate.query(
+        return jdbcTemplate.query(
                 sql,
                 ps -> {
                     ps.setString(1 , "1");
@@ -96,6 +61,6 @@ public class U113UploadBatchService implements UploadBatchService {
                             rs.getString("nac_NacOutTmp"),
                             String.valueOf(Double.parseDouble(rs.getString("tur_TotWhMax")) - Double.parseDouble(rs.getString("tur_TotWhMin")))
                     )
-        ));
+        );
     }
 }

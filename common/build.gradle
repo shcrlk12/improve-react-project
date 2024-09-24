@@ -22,11 +22,14 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.3.4'
     implementation 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.17.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
+    implementation 'org.apache.poi:poi:5.3.0'
+    implementation 'org.apache.poi:poi-ooxml:5.3.0'
+    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.1.0'
 }
 
 tasks.named('test') {

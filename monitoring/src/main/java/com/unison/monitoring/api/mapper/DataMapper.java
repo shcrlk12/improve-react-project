@@ -1,9 +1,9 @@
 package com.unison.monitoring.api.mapper;
 
+import com.unison.common.domain.ReportData;
 import com.unison.common.dto.ReportDataDto;
-import com.unison.monitoring.api.domain.ReportData;
-import com.unison.monitoring.api.jsonapi.Resource;
-import com.unison.monitoring.api.jsonapi.request.ApiRequests;
+import com.unison.common.jsonapi.Resource;
+import com.unison.common.jsonapi.request.ApiRequests;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,10 @@ public class DataMapper {
         for(Resource<ReportDataDto.Request> resource : request.getData()){
             ReportDataDto.Request attribute = resource.getAttributes();
 
+            ReportData.uuid = UUID.fromString(resource.getType().split("_")[0]);
+
             response.add(ReportData.builder()
-                            .uuid(UUID.fromString(resource.getType().split("_")[0]))
-                            .measuredDate(resource.getId())
+                            .measureDate(resource.getId())
                             .fullPerformance(attribute.getFullPerformance())
                             .partialPerformance(attribute.getPartialPerformance())
                             .outOfElectrical(attribute.getOutOfElectrical())
