@@ -30,6 +30,9 @@ public class GeneralOverviewEntity {
     private String description;
 
     @Column(nullable = false)
+    private LocalDateTime lastSyncDate;
+
+    @Column(nullable = false)
     @ColumnDefault("1")
     private boolean isActive;
 

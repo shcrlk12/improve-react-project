@@ -1,15 +1,6 @@
+import { arePropsEmpty, isPropsEmpty } from "@src/utils/props";
 import { forwardRef, RefObject } from "react";
-import {
-  Scatter,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ComposedChart,
-  Legend,
-  ZAxis,
-} from "recharts";
+import { Scatter, Line, XAxis, YAxis, CartesianGrid, Tooltip, ComposedChart, Legend, ZAxis } from "recharts";
 import styled from "styled-components";
 
 /**
@@ -29,8 +20,8 @@ type Point = {
 };
 
 export type PowerCurveGraphProps = {
-  referenceCurve: Point[];
-  scatter: Point[];
+  referencePowerCurve: Point[];
+  powerCurveScatter: Point[];
   title: string;
   ref: RefObject<HTMLDivElement>;
 };
@@ -41,16 +32,12 @@ export type PowerCurveGraphProps = {
  */
 
 const PowerCurveGraph = forwardRef<HTMLDivElement, PowerCurveGraphProps>(
-  ({ title = "Power curve", referenceCurve, scatter }, ref) => {
+  ({ title = "Power curve", referencePowerCurve, powerCurveScatter }, ref) => {
     return (
       <>
         <Title>{title}</Title>
         <div ref={ref}>
-          <ComposedChart
-            width={850}
-            height={400}
-            margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-          >
+          <ComposedChart width={850} height={400} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
             <CartesianGrid />
             <XAxis
               type="number"
@@ -80,27 +67,23 @@ const PowerCurveGraph = forwardRef<HTMLDivElement, PowerCurveGraphProps>(
               ticks={[0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500]}
             />
             <Tooltip />
-            <Legend
-              layout="horizontal"
-              verticalAlign="top"
-              align="center"
-              wrapperStyle={{ top: 0, left: 25 }}
-            />
+            <Legend layout="horizontal" verticalAlign="top" align="center" wrapperStyle={{ top: 0, left: 25 }} />
             <ZAxis range={[10]} />
 
             <Line
               name="Reference power curve"
-              data={referenceCurve}
+              data={referencePowerCurve}
               stroke="red"
               dataKey="activePower"
               strokeWidth="2"
+              dot={false}
             />
-            <Scatter name="Scatter data" data={scatter} fill="blue" />
+            <Scatter name="Scatter data" data={powerCurveScatter} fill="blue" />
           </ComposedChart>
         </div>
       </>
     );
-  }
+  },
 );
 
 export default PowerCurveGraph;

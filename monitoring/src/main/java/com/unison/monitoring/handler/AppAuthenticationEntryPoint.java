@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Component
 public class AppAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -19,13 +20,16 @@ public class AppAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> error = new HashMap<>();
+        Map<String, Object> json = new HashMap<>();
 
-        data.put("code", ErrorCode.AUTHENTICATION_ENTRY_POINT.getCode());
-        data.put("message", ErrorCode.AUTHENTICATION_ENTRY_POINT.getMessage());
+        json.put("errors", error);
+
+        error.put("status", 401);
+        error.put("title", "Failed Authentication");
 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write(objectMapper.writeValueAsString(data));
+        response.getWriter().write(objectMapper.writeValueAsString(json));
     }
 }

@@ -1,34 +1,25 @@
-import DailyRWPGraph, {
-  DailyRWPGraphProps,
-} from "@components/graph/DailyRWPGraph";
-import PowerCurveGraph, {
-  PowerCurveGraphProps,
-} from "@components/graph/PowerCurveGraph";
-import DailyOperatingTable, {
-  DailyOperatingTableProps,
-} from "@components/preview/table/DailyOperatingTable";
-import TotalOperatingTable, {
-  TotalOperatingTableProps,
-} from "./table/TotalOperatingTable";
-import AlarmTableV2 from "./table/AlarmTableV2";
-import EventTextBox from "./EventTextBox";
+import DailyRWPGraph, { DailyRWPGraphProps } from "@components/graph/DailyRWPGraph";
+import PowerCurveGraph, { PowerCurveGraphProps } from "@components/graph/PowerCurveGraph";
+import DailyOperatingTable, { DailyOperatingTableProps } from "@components/preview/table/DailyOperatingTable";
+import TotalOperatingTable, { TotalOperatingTableProps } from "./table/TotalOperatingTable";
+import AlarmTableV2, { AlarmType } from "./table/AlarmTableV2";
+import EventTextBox, { EventBoxNote } from "./EventTextBox";
 import styled from "styled-components";
 import { PrimaryButton } from "@karden/utils/button";
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, SetStateAction, useRef } from "react";
 import html2canvas from "html2canvas";
-
-type EventTextBoxProps = {
-  title: string;
-  content?: string;
-};
+import { format } from "date-fns";
 
 export type PreviewProps = {
+  type: string;
+  date: string;
   dailyOperatingTableProps: DailyOperatingTableProps;
   totalOperatingTableProps: TotalOperatingTableProps;
   powerCurveGraphProps: PowerCurveGraphProps;
   dailyRWPGraphProps: DailyRWPGraphProps;
-  eventTextBoxProps: EventTextBoxProps[];
-  setEventTextBoxProps: any;
+  alarmsProps: AlarmType[];
+  eventBoxNotesProps: EventBoxNote[];
+  setEventBoxNotes: React.Dispatch<SetStateAction<EventBoxNote[]>>;
   //   alarmTableProps: Error[];
 };
 
@@ -55,52 +46,52 @@ const ReportDownloadContainer = styled.div`
 `;
 
 const Preview = ({
+  type,
+  date,
   dailyOperatingTableProps,
   totalOperatingTableProps,
   powerCurveGraphProps,
   dailyRWPGraphProps,
-  eventTextBoxProps,
-  setEventTextBoxProps,
+  eventBoxNotesProps,
+  alarmsProps,
+  setEventBoxNotes,
   //   alarmTableProps,
 }: PreviewProps) => {
   const powerCurveGraphRef = useRef<HTMLDivElement>(null);
   const dailyRWPGraphRef = useRef<HTMLDivElement>(null);
 
+  let formattedDate;
+
+  if (date !== "") {
+    formattedDate = format(date, "yyyy-MM-dd");
+  }
+  console.log(dailyRWPGraphProps);
+  console.log("alarmsProps");
+  console.log(alarmsProps);
+
   return (
     <>
       <Container>
-        <PreviewTitle>U151 Daily report [2024-09-03]</PreviewTitle>
-        <DailyOperatingTable
-          dailyOperatingTableProps={dailyOperatingTableProps}
-        />
-        <TotalOperatingTable
-          totalOperatingTableProps={totalOperatingTableProps}
-        />
+        <PreviewTitle>U151 Daily report [{formattedDate}]</PreviewTitle>
+        <DailyOperatingTable dailyOperatingTableProps={dailyOperatingTableProps} />
+        <TotalOperatingTable totalOperatingTableProps={totalOperatingTableProps} />
         <PowerCurveGraph
           ref={powerCurveGraphRef}
           title={"Power curve(`24.09-`24.12)"}
-          referenceCurve={powerCurveGraphProps.referenceCurve}
-          scatter={powerCurveGraphProps.scatter}
+          referencePowerCurve={powerCurveGraphProps.referencePowerCurve}
+          powerCurveScatter={powerCurveGraphProps.powerCurveScatter}
         />
-        <DailyRWPGraph
-          ref={dailyRWPGraphRef}
-          title={"Time chart(24/9/02)"}
-          dailyRWPGraphProps={dailyRWPGraphProps.dailyRWPGraphProps}
-        />
-        <AlarmTableV2 />
-        {eventTextBoxProps.map((eventText) => (
+        <DailyRWPGraph ref={dailyRWPGraphRef} title={"Time chart(24/9/02)"} timeChart={dailyRWPGraphProps.timeChart} />
+        <AlarmTableV2 alarms={alarmsProps} />
+        {eventBoxNotesProps.map((eventText, index) => (
           <EventTextBox
-            title={eventText.title}
+            title={`${index + 1}. ${eventText.title}`}
             content={eventText.content}
             setContent={(event: ChangeEvent<HTMLTextAreaElement>) => {
               const title = event.currentTarget.id;
               const content = event.currentTarget.value;
 
-              setEventTextBoxProps((prev: EventTextBoxProps[]) =>
-                prev.map((data) =>
-                  data.title === title ? { ...data, content } : data
-                )
-              );
+              setEventBoxNotes((prev) => prev.map((data) => (data.title === title ? { ...data, content } : data)));
             }}
           />
         ))}

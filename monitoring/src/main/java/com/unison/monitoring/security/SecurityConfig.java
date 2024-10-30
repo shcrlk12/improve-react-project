@@ -62,11 +62,11 @@ public class SecurityConfig{
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/users/**")
+                                        AntPathRequestMatcher.antMatcher("/api/users/**"),
+                                        AntPathRequestMatcher.antMatcher("/api/data/**")
                                 ).hasAnyRole("USER", "MANAGER", "ADMIN")
                                 .requestMatchers(
                                         AntPathRequestMatcher.antMatcher("/api/login/**"),
-                                        AntPathRequestMatcher.antMatcher("/api/data/**"),
                                         AntPathRequestMatcher.antMatcher("/api/docx/**")
                                 ).permitAll()
 

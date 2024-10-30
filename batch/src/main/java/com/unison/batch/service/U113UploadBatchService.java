@@ -1,5 +1,6 @@
 package com.unison.batch.service;
 
+import com.unison.common.domain.Alarm;
 import com.unison.common.domain.ReportData;
 import com.unison.common.util.DateTimeUtils;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +62,40 @@ public class U113UploadBatchService implements UploadBatchService {
                             rs.getString("nac_NacOutTmp"),
                             String.valueOf(Double.parseDouble(rs.getString("tur_TotWhMax")) - Double.parseDouble(rs.getString("tur_TotWhMin")))
                     )
+        );
+    }
+
+    @Override
+    public List<Alarm> getAlarms(LocalDateTime startDate, LocalDateTime endDate) {
+        String sql = "SELECT " +
+                "alarm_id, " +
+                "alarm_number, " +
+                "alarm_code, " +
+                "comment, " +
+                "alarm_log_timestamp " +
+                "FROM alarm_log_tab " +
+                "WHERE wind_farm_id = ? " +
+                "AND device_id = ? " +
+                "AND alarm_log_timestamp >= ? AND alarm_log_timestamp < ? " +
+                "ORDER BY alarm_log_timestamp ASC";
+
+        return jdbcTemplate.query(
+                sql,
+                ps -> {
+                    ps.setString(1 , "1");
+                    ps.setString(2 , "1");
+                    ps.setString(3 , DateTimeUtils.formatLocalDateTime( "yyyy-MM-dd HH:mm:ss", startDate));
+                    ps.setString(4 , DateTimeUtils.formatLocalDateTime( "yyyy-MM-dd HH:mm:ss", endDate));
+
+                },
+                (ResultSet rs, int rowNum)  ->
+                        new Alarm(
+                                rs.getString("alarm_id"),
+                                rs.getString("alarm_number"),
+                                rs.getString("alarm_code"),
+                                rs.getString("comment"),
+                                rs.getString("alarm_log_timestamp")
+                        )
         );
     }
 }

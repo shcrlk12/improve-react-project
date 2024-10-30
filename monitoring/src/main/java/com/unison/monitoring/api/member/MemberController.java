@@ -1,15 +1,15 @@
 package com.unison.monitoring.api.member;
 
 import com.unison.common.dto.MemberDto;
-import com.unison.monitoring.api.jsonapi.JsonApi;
-import com.unison.monitoring.api.jsonapi.JsonApiOrgHttpHeaders;
+import com.unison.common.jsonapi.JsonApi;
+import com.unison.common.jsonapi.JsonApiOrgHttpHeaders;
+import com.unison.common.jsonapi.Links;
+import com.unison.common.jsonapi.Resource;
+import com.unison.common.jsonapi.request.ApiRequest;
+import com.unison.common.jsonapi.response.ApiResponse;
 import com.unison.monitoring.api.domain.Member;
 import com.unison.monitoring.api.mapper.MemberMapper;
 import com.unison.monitoring.api.member.service.MemberServiceImpl;
-import com.unison.monitoring.api.jsonapi.request.ApiRequest;
-import com.unison.monitoring.api.jsonapi.response.ApiResponse;
-import com.unison.monitoring.api.jsonapi.Links;
-import com.unison.monitoring.api.jsonapi.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

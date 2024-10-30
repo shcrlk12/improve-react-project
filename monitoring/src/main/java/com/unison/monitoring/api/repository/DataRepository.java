@@ -1,4 +1,4 @@
-package com.unison.monitoring.api.data;
+package com.unison.monitoring.api.repository;
 
 import com.unison.monitoring.api.entity.DataEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

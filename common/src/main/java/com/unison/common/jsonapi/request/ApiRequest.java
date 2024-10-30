@@ -1,6 +1,6 @@
 package com.unison.common.jsonapi.request;
 
-import com.unison.batch.jsonapi.Resource;
+import com.unison.common.jsonapi.Resource;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

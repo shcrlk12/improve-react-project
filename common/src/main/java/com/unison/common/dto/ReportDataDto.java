@@ -1,29 +1,29 @@
 package com.unison.common.dto;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Getter
 @RequiredArgsConstructor
 public class ReportDataDto {
-    public final static String TYPE = "data";
+    public final static String TYPE = "10min-data";
 
     @Getter
+    @Setter
     @Builder
     @RequiredArgsConstructor
-    public static class Request{
-        private final String fullPerformance;
-        private final String partialPerformance;
-        private final String outOfElectrical;
-        private final String outOfEnvironment;
-        private final String requestedShutdown;
-        private final String scheduledMaintenance;
-        private final String technicalStandby;
-        private final String rotorSpeed;
-        private final String windSpeed;
-        private final String nacOutTmp;
-        private final String activePower;
+    @AllArgsConstructor
+    public static class Response{
+        private String fullPerformance;
+        private String partialPerformance;
+        private String outOfElectrical;
+        private String outOfEnvironment;
+        private String requestedShutdown;
+        private String scheduledMaintenance;
+        private String technicalStandby;
+        private String rotorSpeed;
+        private String windSpeed;
+        private String nacOutTmp;
+        private String activePower;
     }
 }

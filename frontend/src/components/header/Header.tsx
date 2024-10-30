@@ -6,6 +6,8 @@ import styled from "styled-components";
 import { isAuthenticated } from "@src/utils/user";
 import GlobalNavigationBar from "./navigation/GlobalNavigationBar";
 import { PrimaryButton } from "@karden/utils/button";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 /**
  * Style
@@ -69,13 +71,12 @@ type HeaderProps = {
  * @author Karden
  * @created 2024-07-17
  */
-const Header = ({
-  title,
-  globalNavigationBar,
-  userRole,
-  logoOnClick,
-  logoutOnClick,
-}: HeaderProps) => {
+const Header = ({ title, globalNavigationBar, userRole, logoOnClick, logoutOnClick }: HeaderProps) => {
+  const location = useLocation();
+
+  const isLoginPage = location.pathname === "/login";
+  const isUserAuthenticated = isAuthenticated(userRole);
+
   return (
     <StyledHeader>
       <HeaderInner>
@@ -83,12 +84,9 @@ const Header = ({
           <Logo src={logo} alt="unison logo" onClick={logoOnClick} />
           <PageTitle>{title}</PageTitle>
         </LeftHeaderContainer>
-        {isAuthenticated(userRole) && (
+        {isUserAuthenticated && !isLoginPage && (
           <RightHeaderContainer>
-            <GlobalNavigationBar
-              globalNavigationBar={globalNavigationBar}
-              userRole={userRole}
-            />
+            <GlobalNavigationBar globalNavigationBar={globalNavigationBar} userRole={userRole} />
             <PrimaryButton text="Logout" onClick={logoutOnClick} />
           </RightHeaderContainer>
         )}

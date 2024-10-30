@@ -39,6 +39,10 @@ server:
 ## custom setting
 cors:
   ip: 127.0.0.1
-  port: 5151
+  port: 5173
   domain: localhost
 
+api-server:
+  ip: 127.0.0.1
+  port: 5151
+  domain: localhost

@@ -2,7 +2,7 @@
  * Configuration for common settings.
  */
 export const config = {
-  apiServer: "127.0.0.1",
+  apiServer: { ip: "127.0.0.1", port: "6789" },
 };
 
 export const turbineConfig = {

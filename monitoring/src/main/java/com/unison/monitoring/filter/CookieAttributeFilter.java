@@ -19,7 +19,7 @@ public class CookieAttributeFilter implements Filter {
                          FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         chain.doFilter(request, response);
-//        addSameSite(httpServletResponse , "None");
+        addSameSite(httpServletResponse , "None");
     }
 
     private void addSameSite(HttpServletResponse response, String sameSite) {

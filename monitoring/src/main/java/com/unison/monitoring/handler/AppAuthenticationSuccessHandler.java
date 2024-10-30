@@ -33,7 +33,7 @@ public class AppAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
     {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> json = new HashMap<>();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         String role = userDetails.getAuthorities().toString();
@@ -42,14 +42,21 @@ public class AppAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
 
         memberEntity.setLastLoginTime(LocalDateTime.now());
 
-        data.put("status", HttpServletResponse.SC_OK);
-        data.put("username",  userDetails.getUsername());
-        data.put("role", role.replaceAll("[\\[\\]]", ""));  // [ROLE_USER] 형식을 ROLE_USER로 변환
-        data.put("message", "로그인에 성공했습니다.");
+        Map<String, Object> data = new HashMap<>();
+        data.put("id", userDetails.getUsername());
+        data.put("type", "login");
+
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("role", role.replaceAll("[\\[\\]]", ""));
+        attributes.put("message", "로그인에 성공했습니다.");
+
+        data.put("attributes", attributes);
+
+        json.put("data", data);
 
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_OK);
 
-        response.getWriter().write(objectMapper.writeValueAsString(data));
+        response.getWriter().write(objectMapper.writeValueAsString(json));
     }
 }

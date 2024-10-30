@@ -1,12 +1,14 @@
 package com.unison.monitoring.api.data.service;
 
 import com.unison.common.domain.ReportData;
+import com.unison.common.dto.AlarmDto;
 import com.unison.common.util.DateTimeUtils;
+import com.unison.monitoring.api.entity.AlarmEntity;
 import com.unison.monitoring.api.entity.DataEntity;
-import com.unison.monitoring.api.data.DataRepository;
+import com.unison.monitoring.api.repository.AlarmRepository;
+import com.unison.monitoring.api.repository.DataRepository;
 import com.unison.monitoring.api.entity.GeneralOverviewEntity;
 import com.unison.monitoring.api.entity.GeneralOverviewRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +16,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class DataManagementServiceImpl implements DataManagementService{
 
+    private final AlarmRepository alarmRepository;
     private final DataRepository dataRepository;
     private final GeneralOverviewRepository generalOverviewRepository;
 
@@ -61,6 +65,35 @@ public class DataManagementServiceImpl implements DataManagementService{
                 );
             }
             dataRepository.saveAll(dataEntityList);
+        }
+    }
+
+    @Override
+    public void uploadAlarms(List<AlarmDto.Response> alarmList, UUID turbineUuid) throws Exception {
+        List<AlarmEntity> alarmEntityList = new ArrayList<>();
+
+        if(alarmList == null || alarmList.isEmpty()){
+            throw new Exception();
+        }
+
+        if(generalOverviewRepository.findById(turbineUuid).isPresent()) {
+            for (AlarmDto.Response alarm : alarmList) {
+
+                alarmEntityList.add(
+                        AlarmEntity.builder()
+                                .id(
+                                        AlarmEntity.Id.builder()
+                                                .timestamp(DateTimeUtils.parseLocalDateTime(alarm.getAlarmLogTimestamp()))
+                                                .alarmNumber(alarm.getAlarmNumber())
+                                                .turbine_uuid(turbineUuid)
+                                                .build()
+                                )
+                                .alarmCode(alarm.getAlarmCode())
+                                .comment(alarm.getComment())
+                                .build()
+                );
+            }
+            alarmRepository.saveAll(alarmEntityList);
         }
     }
 }

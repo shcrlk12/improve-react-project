@@ -1,5 +1,6 @@
 package com.unison.batch.service;
 
+import com.unison.common.domain.Alarm;
 import com.unison.common.domain.ReportData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +17,11 @@ public class U120UploadBatchService implements UploadBatchService {
 
     @Override
     public List<ReportData> getReportData(LocalDateTime startDate, LocalDateTime endDate) {
+        return null;
+    }
+
+    @Override
+    public List<Alarm> getAlarms(LocalDateTime startDate, LocalDateTime endDate) {
         return null;
     }
 }

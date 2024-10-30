@@ -21,7 +21,7 @@ public class MapperTests {
         List<ReportData> testDataList = new ArrayList<>(Arrays.asList(testData1, testData2, testData3));
 
         //When
-        List<Resource<ReportDataDto.Request>> resource = Mapper.reportDataToResource("u113", testDataList);
+        List<Resource<ReportDataDto.Response>> resource = Mapper.reportDataToResource("u113", testDataList);
 
         //Then
         assertEquals(resource.get(1).getId(), "2024-11-13 13:10:00");

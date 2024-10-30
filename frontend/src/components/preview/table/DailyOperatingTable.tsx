@@ -1,62 +1,73 @@
-import {
-  InfoLine,
-  ItemContainer,
-  ItemContent,
-  ItemTitle,
-  StyledOperatingTable,
-  Title,
-} from "./OperatingTable.styled";
+import { isPropsEmpty } from "@src/utils/props";
+import { InfoLine, ItemContainer, ItemContent, ItemTitle, StyledOperatingTable, Title } from "./OperatingTable.styled";
+import { format } from "date-fns";
+
 /**
  * Types
  */
 export type DailyOperatingTableProps = {
-  operatingDate: Date;
-  reportWriteDate: Date;
-  averageWindSpeed: number; // m/s
-  totalActivePower: number; //kWh
-  capacityFactor: number; //percent
-  operatingTime: number; // second
-  generatingTime: number; //second
+  operatingPeriod: string;
+  writtenDate: string;
+  windSpeed: number; // m/s
+  activePower: number; //kWh
+  operatingTime: number; //second
+  generatingTime: number; // second
 };
 
 /**
  * Styled
  */
-
 const DailyOperatingTable: React.FC<{
   dailyOperatingTableProps: DailyOperatingTableProps;
 }> = ({ dailyOperatingTableProps }) => {
+  if (isPropsEmpty(dailyOperatingTableProps)) return null;
+
+  const { operatingPeriod, writtenDate, windSpeed, activePower, operatingTime, generatingTime } =
+    dailyOperatingTableProps;
+  const ratedPower = 4300;
+
+  const formattedDate = format(writtenDate, "yyyy년 MM월 dd일");
+
   return (
     <StyledOperatingTable>
       <Title>일별 운전 현황</Title>
       <InfoLine>
         <ItemContainer>
           <ItemTitle>운전 기간</ItemTitle>
-          <ItemContent>`24.08.27 00:00 ~ 24:00</ItemContent>
+          <ItemContent>{operatingPeriod}</ItemContent>
         </ItemContainer>
         <ItemContainer>
           <ItemTitle>작성일</ItemTitle>
-          <ItemContent>2024년 08월 28일</ItemContent>
+          <ItemContent>{formattedDate}</ItemContent>
         </ItemContainer>
       </InfoLine>
       <InfoLine>
         <ItemContainer>
           <ItemTitle>평균 풍속</ItemTitle>
-          <ItemContent>3.47 m/s</ItemContent>
+          <ItemContent>{windSpeed} m/s</ItemContent>
         </ItemContainer>
         <ItemContainer>
           <ItemTitle>발전량</ItemTitle>
-          <ItemContent>9,203.39 kWh (CF:8.92%)</ItemContent>
+          <ItemContent>
+            {Number(activePower.toFixed(2)).toLocaleString("ko-KR")} kWh (CF:{" "}
+            {((activePower / (ratedPower * 24)) * 100).toFixed(2)} %)
+          </ItemContent>
         </ItemContainer>
       </InfoLine>
       <InfoLine>
         <ItemContainer>
           <ItemTitle>운전 시간 (가동률)</ItemTitle>
-          <ItemContent>17h 16m (71.96%)</ItemContent>
+          <ItemContent>
+            {Number((operatingTime / 3600).toFixed(0)).toLocaleString("ko-KR")}h{" "}
+            {((operatingTime % 3600) / 60).toFixed(0)}m ({((operatingTime / (3600 * 24)) * 100).toFixed(2)}%)
+          </ItemContent>
         </ItemContainer>
         <ItemContainer>
           <ItemTitle>발전시간</ItemTitle>
-          <ItemContent>7h 37m</ItemContent>
+          <ItemContent>
+            {Number((generatingTime / 3600).toFixed(0)).toLocaleString("ko-KR")}h{" "}
+            {((generatingTime % 3600) / 60).toFixed(0)}m
+          </ItemContent>
         </ItemContainer>
       </InfoLine>
     </StyledOperatingTable>

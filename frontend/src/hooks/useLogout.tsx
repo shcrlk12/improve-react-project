@@ -1,5 +1,7 @@
 import { config } from "@config/config";
 import { routes } from "@config/routes";
+import { logout } from "@reducers/userActions";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 
 /**
@@ -13,9 +15,10 @@ import { useNavigate } from "react-router";
  */
 const useLogout = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
-    fetch(config.apiServer + "/logout", {
+    fetch(`http://${config.apiServer.ip}:${config.apiServer.port}/logout`, {
       mode: "cors",
       method: "GET",
       credentials: "include",
@@ -25,6 +28,7 @@ const useLogout = () => {
       },
     });
     navigate(routes.LOGIN.INDEX);
+    dispatch(logout());
   };
 
   return handleLogout;

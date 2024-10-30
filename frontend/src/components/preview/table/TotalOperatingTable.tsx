@@ -1,27 +1,30 @@
 import React from "react";
 
-import {
-  InfoLine,
-  ItemContainer,
-  ItemContent,
-  ItemTitle,
-  StyledOperatingTable,
-  Title,
-} from "./OperatingTable.styled";
+import { InfoLine, ItemContainer, ItemContent, ItemTitle, StyledOperatingTable, Title } from "./OperatingTable.styled";
+import { isPropsEmpty } from "@src/utils/props";
+import { format, parseISO, differenceInHours, differenceInSeconds } from "date-fns";
+
 /**
  * Types
  */
 export type TotalOperatingTableProps = {
-  startOperatingDate: Date;
-  targetOperatingDate: Date;
-  totalActivePower: number; //kWh
-  totalCapacityFactor: number; //percent
-  operatingTime: number; //second
-  generatingTime: number; //second
+  startDate: string;
+  writtenDate: string;
+  totalActivePower: number;
+  totalOperatingTime: number;
+  totalGeneratingTime: number;
+  ratedPower: number; //kw
 };
 const TotalOperatingTable: React.FC<{
   totalOperatingTableProps: TotalOperatingTableProps;
 }> = ({ totalOperatingTableProps }) => {
+  if (isPropsEmpty(totalOperatingTableProps)) return null;
+
+  const { startDate, writtenDate, totalActivePower, totalOperatingTime, totalGeneratingTime, ratedPower } = {
+    ...totalOperatingTableProps,
+    ratedPower: 4300,
+  };
+
   // const {
   //   startOperatingDate,
   //   targetOperatingDate,
@@ -30,27 +33,43 @@ const TotalOperatingTable: React.FC<{
   //   operatingTime,
   //   generatingTime,
   // } = totalOperatingTableProps;
+  const operatingTimeInHours = differenceInHours(parseISO(writtenDate), parseISO(startDate));
+  const operatingTimeInSeconds = differenceInSeconds(parseISO(writtenDate), parseISO(startDate));
+
   return (
     <StyledOperatingTable>
       <Title>누적 운전 현황</Title>
       <InfoLine>
         <ItemContainer>
           <ItemTitle>운전 기간</ItemTitle>
-          <ItemContent>`19.09.03 00:00 ~ `24.08.27 24:00 (43,704h)</ItemContent>
+          <ItemContent>
+            {format(startDate, "`yy.MM.dd 00:00") + " ~ " + format(writtenDate, "`yy.MM.dd 00:00")} (
+            {operatingTimeInHours.toLocaleString("ko-KR")}h)
+          </ItemContent>
         </ItemContainer>
         <ItemContainer>
           <ItemTitle>누적 발전량</ItemTitle>
-          <ItemContent>38,509,959.02 kWh (CF: 23.49%)</ItemContent>
+          <ItemContent>
+            {Number(totalActivePower.toFixed(2)).toLocaleString("ko-KR")} kWh (CF:{" "}
+            {((totalActivePower / (ratedPower * operatingTimeInHours)) * 100).toFixed(2)} %)
+          </ItemContent>
         </ItemContainer>
       </InfoLine>
       <InfoLine>
         <ItemContainer>
           <ItemTitle>누적 운전시간</ItemTitle>
-          <ItemContent>38,121h 23m (87.23%)</ItemContent>
+          <ItemContent>
+            {Number((totalOperatingTime / 3600).toFixed(0)).toLocaleString("ko-KR")}h{" "}
+            {((totalOperatingTime % 3600) / 60).toFixed(0)}m (
+            {((totalOperatingTime / operatingTimeInSeconds) * 100).toFixed(2)} %)
+          </ItemContent>
         </ItemContainer>
         <ItemContainer>
           <ItemTitle>누적 발전시간</ItemTitle>
-          <ItemContent>24,454h 0m</ItemContent>
+          <ItemContent>
+            {Number((totalGeneratingTime / 3600).toFixed(0)).toLocaleString("ko-KR")}h{" "}
+            {((totalGeneratingTime % 3600) / 60).toFixed(0)}m
+          </ItemContent>
         </ItemContainer>
       </InfoLine>
     </StyledOperatingTable>

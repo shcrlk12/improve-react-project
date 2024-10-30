@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import HeaderContainer from "@components/header/HeaderContainer";
 import LoginPage from "@pages/LoginPage";
 import { Navigate, Route, Routes } from "react-router";
@@ -8,27 +9,67 @@ import { routes } from "@config/routes";
 import ManagementPage from "@pages/user/ManagementPage";
 import AddPage from "@pages/user/AddPage";
 import ModifyPage from "@pages/user/ModifyPage";
+import Loading from "@components/App/Loading";
+import { ROLE_ADMIN, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_USER, UserRoleType } from "@config/userRole";
+import { useSelector } from "react-redux";
+import { RootState } from "./main";
+
+type PageRole = {
+  path: string;
+  component: any;
+};
+
+const getRouteByRole = (userRole: UserRoleType) => {
+  const anonymousRoleRoutes: PageRole[] = [{ path: routes.LOGIN.INDEX, component: <LoginPage /> }];
+
+  const userRoleRoutes: PageRole[] = [
+    ...anonymousRoleRoutes,
+    { path: routes.REPORT.INDEX, component: <Navigate to={routes.REPORT.U151.INDEX} /> },
+    { path: routes.REPORT.U151.INDEX, component: <U136Page /> },
+    { path: routes.REPORT.U113.INDEX, component: <U113Page /> },
+    { path: routes.REPORT.U120.INDEX, component: <U120Page /> },
+  ];
+
+  const managerRoleRoutes: PageRole[] = [...userRoleRoutes];
+
+  const adminRoleRoutes: PageRole[] = [
+    ...managerRoleRoutes,
+    { path: routes.USER.MANAGEMENT.INDEX, component: <ManagementPage /> },
+    { path: routes.USER.ADD.INDEX, component: <AddPage /> },
+    { path: routes.USER.MODIFY.INDEX, component: <ModifyPage /> },
+  ];
+
+  let roleRoutes: PageRole[];
+
+  switch (userRole) {
+    case ROLE_ADMIN:
+      roleRoutes = adminRoleRoutes;
+      break;
+    case ROLE_MANAGER:
+      roleRoutes = managerRoleRoutes;
+      break;
+    case ROLE_USER:
+      roleRoutes = userRoleRoutes;
+      break;
+    case ROLE_ANONYMOUS:
+      roleRoutes = anonymousRoleRoutes;
+      break;
+    default:
+      roleRoutes = [{ path: "", component: "" }];
+  }
+
+  return roleRoutes.map((route) => <Route key={route.path} path={route.path} element={route.component} />);
+};
 
 function App() {
+  const userRole = useSelector((store: RootState) => store.userReducer.user.role) as UserRoleType;
+
   return (
     <>
       <HeaderContainer />
+      <Loading />
       <Routes>
-        <Route path={routes.LOGIN.INDEX} element={<LoginPage />} />
-        <Route
-          path={routes.REPORT.INDEX}
-          element={<Navigate to={routes.REPORT.U151.INDEX} />}
-        />
-        <Route path={routes.REPORT.U151.INDEX} element={<U136Page />} />
-        <Route path={routes.REPORT.U113.INDEX} element={<U113Page />} />
-        <Route path={routes.REPORT.U120.INDEX} element={<U120Page />} />
-        <Route
-          path={routes.USER.MANAGEMENT.INDEX}
-          element={<ManagementPage />}
-        />
-        <Route path={routes.USER.ADD.INDEX} element={<AddPage />} />
-        <Route path={routes.USER.MODIFY.INDEX} element={<ModifyPage />} />
-
+        {getRouteByRole(userRole)}
         <Route path="*" element={<Navigate to={routes.LOGIN.INDEX} />} />
       </Routes>
     </>

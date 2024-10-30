@@ -1,11 +1,14 @@
 import React, { ChangeEvent } from "react";
 
-type EventTextBox = {
+export type EventBoxNote = {
   title: string;
   content?: string | null | undefined;
-  setContent?: (event: ChangeEvent<HTMLTextAreaElement>) => void;
 };
-const EventTextBox = ({ title, content, setContent }: EventTextBox) => {
+type EventTextBoxProps = {
+  setContent?: (event: ChangeEvent<HTMLTextAreaElement>) => void;
+} & EventBoxNote;
+
+const EventTextBox = ({ title, content, setContent }: EventTextBoxProps) => {
   return (
     <div>
       <div style={{ fontSize: "16px", fontWeight: "600" }}>{title}</div>
@@ -16,8 +19,7 @@ const EventTextBox = ({ title, content, setContent }: EventTextBox) => {
         cols={75}
         rows={6}
         value={content ? content : "특이사항 없음."}
-        onChange={setContent}
-      ></textarea>
+        onChange={setContent}></textarea>
     </div>
   );
 };

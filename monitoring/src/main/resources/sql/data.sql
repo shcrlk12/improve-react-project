@@ -1,7 +1,10 @@
 -- Member  table
 INSERT  INTO member (id, pw, role, name, created_at) VALUES ('admin@unison.co.kr', '$2a$10$kwsmnExaw.30g8nMJROov.naBQVmkeaccvWmVdGM76X5bV9mPGyJ2', 'ROLE_ADMIN', 'Administrator', GETDATE());
+INSERT  INTO member (id, pw, role, name, created_at) VALUES ('admin2@unison.co.kr', '$2a$10$kwsmnExaw.30g8nMJROov.naBQVmkeaccvWmVdGM76X5bV9mPGyJ2', 'ROLE_USER', 'Administrator', GETDATE());
 
 -- General Overview table
-INSERT INTO general_overview (uuid, site_name, created_at, created_by) VALUES ('325dbb35-9e49-4466-98f2-57e2145748f7', 'u151', GETDATE(), GETDATE());
-INSERT INTO general_overview (uuid, site_name, created_at, created_by) VALUES ('31f8eca8-228f-424a-9d14-98563c852bcf', 'u113', GETDATE(), GETDATE());
-INSERT INTO general_overview (uuid, site_name, created_at, created_by) VALUES ('2175331d-4168-4f34-a7f6-0e97ad3d523c', 'u120', GETDATE(), GETDATE());
+INSERT INTO general_overview (uuid, site_name, last_sync_date, created_at, created_by) VALUES ('8a80252a-1ee6-4aa3-99da-519fa19fae46', 'u151', '2024-05-01 00:00:00', GETDATE(), GETDATE());
+INSERT INTO general_overview (uuid, site_name, last_sync_date, created_at, created_by) VALUES ('b016e89f-b126-4b47-8ea1-4bc42ded44dc', 'u113', '2024-05-01 00:00:00', GETDATE(), GETDATE());
+INSERT INTO general_overview (uuid, site_name, last_sync_date, created_at, created_by) VALUES ('e9884c5a-5a55-411b-bbfd-9b9fab8347a2', 'u120', '2024-05-01 00:00:00', GETDATE(), GETDATE());
+
+-- Power Curve table

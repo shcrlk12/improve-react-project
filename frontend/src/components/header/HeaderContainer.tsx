@@ -1,8 +1,10 @@
-import { ROLE_ADMIN } from "@src/configs/userRole";
+import { ROLE_ADMIN, UserRoleType } from "@src/configs/userRole";
 import Header from "./Header";
 import { globalNavigationBar } from "@src/configs/navigationBarConfig";
 import useTitle from "@src/hooks/useTitle";
 import useLogout from "@src/hooks/useLogout";
+import { useSelector } from "react-redux";
+import { RootState } from "@src/main";
 
 /**
  * Render and involve bussiness logic of header component
@@ -13,12 +15,13 @@ import useLogout from "@src/hooks/useLogout";
 const HeaderContainer = () => {
   const title = useTitle();
   const handleLogout = useLogout();
+  const user = useSelector((store: RootState) => store.userReducer);
 
   return (
     <>
       <Header
         title={title}
-        userRole={ROLE_ADMIN}
+        userRole={user.user.role as UserRoleType}
         globalNavigationBar={globalNavigationBar}
         logoOnClick={() => {}}
         logoutOnClick={handleLogout}
