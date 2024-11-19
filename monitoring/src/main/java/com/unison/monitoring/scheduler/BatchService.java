@@ -6,12 +6,14 @@ import com.unison.common.jsonapi.response.ApiResponses;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 public interface BatchService{
 
 
-    Mono<ApiResponses<AlarmDto.Response>> retrieveAlarmsFromU113();
+    Mono<ApiResponses<AlarmDto.Response>> retrieveAlarmsFromU113() throws Exception;
 
-    Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU113();
+    Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU113() throws Exception;
 
     Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU120();
 

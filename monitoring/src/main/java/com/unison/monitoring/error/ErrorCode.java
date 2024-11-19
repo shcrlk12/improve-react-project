@@ -18,7 +18,7 @@ public enum ErrorCode {
     AUTHENTICATION_ENTRY_POINT("E103", "Failed Authentication"),
 
     /*E201 ~ E299*/
-    INTERNAL_SERVER_ERROR("E003", "Internal server error");
+    INTERNAL_SERVER_ERROR("E203", "Internal server error");
 
     private final String code;
     private String message;

@@ -8,6 +8,9 @@ import GlobalNavigationBar from "./navigation/GlobalNavigationBar";
 import { PrimaryButton } from "@karden/utils/button";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import userReducer from "./../../reducers/userReducer";
+import { RootState } from "@src/main";
 
 /**
  * Style
@@ -47,11 +50,15 @@ const PageTitle = styled.div`
 `;
 
 const RightHeaderContainer = styled.div`
-  width: 500px;
+  width: 800px;
   margin-right: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const StyledUserName = styled.div`
+  margin-right: 40px;
 `;
 
 /**
@@ -77,6 +84,8 @@ const Header = ({ title, globalNavigationBar, userRole, logoOnClick, logoutOnCli
   const isLoginPage = location.pathname === "/login";
   const isUserAuthenticated = isAuthenticated(userRole);
 
+  const userName = useSelector((store: RootState) => store.userReducer.user.name);
+
   return (
     <StyledHeader>
       <HeaderInner>
@@ -87,6 +96,7 @@ const Header = ({ title, globalNavigationBar, userRole, logoOnClick, logoutOnCli
         {isUserAuthenticated && !isLoginPage && (
           <RightHeaderContainer>
             <GlobalNavigationBar globalNavigationBar={globalNavigationBar} userRole={userRole} />
+            <StyledUserName> {userName}</StyledUserName>
             <PrimaryButton text="Logout" onClick={logoutOnClick} />
           </RightHeaderContainer>
         )}

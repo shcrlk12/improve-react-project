@@ -16,6 +16,7 @@ const initialState: UserState = {
     id: "",
     name: "",
     role: ROLE_ANONYMOUS,
+    lastLoginTime: null,
   },
 };
 
@@ -33,8 +34,9 @@ const userReducer = (state: UserState = initialState, action: UserAction) => {
         isAuthenticated: false,
         user: {
           id: "",
-          username: "",
+          name: "",
           role: ROLE_ANONYMOUS,
+          lastLoginTime: null,
         },
       };
     default:

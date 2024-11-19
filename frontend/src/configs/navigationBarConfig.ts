@@ -21,13 +21,13 @@ export const globalNavigationBar: GlobalNavigationBarType[] = [
     userRole: ROLE_USER,
     items: [
       {
-        name: "U151",
-        link: routes.REPORT.U151.INDEX,
+        name: "U113",
+        link: routes.REPORT.U113.INDEX,
         userRole: ROLE_USER,
       },
       {
-        name: "U113",
-        link: routes.REPORT.U113.INDEX,
+        name: "U151",
+        link: routes.REPORT.U151.INDEX,
         userRole: ROLE_USER,
       },
       {
@@ -40,8 +40,13 @@ export const globalNavigationBar: GlobalNavigationBarType[] = [
   {
     name: "user",
     link: routes.USER.MANAGEMENT.INDEX,
-    userRole: ROLE_ADMIN,
+    userRole: ROLE_USER,
     items: [
+      {
+        name: "My infomation",
+        link: routes.USER.MY_INFOMATION.INDEX,
+        userRole: ROLE_USER,
+      },
       {
         name: "User management",
         link: routes.USER.MANAGEMENT.INDEX,

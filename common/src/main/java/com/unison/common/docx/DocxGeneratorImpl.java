@@ -67,19 +67,81 @@ public class DocxGeneratorImpl implements DocxGenerator{
 
     @Override
     public void setTableText(XWPFTable table, int row, int column, String text) {
+        setTableText(table, row, column, text, 9, false);
+    }
+
+    @Override
+    public void setTableText(XWPFTable table, int row, int column, String text, int fontSize) {
+        setTableText(table, row, column, text, fontSize, false);
+    }
+
+    @Override
+    public void setTableText(XWPFTable table, int row, int column, String text, int fontSize, boolean isBold) {
+        setTableText(table, row, column, text, fontSize, 0, isBold);
+    }
+
+    @Override
+    public void setTableText(XWPFTable table, int row, int column, String text, int fontSize, int spaceAfter, boolean isBold) {
         XWPFTableRow r = table.getRow(row);
         XWPFTableCell c = r.getCell(column);
         c.removeParagraph(0);
 
         XWPFParagraph pr = c.addParagraph();
-        pr.setSpacingAfter(0);
+        pr.setSpacingAfter(spaceAfter);
 
         XWPFRun run = pr.createRun();
         run.setText(text);
-        run.setFontSize(9);
-        run.setBold(true);
-
+        run.setFontSize(fontSize);
+        run.setBold(isBold);
     }
+
+    @Override
+    public void setIndentationLeft(XWPFTable table, int row, int column, int indentationLeft) {
+        if (row >= table.getNumberOfRows()) return;
+        XWPFTableRow r = table.getRow(row);
+
+        if (column >= r.getTableCells().size()) return;
+        XWPFTableCell c = r.getCell(column);
+
+        XWPFParagraph pr;
+        if (c.getParagraphs().isEmpty()) {
+            pr = c.addParagraph();
+        } else {
+            pr = c.getParagraphs().get(0);
+        }
+
+        pr.setIndentationLeft(indentationLeft);
+    }
+
+
+    @Override
+    public void setParagraphAlignment(XWPFTable table, int row, int column, ParagraphAlignment align) {
+        if (row >= table.getNumberOfRows()) return;
+        XWPFTableRow r = table.getRow(row);
+
+        if (column >= r.getTableCells().size()) return;
+        XWPFTableCell c = r.getCell(column);
+
+        XWPFParagraph pr;
+        if (c.getParagraphs().isEmpty()) {
+            pr = c.addParagraph();
+        } else {
+            pr = c.getParagraphs().get(0);
+        }
+        pr.setAlignment(align);
+    }
+
+    @Override
+    public void setVerticalAlignment(XWPFTable table, int row, int column, XWPFTableCell.XWPFVertAlign vAlign) {
+        if (row >= table.getNumberOfRows()) return;
+        XWPFTableRow r = table.getRow(row);
+
+        if (column >= r.getTableCells().size()) return;
+        XWPFTableCell c = r.getCell(column);
+
+        c.setVerticalAlignment(vAlign);
+    }
+
 
     @Override
     public XWPFRun getRun(XWPFTable table, int row, int column) {
@@ -138,5 +200,15 @@ public class DocxGeneratorImpl implements DocxGenerator{
     public void addPageBreak() {
         XWPFParagraph pageBreakParagraph = document.createParagraph();
         pageBreakParagraph.setPageBreak(true);
+    }
+
+    @Override
+    public void widthCellsAcrossRow(XWPFTable table, int rowNum, int colNum, int width) {
+        XWPFTableCell cell = table.getRow(rowNum).getCell(colNum);
+        if (cell.getCTTc().getTcPr() == null)
+            cell.getCTTc().addNewTcPr();
+        if (cell.getCTTc().getTcPr().getTcW()==null)
+            cell.getCTTc().getTcPr().addNewTcW();
+        cell.getCTTc().getTcPr().getTcW().setW(BigInteger.valueOf((long) width));
     }
 }

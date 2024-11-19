@@ -56,11 +56,14 @@ public class SecurityConfig{
                     return config;
                 }))
                 .headers((headerConfig) ->
-                        headerConfig.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable
-                        )
+                        headerConfig
+                                .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
                 )
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
+                                .requestMatchers(
+                                        AntPathRequestMatcher.antMatcher("/api/data/sites")
+                                ).permitAll()
                                 .requestMatchers(
                                         AntPathRequestMatcher.antMatcher("/api/users/**"),
                                         AntPathRequestMatcher.antMatcher("/api/data/**")
@@ -69,7 +72,6 @@ public class SecurityConfig{
                                         AntPathRequestMatcher.antMatcher("/api/login/**"),
                                         AntPathRequestMatcher.antMatcher("/api/docx/**")
                                 ).permitAll()
-
                 ).formLogin((formLogin) ->
                         formLogin
                                 .loginPage("/api/login")

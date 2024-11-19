@@ -6,6 +6,7 @@ import { Dispatch } from "react";
 import { useDispatch } from "react-redux";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { logout } from "@reducers/userActions";
+import Swal from "sweetalert2";
 
 const statusOk = async (response: Response) => {
   if (!response.ok) {
@@ -30,11 +31,12 @@ const useFetchData = () => {
 
     try {
       const response = await fetch(url, option);
+      dispatch(resetLoading());
+
       if (!response.ok) {
         if (response.status === 401) {
           expireSession(dispatch, navigate);
         }
-        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const json = await response.json();
@@ -45,9 +47,15 @@ const useFetchData = () => {
       } else {
         console.error("Error fetching data:", e);
       }
-      throw e; // 에러가 발생했음을 호출한 쪽에서 인지할 수 있게 던짐
-    } finally {
       dispatch(resetLoading());
+
+      await Swal.fire({
+        title: "서버 연결 실패",
+        text: "백엔드 서버 연결 실패 관리자에게 문의하세요.",
+        icon: "error",
+      });
+
+      throw e;
     }
   };
 

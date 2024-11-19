@@ -9,6 +9,7 @@ import { DailyOperatingTableProps } from "./table/DailyOperatingTable";
 import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
 import { AlarmTableV2Props, AlarmType } from "./table/AlarmTableV2";
 import { EventBoxNote } from "./EventTextBox";
+import { SiteType } from "@reducers/appAction";
 
 /**
  * Types
@@ -24,10 +25,14 @@ type ResponseOfReportU151 = {
   DailyRWPGraphProps &
   AlarmTableV2Props;
 
-const PreviewContainer = () => {
-  console.log("PreviewContainer");
+type PreviewContainerProps = {
+  key: number;
+  selectedSite: SiteType;
+  selectedDate: Date;
+};
+const PreviewContainer = ({ key, selectedSite, selectedDate }: PreviewContainerProps) => {
   const fetchData = useFetchData();
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dailyRWPGraphProps, setDailyRWPGraphProps] = useState<DailyRWPGraphProps>({} as DailyRWPGraphProps);
   const [powerCurveGraphProps, setPowerCurveGraphProps] = useState<PowerCurveGraphProps>({} as PowerCurveGraphProps);
   const [dailyOperatingTableProps, setDailyOperatingTableProps] = useState<DailyOperatingTableProps>(
@@ -44,7 +49,7 @@ const PreviewContainer = () => {
     const fetchDataAsync = async () => {
       try {
         const data = await fetchData<JsonApi<ResponseOfReportU151>>(
-          `http://${config.apiServer.ip}:${config.apiServer.port}/api/data/report/u151`,
+          `http://${config.apiServer.ip}:${config.apiServer.port}/api/data/report?turbineUuid=${selectedSite.uuid}&writeDate=${selectedDate.toISOString(9)}`,
           {
             mode: "cors",
             method: "GET",
@@ -73,23 +78,34 @@ const PreviewContainer = () => {
         setEventBoxNotes(data.attributes.eventBoxNotes);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(true);
       }
     };
 
     fetchDataAsync();
-  }, []);
+  }, [key]);
+
+  useEffect(() => {
+    console.log(selectedDate);
+
+    setDate(selectedDate.toString());
+  }, [selectedDate]);
 
   return (
-    <Preview
-      date={date}
-      dailyOperatingTableProps={dailyOperatingTableProps}
-      totalOperatingTableProps={totalOperatingTableProps}
-      powerCurveGraphProps={powerCurveGraphProps}
-      dailyRWPGraphProps={dailyRWPGraphProps}
-      eventBoxNotesProps={eventBoxNotes}
-      alarmsProps={alarms}
-      setEventBoxNotes={setEventBoxNotes}
-    />
+    isLoading && (
+      <Preview
+        selectedSite={selectedSite}
+        date={date}
+        dailyOperatingTableProps={dailyOperatingTableProps}
+        totalOperatingTableProps={totalOperatingTableProps}
+        powerCurveGraphProps={powerCurveGraphProps}
+        dailyRWPGraphProps={dailyRWPGraphProps}
+        eventBoxNotesProps={eventBoxNotes}
+        alarmsProps={alarms}
+        setEventBoxNotes={setEventBoxNotes}
+      />
+    )
   );
 };
 

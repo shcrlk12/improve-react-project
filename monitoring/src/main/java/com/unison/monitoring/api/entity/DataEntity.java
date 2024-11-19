@@ -9,6 +9,7 @@ import org.springframework.data.domain.Persistable;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -22,51 +23,42 @@ public class DataEntity implements Persistable<DataEntity.Id> {
     private Id id;
 
     @Column
-    private String fullPerformance;
+    private Integer fullPerformance;
 
     @Column
-    private String partialPerformance;
+    private Integer partialPerformance;
 
     @Column
-    private String outOfElectrical;
+    private Integer outOfElectrical;
 
     @Column
-    private String outOfEnvironment;
+    private Integer outOfEnvironment;
 
     @Column
-    private String requestedShutdown;
+    private Integer requestedShutdown;
 
     @Column
-    private String scheduledMaintenance;
+    private Integer scheduledMaintenance;
 
     @Column
-    private String technicalStandby;
+    private Integer technicalStandby;
 
     @Column
-    private String rotorSpeed;
+    private Double rotorSpeed;
 
     @Column
-    private String windSpeed;
+    private Double windSpeed;
 
     @Column
-    private String nacOutTmp;
+    private Double nacOutTmp;
 
     @Column
-    private String activePower;
+    private Double activePower;
 
     @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    @Override
-    public boolean isNew() {
-        return this.getCreatedAt() == null;
-    }
 
     @Getter
     @Setter
@@ -78,8 +70,18 @@ public class DataEntity implements Persistable<DataEntity.Id> {
         @Column
         private LocalDateTime timestamp;
 
-        @ManyToOne
-        @JoinColumn(name = "general_overview_uuid")  // 외래 키를 명시적으로 정의
-        private GeneralOverviewEntity generalOverview;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "general_overview_uuid")
+        private GeneralOverviewEntity generalOverviewEntity;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @Override
+    public boolean isNew() {
+        return this.getCreatedAt() == null;
     }
 }

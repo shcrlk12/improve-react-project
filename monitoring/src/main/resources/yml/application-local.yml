@@ -15,11 +15,11 @@ spring:
     url: jdbc:sqlserver://127.0.0.1:1433;databaseName=Monitoring;encrypt=true;trustServerCertificate=true;
     username: sa
     password:
-    initialization-mode: always #data.sql 실행
+    initialization-mode: always #test-data.sql 실행
 
   jpa:
     hibernate:
-      ddl-auto: create # create-drop - 어플리케이션이 종료할때 테이블 삭제
+      ddl-auto: create-drop # create-drop - 어플리케이션이 종료할때 테이블 삭제
     show-sql: true
     defer-datasource-initialization: true
     properties:
@@ -28,7 +28,7 @@ spring:
   sql:
     init:
       mode: always
-      data-locations: classpath:/sql/data.sql
+      data-locations: classpath:/sql/test-data.sql
 
 server:
   port: 6789
@@ -46,3 +46,9 @@ api-server:
   ip: 127.0.0.1
   port: 5151
   domain: localhost
+
+batch-server:
+  u113: 125.136.87.142
+  u120: 125.136.87.142
+  u151: 125.136.87.142
+  port: 5151

@@ -33,7 +33,7 @@ const ShowCurrentDate = styled.div`
 
 const PopupContainer = styled.div`
   position: absolute;
-  top: 20px;
+  top: -200px;
   right: 0;
   background-color: #fff;
   border-radius: 10px;
@@ -42,6 +42,7 @@ const PopupContainer = styled.div`
   align-items: center;
   padding-bottom: 5px;
   z-index: 9999;
+  box-shadow: 2px 2px 7px ${({ theme }) => theme.color.darkPrimary};
 `;
 
 const ButtonWrapper = styled.div`
@@ -66,29 +67,27 @@ type CalendarPopupProps = {
  * @author Karden
  * @created 2024-07-19
  */
-
 const CalendarPopup = ({ date, setDate }: CalendarPopupProps) => {
   const [tempSelectedDate, setTempSelectedDate] = useState<Date>(date);
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+
+  console.log(date);
 
   return (
     <CalendarContainer>
       <ShowCurrentDate
         onClick={() => {
           setIsCalendarVisible(true);
-        }}
-      >
-        {`${formatDateToString(date, "YYYY-MM-DD")}, ${getNameDayOfWeek(
-          date.getDay()
-        )}`}
+        }}>
+        {`${formatDateToString(date, "YYYY-MM-DD")}, ${getNameDayOfWeek(date.getDay())}`}
       </ShowCurrentDate>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <PopupContainer
-          style={{ display: isCalendarVisible ? "flex" : "none" }}
-        >
+        <PopupContainer style={{ display: isCalendarVisible ? "flex" : "none" }}>
           <DateCalendar
             value={dayjs(tempSelectedDate.toISOString())}
             onChange={(value) => {
+              console.log(value.toDate());
+
               setTempSelectedDate(value.toDate());
             }}
           />

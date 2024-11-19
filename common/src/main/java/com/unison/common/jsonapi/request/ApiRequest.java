@@ -1,9 +1,7 @@
 package com.unison.common.jsonapi.request;
 
 import com.unison.common.jsonapi.Resource;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /*
  * @see https://jsonapi.org/
@@ -11,6 +9,8 @@ import lombok.Setter;
 @Setter
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ApiRequest<T> {
     private Resource<T> data; // Optional at least one
 }

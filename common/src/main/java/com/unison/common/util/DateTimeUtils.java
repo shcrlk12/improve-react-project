@@ -43,7 +43,8 @@ public class DateTimeUtils {
                 "yyyy-MM-dd'T'HH:mm:ss",
                 "yyyy-MM-dd'T'HH:mm:ss.S",
                 "yyyy-MM-dd'T'HH:mm:ss.SS",
-                "yyyy-MM-dd'T'HH:mm:ss.SSS"
+                "yyyy-MM-dd'T'HH:mm:ss.SSS",
+                "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
         );
 
         for (String pattern : formatPatterns) {

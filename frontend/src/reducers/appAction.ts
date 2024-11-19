@@ -22,3 +22,31 @@ export const headerItemVisible = (headerTiemVisible: HeaderItemVisible) => ({
   type: SET_LOADING,
   payload: headerTiemVisible,
 });
+
+/**
+ * site config
+ */
+export const SET_SITES = "SET_SITES" as const;
+export const CLEAR_SITES = "CLEAR_SITES" as const;
+export const SELECT_SITE = "SELECT_SITE" as const;
+
+export type SiteType = {
+  uuid: string;
+  name: string;
+  remark: string;
+  ratedPower: number;
+};
+
+export const setSites = (sites: SiteType[]) => ({
+  type: SET_SITES,
+  payload: sites,
+});
+
+export const selectSite = (site: SiteType) => ({
+  type: SELECT_SITE,
+  payload: site,
+});
+
+export const clearSites = () => ({
+  type: CLEAR_SITES,
+});

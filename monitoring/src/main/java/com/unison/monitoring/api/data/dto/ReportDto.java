@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public class ReportDto {
     public final static String TYPE = "report-data";
@@ -30,7 +31,7 @@ public class ReportDto {
         private List<PowerCurve> referencePowerCurve;
         private List<PowerCurve> powerCurveScatter;
         private List<TimeChart> timeChart;
-        private List<Alarms> alarms;
+        private List<Alarm> alarms;
         private List<Remark> eventBoxNotes;
     }
 
@@ -52,7 +53,7 @@ public class ReportDto {
 
     @Getter
     @AllArgsConstructor
-    public static class Alarms{
+    public static class Alarm {
         private LocalDateTime timestamp;
         private Integer alarmCode;
         private String alarmName;
@@ -61,8 +62,10 @@ public class ReportDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Remark{
         private String title;
         private String content;
+        private UUID uuid;
     }
 }

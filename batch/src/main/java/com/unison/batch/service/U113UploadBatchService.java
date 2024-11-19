@@ -28,10 +28,9 @@ public class U113UploadBatchService implements UploadBatchService {
                 "st_outElecSpTm, " +
                 "st_schMtncTm, " +
                 "rot_RotSpd, " +
-                "nac_WdSpdNac1sNTFAvg, " +
+                "etc_field03, " +
                 "nac_NacOutTmp, " +
-                "tur_TotWhMin, " +
-                "tur_TotWhMax " +
+                "gdc_TurWAvg " +
                 "FROM wtur_10min_report " +
                 "WHERE group_id = ? " +
                 "AND device_id = ? " +
@@ -58,9 +57,9 @@ public class U113UploadBatchService implements UploadBatchService {
                             rs.getString("st_outElecSpTm"),
                             rs.getString("st_schMtncTm"),
                             rs.getString("rot_RotSpd"),
-                            rs.getString("nac_WdSpdNac1sNTFAvg"),
+                            rs.getString("etc_field03"),
                             rs.getString("nac_NacOutTmp"),
-                            String.valueOf(Double.parseDouble(rs.getString("tur_TotWhMax")) - Double.parseDouble(rs.getString("tur_TotWhMin")))
+                            String.valueOf(rs.getString("gdc_TurWAvg"))
                     )
         );
     }

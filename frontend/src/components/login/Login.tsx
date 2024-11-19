@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { UserRoleType } from "@config/userRole";
 import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
+import Swal from "sweetalert2";
 
 /**
  * Types
@@ -17,6 +18,7 @@ import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
 type ResponseOfLogin = {
   message: string;
   role: UserRoleType;
+  name: string;
 };
 
 /**
@@ -72,25 +74,33 @@ const Login = () => {
   const loginSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+    try {
+      const formData = new FormData(event.currentTarget);
 
-    const data = await fetchData<JsonApi<ResponseOfLogin>>(
-      `http://${config.apiServer.ip}:${config.apiServer.port}/api/login`,
-      {
-        mode: "cors",
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      },
-    );
+      const data = await fetchData<JsonApi<ResponseOfLogin>>(
+        `http://${config.apiServer.ip}:${config.apiServer.port}/api/login`,
+        {
+          mode: "cors",
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        },
+      );
 
-    const {
-      id,
-      attributes: { role },
-    } = data;
+      const {
+        id,
+        attributes: { role, name },
+      } = data;
 
-    dispatch(loginSuccess({ id, name: "", role }));
-    navigate("/report");
+      dispatch(loginSuccess({ id, name, role }));
+      navigate("/report");
+    } catch (e) {
+      await Swal.fire({
+        title: "로그인 실패",
+        text: "아이디/패스워드를 확인하세요.",
+        icon: "error",
+      });
+    }
   };
   return (
     <Section>

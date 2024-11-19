@@ -1,16 +1,18 @@
 import styled from "styled-components";
 import { PrimaryButton } from "@karden/utils/button";
 import { TextArea1 } from "@karden/utils/Input";
-import { SitesType, turbineConfig } from "@config/config";
-import {
-  ChangeEvent,
-  Dispatch,
-  MouseEventHandler,
-  SetStateAction,
-  useState,
-} from "react";
+import { ChangeEvent, Dispatch, MouseEventHandler, SetStateAction, useEffect, useMemo, useState } from "react";
 import CalendarPopup from "./../calendar/CalendarPopup";
 import PreviewContainer from "./../preview/PreviewContainer";
+import { selectSite, setSites, SiteType } from "@reducers/appAction";
+import { useLocation, useNavigate } from "react-router";
+import { replaceLastPath } from "@src/utils/path";
+import { useDispatch, useSelector } from "react-redux";
+import useFetch from "@src/hooks/useFetch";
+import { ACCEPT, CONTENT_TYPE, createPostRequestObject } from "@src/jsonApiOrg/JsonApiOrg";
+import { config } from "@config/config";
+import { RootState } from "@src/main";
+import Swal from "sweetalert2";
 
 /**
  * Styled
@@ -49,6 +51,11 @@ const HeaderItem = styled.div`
     animation-name: selected-site;
     animation-duration: 0.6s;
     animation-fill-mode: forwards;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
   }
 `;
 
@@ -110,12 +117,16 @@ const PeriodHeader = styled.div`
  * Type
  */
 type DailyReportType = {
-  selectedSite: string;
+  sites: SiteType[];
+  selectedSite: SiteType;
   selectedDate: Date;
   setSelectedDate: Dispatch<SetStateAction<Date>>;
   handleSiteClick: MouseEventHandler<HTMLDivElement>;
 };
 
+type DailyReportRemarkOfRequest = {
+  remark: string;
+};
 /**
  * This is the daily report component.
  * It allows selection of any site of wind turbine,
@@ -125,39 +136,75 @@ type DailyReportType = {
  * @author Karden
  * @created 2024-07-17
  */
-const DailyReport = ({
-  selectedSite,
-  selectedDate,
-  setSelectedDate,
-  handleSiteClick,
-}: DailyReportType) => {
-  const createHeaderItem = () => {
-    const newArr: JSX.Element[] = [];
 
-    let key: keyof SitesType;
-    for (key in turbineConfig.sites) {
-      newArr.push(
-        <HeaderItem
-          key={key}
-          className={selectedSite === key ? "selected" : undefined}
-          onClick={handleSiteClick}
-        >
-          <div className="hidden-element">{key}</div>
-          {turbineConfig.sites[key]}
-        </HeaderItem>
-      );
-    }
-    return newArr;
-  };
-
-  const [remark, setRemark] = useState<string>(
-    "[44299] PCS fault status ON 알람 관련 냉각수 플럭싱 및 PCS 리액터 교체작업 진행 중"
-  );
-
+const DailyReport = ({ sites, selectedSite, selectedDate, setSelectedDate, handleSiteClick }: DailyReportType) => {
+  const [remark, setRemark] = useState<string>("");
+  const [previewRefreshKey, setRreviewRefreshKey] = useState<number>(0);
   const [isShowPreview, setIsShowPreview] = useState<boolean>(false);
+  const [isDisableRemarkBox, setIsDisableRemarkBox] = useState<boolean>(true);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const fetchData = useFetch();
+  const user = useSelector((store: RootState) => store.userReducer.user);
+
+  useEffect(() => {
+    setRemark(selectedSite.remark);
+    setIsShowPreview(false);
+    setIsDisableRemarkBox(true);
+  }, [selectedSite]);
+
+  useEffect(() => {
+    const splitedPath = location.pathname.split("/");
+    const selectedSiteUuid = splitedPath[splitedPath.length - 1];
+
+    sites.forEach((item) => {
+      if (item.uuid.toLowerCase() === selectedSiteUuid.toLowerCase()) {
+        dispatch(selectSite(item));
+        navigate(replaceLastPath(location.pathname, item.uuid));
+      }
+    });
+  }, [location.pathname]);
+
+  const uploadRemark = async () => {
+    let request = createPostRequestObject<DailyReportRemarkOfRequest>();
+
+    request.data = {
+      id: selectedSite.uuid,
+      type: "daily-remarks",
+      attributes: {
+        remark,
+      },
+    };
+
+    const response = await fetchData(
+      `http://${config.apiServer.ip}:${config.apiServer.port}/api/data/remarks/${selectedSite.uuid}`,
+      {
+        method: "PATCH",
+        credentials: "include",
+        body: JSON.stringify(request),
+        headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
+      },
+    );
+  };
+  const createHeaderItem = useMemo((): JSX.Element[] => {
+    return sites.map((item) => (
+      <HeaderItem
+        key={item.uuid}
+        className={selectedSite.uuid === item.uuid ? "selected" : undefined}
+        onClick={() => {
+          navigate(replaceLastPath(location.pathname, item.uuid));
+        }}>
+        <div className="hidden-element">{item.uuid}</div>
+        {item.name}
+      </HeaderItem>
+    ));
+  }, [location.pathname, selectedSite.uuid]);
+
   return (
     <StyledDailyReport>
-      <SiteHeaderContainer>{createHeaderItem()}</SiteHeaderContainer>
+      <SiteHeaderContainer>{createHeaderItem}</SiteHeaderContainer>
       <MainContainer style={{ width: "450px" }}>
         <SignificantContainer>
           <SignificantHeader>특이사항</SignificantHeader>
@@ -165,9 +212,12 @@ const DailyReport = ({
             <TextArea1
               text={remark}
               onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+                event.preventDefault();
+
                 setRemark(event.currentTarget.value);
               }}
               rows={8}
+              disabled={isDisableRemarkBox}
             />
           </SignificantEditor>
           <SignificantButtonContainer>
@@ -175,13 +225,59 @@ const DailyReport = ({
               type="submit"
               text="저장"
               width="30%"
-              onClick={() => {}}
+              onClick={async () => {
+                if (!isDisableRemarkBox) {
+                  const result = await Swal.fire({
+                    title: "특이사항 저장",
+                    text: "특이사항 저장을 하시겠습니까?",
+                    icon: "info",
+                    showCancelButton: true,
+                    confirmButtonText: "확인",
+                    cancelButtonText: "취소",
+                  });
+                  if (result.isConfirmed) {
+                    await uploadRemark();
+
+                    const newSites = sites.map((site) =>
+                      site.uuid === selectedSite.uuid ? { ...site, remark } : site,
+                    );
+                    dispatch(setSites(newSites));
+                    setIsDisableRemarkBox(true);
+                  }
+                }
+              }}
             />
             <PrimaryButton
               type="submit"
-              text="편집"
+              text={isDisableRemarkBox ? "편집" : "취소"}
               width="30%"
-              onClick={() => {}}
+              onClick={async () => {
+                if (isDisableRemarkBox) {
+                  const result = await Swal.fire({
+                    title: "특이사항 편집",
+                    text: "특이사항 편집을 하시겠습니까?",
+                    icon: "info",
+                    showCancelButton: true,
+                    confirmButtonText: "확인",
+                    cancelButtonText: "취소",
+                  });
+                  if (result.isConfirmed) {
+                    setIsDisableRemarkBox(false);
+                  }
+                } else {
+                  const result = await Swal.fire({
+                    title: "특이사항 편집 취소",
+                    text: "특이사항 편집을 취소 하시겠습니까?",
+                    icon: "info",
+                    showCancelButton: true,
+                    confirmButtonText: "확인",
+                    cancelButtonText: "취소",
+                  });
+                  if (result.isConfirmed) {
+                    setIsDisableRemarkBox(true);
+                  }
+                }
+              }}
             />
           </SignificantButtonContainer>
         </SignificantContainer>
@@ -194,15 +290,30 @@ const DailyReport = ({
             <PrimaryButton
               type="submit"
               text="미리보기 생성"
-              onClick={() => {
-                setIsShowPreview(true);
-                console.log(selectedDate.toDateString());
+              onClick={async () => {
+                const now = new Date(Date.now());
+
+                if (
+                  selectedDate.getFullYear() * 365 + selectedDate.getMonth() * 30.41 + selectedDate.getDate() >
+                  now.getFullYear() * 365 + now.getMonth() * 30.41 + now.getDate()
+                ) {
+                  await Swal.fire({
+                    title: "날짜 선택 에러",
+                    text: "오늘 날짜 이전으로 선택하세요.",
+                    icon: "error",
+                  });
+                } else {
+                  setIsShowPreview(true);
+                  setRreviewRefreshKey((prev) => prev + 1);
+                }
               }}
             />
           </SignificantButtonContainer>
         </PeriodContainer>
       </MainContainer>
-      {isShowPreview && <PreviewContainer />}
+      {isShowPreview && (
+        <PreviewContainer selectedDate={selectedDate} selectedSite={selectedSite} key={previewRefreshKey} />
+      )}
     </StyledDailyReport>
   );
 };

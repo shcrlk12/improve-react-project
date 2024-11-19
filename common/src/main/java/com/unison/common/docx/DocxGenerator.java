@@ -1,8 +1,6 @@
 package com.unison.common.docx;
 
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.InputStream;
 
@@ -18,6 +16,17 @@ public interface DocxGenerator {
 
     void setTableText(XWPFTable table, int row, int column, String text);
 
+    void setTableText(XWPFTable table, int row, int column, String text, int fontSize);
+
+    void setTableText(XWPFTable table, int row, int column, String text, int fontSize, boolean isBold);
+    void setTableText(XWPFTable table, int row, int column, String text, int fontSize, int spaceAfter, boolean isBold);
+
+    void setIndentationLeft(XWPFTable table, int row, int column, int indentationLeft);
+
+
+    void setParagraphAlignment(XWPFTable table, int row, int column, ParagraphAlignment align);
+    void setVerticalAlignment(XWPFTable table, int row, int column, XWPFTableCell.XWPFVertAlign vAlign);
+
     XWPFRun getRun(XWPFTable table, int row, int column);
 
     void createImageTable(InputStream img);
@@ -29,4 +38,6 @@ public interface DocxGenerator {
     void addText(String text);
 
     void addPageBreak();
+
+    void widthCellsAcrossRow (XWPFTable table, int rowNum, int colNum, int width);
 }

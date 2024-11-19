@@ -27,7 +27,7 @@ public class AlarmEntity {
     private String comment;
 
     @Column(nullable = true)
-    private String note;
+    private String remark;
 
     @Getter
     @Setter
@@ -43,6 +43,6 @@ public class AlarmEntity {
         private String alarmNumber;
 
         @Column
-        private UUID turbine_uuid;
+        private UUID turbineUuid;
     }
 }

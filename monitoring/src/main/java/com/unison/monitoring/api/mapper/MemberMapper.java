@@ -1,18 +1,20 @@
 package com.unison.monitoring.api.mapper;
 
 import com.unison.common.dto.MemberDto;
+import com.unison.common.jsonapi.request.ApiRequest;
 import com.unison.monitoring.api.domain.Member;
 
 
 public class MemberMapper {
 
-    public static Member memberDtoToMember(MemberDto.Request memberDto){
+    public static Member memberDtoToMember(ApiRequest<MemberDto.Request> memberRequest){
+        MemberDto.Request memberDtoRequest = memberRequest.getData().getAttributes();
 
         return Member.builder()
-                .id(memberDto.getId())
-                .pw(memberDto.getPw())
-                .name(memberDto.getName())
-                .role(memberDto.getRole())
+                .id(memberRequest.getData().getId())
+                .pw(memberDtoRequest.getPw())
+                .name(memberDtoRequest.getName())
+                .role(memberDtoRequest.getRole())
                 .build();
     }
 

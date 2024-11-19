@@ -12,8 +12,8 @@ import { arePropsEmpty } from "@src/utils/props";
 
 //TData
 export type AlarmType = {
-  timestamp: Date;
-  alarmCode: number;
+  timestamp: Date | string;
+  alarmCode: number | string;
   alarmName: string;
   remarks: string;
 };
@@ -57,7 +57,7 @@ const columns = [
   }),
 ];
 
-const AlarmTableV2 = ({ alarms }: AlarmTableV2Props) => {
+const AlarmTableV2 = React.memo(({ alarms }: AlarmTableV2Props) => {
   const [data, _setData] = React.useState<AlarmType[]>([] as AlarmType[]);
   const rerender = React.useReducer(() => ({}), {})[1];
   const [pagination, setPagination] = useState({
@@ -66,12 +66,11 @@ const AlarmTableV2 = ({ alarms }: AlarmTableV2Props) => {
   });
 
   useEffect(() => {
+    if (alarms.length === 0) {
+      alarms.push({ alarmCode: "", timestamp: "", alarmName: "", remarks: "" });
+    }
     if (!arePropsEmpty(alarms)) _setData([...alarms]);
-    console.log(alarms);
   }, [alarms]);
-
-  console.log("props");
-  console.log(alarms);
 
   const table = useReactTable({
     data,
@@ -151,6 +150,6 @@ const AlarmTableV2 = ({ alarms }: AlarmTableV2Props) => {
       </div>
     </TableContainer>
   );
-};
+});
 
 export default AlarmTableV2;

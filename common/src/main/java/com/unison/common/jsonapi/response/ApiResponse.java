@@ -31,6 +31,7 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
+    @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)  // Null 값이 포함되지 않도록 설정
     public static class Error {
         private String id;  // Optional

@@ -4,6 +4,7 @@ package com.unison.monitoring.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unison.monitoring.api.entity.MemberEntity;
 import com.unison.monitoring.api.member.MemberRepository;
+import com.unison.monitoring.security.UserDetailImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,16 +30,16 @@ public class AppAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
     }
     @Override
     @Transactional
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException
     {
         ObjectMapper objectMapper = new ObjectMapper();
 
         Map<String, Object> json = new HashMap<>();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        UserDetailImpl userDetails = (UserDetailImpl) authentication.getPrincipal();
 
         String role = userDetails.getAuthorities().toString();
 
-        MemberEntity memberEntity = memberRepository.findById(userDetails.getUsername()).get();
+        MemberEntity memberEntity = memberRepository.findById(userDetails.getUsername()).orElse(userDetails.getMember());
 
         memberEntity.setLastLoginTime(LocalDateTime.now());
 
@@ -48,6 +49,7 @@ public class AppAuthenticationSuccessHandler extends SimpleUrlAuthenticationSucc
 
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("role", role.replaceAll("[\\[\\]]", ""));
+        attributes.put("name", memberEntity.getName());
         attributes.put("message", "로그인에 성공했습니다.");
 
         data.put("attributes", attributes);

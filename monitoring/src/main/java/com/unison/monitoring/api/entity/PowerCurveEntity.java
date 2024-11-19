@@ -20,6 +20,7 @@ public class PowerCurveEntity {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "general_overview_uuid")
     private GeneralOverviewEntity generalOverviewEntity;
 
     @Column(nullable = false)

@@ -2,110 +2,227 @@ package com.unison.monitoring.api.word;
 
 import com.unison.common.docx.DocxGenerator;
 import com.unison.common.docx.DocxGeneratorImpl;
+import com.unison.common.domain.Remark;
+import com.unison.common.util.DateTimeUtils;
+import com.unison.monitoring.api.data.dto.ReportDto;
+import com.unison.monitoring.api.data.service.DataManagementService;
+import com.unison.monitoring.api.remark.RemarkServiceImpl;
+import com.unison.monitoring.security.UserDetailImpl;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.*;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping("/api/docx")
 @RequiredArgsConstructor
 public class DocxController {
+    private final DataManagementService dataManagementService;
+    private final RemarkServiceImpl remarkService;
 
-    @GetMapping("/daily-report")
-    public void goToWord(HttpServletResponse response) throws Exception {
+    @Getter
+    @AllArgsConstructor
+    public static class TimeObject {
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        private LocalDateTime writeDate;
+    }
+
+    @PostMapping("/daily-report")
+    @ModelAttribute
+    public void goToWord(HttpServletResponse response, MultipartHttpServletRequest multipartHttpServletRequest, UUID turbineUuid, String siteName, TimeObject timeObject) throws Exception {
+        LocalDateTime writeDate = timeObject.getWriteDate();
+        String fileName = String.format("%s.BS.%s daily report.docx", DateTimeUtils.formatLocalDateTime("yyyyMMdd", writeDate), siteName);
+        int DEFAULT_INDENTATION_LEFT = 120;
+
         response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-        response.setHeader("Content-Disposition", "attachment; filename=\"document.docx\"");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+        response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, "Content-Disposition");
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailImpl userDetail = (UserDetailImpl)authentication.getPrincipal();
+
+        MultipartFile powerCurveImg = multipartHttpServletRequest.getFile("powerCurve");
+        MultipartFile timeChartImg = multipartHttpServletRequest.getFile("timeChart");
+
+
+        LocalDateTime startDate = LocalDateTime.of(writeDate.getYear(), writeDate.getMonth(), writeDate.getDayOfMonth(), 0, 0);
+        LocalDateTime endDate = startDate.plusDays(1);
         try {
 
+            ReportDto.Response attributes = dataManagementService.createAndWriteHeaderTable(turbineUuid, startDate);
+
+            //2 reference power curve
+            attributes.setReferencePowerCurve(dataManagementService.getReferencePowerCurve(turbineUuid));
+
+            //2 power curve 데이터
+            attributes.setPowerCurveScatter(dataManagementService.getPowerCurveByTime(turbineUuid, startDate, endDate));
+
+            //3 time chart 데이터
+            attributes.setTimeChart(dataManagementService.getTimeChartDataList(turbineUuid, startDate));
+
+            //4 alarm 데이터
+            attributes.setAlarms(dataManagementService.getAlarmsByTime(turbineUuid, startDate, endDate));
+
+            //5 remarks 데이터
+            attributes.setEventBoxNotes(dataManagementService.getRemarksByTime(turbineUuid, startDate, endDate));
             DocxGenerator docxGenerator = new DocxGeneratorImpl();
 
 
             docxGenerator.setPageMargin(BigInteger.valueOf(850), BigInteger.valueOf(850), BigInteger.valueOf(1440), BigInteger.valueOf(1440));
 
-            docxGenerator.addTitle("U151 DAILY REPORT");
+            docxGenerator.addTitle(siteName.toUpperCase(Locale.ROOT) + " DAILY REPORT");
 
             docxGenerator.addText("일별 운전 현황");
 
             XWPFTable table1 = docxGenerator.createTable(3, 4);
 
-            docxGenerator.setTableText(table1, 0, 0, "운전기간");
-            docxGenerator.setTableText(table1, 0, 1, "`24.08.21 00:00 ~ 24:00");
-            docxGenerator.setTableText(table1, 0, 2, "작성일");
-            docxGenerator.setTableText(table1, 0, 3, "2024년 08월 23일");
 
-            docxGenerator.setTableText(table1, 1, 0, "평균 풍속");
-            docxGenerator.setTableText(table1, 1, 1, "5.03 m/s");
-            docxGenerator.setTableText(table1, 1, 2, "발전량");
-            docxGenerator.setTableText(table1, 1, 3, "29,433.45 kWh (CF:28.52%)");
+            docxGenerator.setTableText(table1, 0, 0, "운전기간", 9, true);
+            docxGenerator.setTableText(table1, 0, 1, attributes.getOperatingPeriod(), 9, true);
+            docxGenerator.setTableText(table1, 0, 2, "작성일", 9, true);
+            docxGenerator.setTableText(table1, 0, 3, DateTimeUtils.formatLocalDateTime("yyyy년 MM월 dd일", LocalDateTime.now()), 9, true);
 
-            docxGenerator.setTableText(table1, 2, 0, "운전 시간 (가동률)");
-            docxGenerator.setTableText(table1, 2, 1, "15h 07m (62.98%)");
-            docxGenerator.setTableText(table1, 2, 2, "발전시간");
-            docxGenerator.setTableText(table1, 2, 3, "14h 58m");
+            docxGenerator.setIndentationLeft(table1, 0, 0, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table1, 0, 1, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table1, 0, 2, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table1, 0, 3, DEFAULT_INDENTATION_LEFT);
+
+            DecimalFormat df = new DecimalFormat("#,##0.00");
+            String formattedDailyActivePower = df.format(attributes.getActivePower());
+
+            docxGenerator.setTableText(table1, 1, 0, "평균 풍속", 9, true);
+            docxGenerator.setTableText(table1, 1, 1, String.format("%.02f m/s", attributes.getWindSpeed()), 9, true);
+            docxGenerator.setTableText(table1, 1, 2, "발전량", 9, true);
+            docxGenerator.setTableText(table1, 1, 3, String.format("%s kWh (CF:28.52%%)", formattedDailyActivePower), 9, true);
+
+            docxGenerator.setIndentationLeft(table1, 1, 0, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table1, 1, 1, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table1, 1, 2, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table1, 1, 3, DEFAULT_INDENTATION_LEFT);
+
+            int dailyOperatingHour = attributes.getOperatingTime() / 3600;
+            float dailyOperatingMinute = attributes.getOperatingTime() % 3600 / 60f;
+            int dailyGeneratingHour = attributes.getGeneratingTime() / 3600;
+            float dailyGeneratingMinute = attributes.getGeneratingTime() % 3600 / 60f;
+
+            docxGenerator.setTableText(table1, 2, 0,"운전 시간 (가동률)", 9, true);
+            docxGenerator.setTableText(table1, 2, 1, String.format("%02dh %02dm (62.98%%)", dailyOperatingHour, Math.round(dailyOperatingMinute)), 9, true);
+            docxGenerator.setTableText(table1, 2, 2,"발전시간", 9, true);
+            docxGenerator.setTableText(table1, 2, 3, String.format("%02dh %02dm", dailyGeneratingHour, Math.round(dailyGeneratingMinute)), 9, true);
+
+            docxGenerator.setIndentationLeft(table1, 2, 0, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table1, 2, 1, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table1, 2, 2, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table1, 2, 3, DEFAULT_INDENTATION_LEFT);
 
             docxGenerator.addText("누적 운전 현황");
 
             XWPFTable table2 = docxGenerator.createTable(2, 4);
 
-            docxGenerator.setTableText(table2, 0, 0, "운전기간");
-            docxGenerator.setTableText(table2, 0, 1, "`19.09.03 00:00 ~ `24.08.21 24:00 (43,560h)");
-            docxGenerator.setTableText(table2, 0, 2, "누적 발전량");
-            docxGenerator.setTableText(table2, 0, 3, "38,449,139.27 kWh (CF: 23.54%)");
+            String formattedCompassionate = DateTimeUtils.formatLocalDateTime("`yy.MM.dd 00:00", attributes.getStartDate());
+            String formattedDate = DateTimeUtils.formatLocalDateTime("`yy.MM.dd 24:00", attributes.getDate());
 
-            docxGenerator.setTableText(table2, 1, 0, "누적 운전시간");
-            docxGenerator.setTableText(table2, 1, 1, "37,984h 07m (87.20%)");
-            docxGenerator.setTableText(table2, 1, 2, "누적 발전시간");
-            docxGenerator.setTableText(table2, 1, 3, "24,394h 49m");
+            String formattedTotalActivePower = df.format(attributes.getTotalActivePower());
+
+            docxGenerator.setTableText(table2, 0, 0, "운전기간", 9, true);
+            docxGenerator.setTableText(table2, 0, 1, String.format("%s ~ %s (43,560h)", formattedCompassionate, formattedDate), 9, true);
+            docxGenerator.setTableText(table2, 0, 2, "누적 발전량", 9, true);
+            docxGenerator.setTableText(table2, 0, 3, String.format("%s kWh (CF:28.52%%)", formattedTotalActivePower), 9, true);
+
+            docxGenerator.setIndentationLeft(table2, 0, 0, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table2, 0, 1, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table2, 0, 2, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table2, 0, 3, DEFAULT_INDENTATION_LEFT);
+
+            int totalOperatingHour = attributes.getTotalOperatingTime() / 3600;
+            float totalOperatingMinute = attributes.getTotalOperatingTime() % 3600 / 60f;
+            int totalGeneratingHour = attributes.getTotalGeneratingTime() / 3600;
+            float totalGeneratingMinute = attributes.getTotalGeneratingTime() % 3600 / 60f;
+
+            docxGenerator.setTableText(table2, 1, 0, "누적 운전시간", 9, true);
+            docxGenerator.setTableText(table2, 1, 1, String.format("%02dh %02dm (62.98%%)", totalOperatingHour, Math.round(totalOperatingMinute)), 9, true);
+            docxGenerator.setTableText(table2, 1, 2, "누적 발전시간", 9, true);
+            docxGenerator.setTableText(table2, 1, 3, String.format("%02dh %02dm", totalGeneratingHour, Math.round(totalGeneratingMinute)), 9, true);
+
+            docxGenerator.setIndentationLeft(table2, 1, 0, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table2, 1, 1, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table2, 1, 2, DEFAULT_INDENTATION_LEFT);
+            docxGenerator.setIndentationLeft(table2, 1, 3, DEFAULT_INDENTATION_LEFT);
 
             //출력 곡선
             docxGenerator.addText("출력곡선(`24.07~`24.09)");
-
-            InputStream is1 = getClass().getResourceAsStream("/img/power curve.png");
-            docxGenerator.createImageTable(is1);
-            is1.close();
+            docxGenerator.createImageTable(powerCurveImg.getInputStream());
 
             docxGenerator.addPageBreak();
             //출력 곡선
             docxGenerator.addText("Time chart(24/08/24)");
-
-            InputStream is2 = getClass().getResourceAsStream("/img/time chart.png");
-            docxGenerator.createImageTable(is2);
-            is2.close();
+            docxGenerator.createImageTable(timeChartImg.getInputStream());
 
             //에러 발생 현황
-            XWPFTable table3 = docxGenerator.createTable(4, 5);
+            List<ReportDto.Alarm> alarms = attributes.getAlarms();
 
-            docxGenerator.mergeVerticalCell(table3, 0, 0, 3);
+            int alarmTableSize;
 
-            docxGenerator.setTableText(table3, 0, 0, "에러 발생현황");
+            if(alarms.isEmpty()){
+                alarmTableSize = 2;
+            }
+            else {
+                alarmTableSize = alarms.size() + 1;
+            }
+            XWPFTable table3 = docxGenerator.createTable(alarmTableSize, 5);
+
+            docxGenerator.mergeVerticalCell(table3, 0, 0, alarmTableSize - 1);
+
+            docxGenerator.setTableText(table3, 0, 0, "에러 발생현황", 9, true);
+            docxGenerator.setParagraphAlignment(table3, 0, 0, ParagraphAlignment.CENTER);
+            docxGenerator.setVerticalAlignment(table3, 0, 0, XWPFTableCell.XWPFVertAlign.CENTER);
+            docxGenerator.widthCellsAcrossRow(table3, 0, 0, 1600);
+
             docxGenerator.setTableText(table3, 0, 1, "발생일시");
+            docxGenerator.setParagraphAlignment(table3, 0, 1, ParagraphAlignment.CENTER);
+
             docxGenerator.setTableText(table3, 0, 2, "에러코드");
+            docxGenerator.setParagraphAlignment(table3, 0, 2, ParagraphAlignment.CENTER);
+
             docxGenerator.setTableText(table3, 0, 3, "내용");
+            docxGenerator.setParagraphAlignment(table3, 0, 3, ParagraphAlignment.CENTER);
+
             docxGenerator.setTableText(table3, 0, 4, "비고");
+            docxGenerator.setParagraphAlignment(table3, 0, 4, ParagraphAlignment.CENTER);
 
-            docxGenerator.setTableText(table3, 1, 1, "2024-08-21 15:57:15");
-            docxGenerator.setTableText(table3, 1, 2, "30001");
-            docxGenerator.setTableText(table3, 1, 3, "Local manual stop");
 
-            docxGenerator.setTableText(table3, 2, 1, "2024-08-21 15:57:15");
-            docxGenerator.setTableText(table3, 2, 2, "30001");
-            docxGenerator.setTableText(table3, 2, 3, "Local manual stop");
+            for(int i = 0; i < alarms.size(); i++){
+                ReportDto.Alarm alarm = alarms.get(i);
 
-            docxGenerator.setTableText(table3, 3, 1, "2024-08-21 15:57:15");
-            docxGenerator.setTableText(table3, 3, 2, "30001");
-            docxGenerator.setTableText(table3, 3, 3, "Local manual stop");
+                docxGenerator.setTableText(table3, i+1, 1, DateTimeUtils.formatLocalDateTime("yyyy-MM-dd HH:mm:ss", alarm.getTimestamp()), 9, false);
+                docxGenerator.setTableText(table3, i+1, 2, alarm.getAlarmCode().toString(), 9, false);
+                docxGenerator.setTableText(table3, i+1, 3, alarm.getAlarmName(), 9, false);
+                docxGenerator.setTableText(table3, i+1, 4, Optional.ofNullable(alarm.getRemarks()).orElse(""), 9, false);
+
+                docxGenerator.setIndentationLeft(table3, i+1, 1, DEFAULT_INDENTATION_LEFT);
+                docxGenerator.setIndentationLeft(table3, i+1, 2, DEFAULT_INDENTATION_LEFT);
+                docxGenerator.setIndentationLeft(table3, i+1, 3, DEFAULT_INDENTATION_LEFT);
+                docxGenerator.setIndentationLeft(table3, i+1, 4, DEFAULT_INDENTATION_LEFT);
+            }
 
             docxGenerator.addPageBreak();
 
@@ -113,51 +230,41 @@ public class DocxController {
             XWPFTable table4 = docxGenerator.createTable(1, 1);
             XWPFTableRow table4_row = table4.getRow(0);
 
-            XWPFParagraph table4_pr1 = table4_row.getCell(0).getParagraphs().get(0);
-            table4_pr1.setIndentationLeft(120);
-            table4_pr1.setSpacingAfter(50);
+            List<Remark> remarks = remarkService.getRemarksInADay(turbineUuid, writeDate);
 
-            XWPFRun table4_run1 = table4_pr1.createRun();
-            table4_run1.setText("1. 주요 이벤트 현황");
+            remarks.forEach(remark -> {
+                XWPFParagraph titleParagraph = table4_row.getCell(0).addParagraph();
+                titleParagraph.setIndentationLeft(120);
+                titleParagraph.setSpacingAfter(50);
 
-            XWPFParagraph table4_pr2 = table4_row.getCell(0).addParagraph();
-            table4_pr2.setIndentationLeft(480);
-            table4_pr2.setSpacingAfter(50);
+                XWPFRun textOfTitle = titleParagraph.createRun();
+                textOfTitle.setText(remark.getOrder() + ". " + remark.getTitle());
+                textOfTitle.setBold(true);
 
-            XWPFRun table4_run2 = table4_pr2.createRun();
-            table4_run2.setText("1) 특이사항 없음");
+                XWPFParagraph contentParagraph = table4_row.getCell(0).addParagraph();
+                contentParagraph.setIndentationLeft(480);
+                contentParagraph.setSpacingAfter(50);
 
-            table4_row.getCell(0).addParagraph().setSpacingAfter(0);
+                String content = remark.getContent();
+                String[] lines = content.split("\\r?\\n");
 
-            XWPFParagraph table4_pr3 = table4_row.getCell(0).addParagraph();
-            table4_pr3.setIndentationLeft(120);
-            table4_pr3.setSpacingAfter(50);
+                for (String line : lines) {
+                    XWPFRun textOfContent = contentParagraph.createRun();
+                    textOfContent.setText(line);
+                    textOfContent.addCarriageReturn(); // 줄 바꿈 추가
+                }
 
-            XWPFRun table4_run3 = table4_pr3.createRun();
-            table4_run3.setText("2. 주요 에러 발생현황 및 조치사항");
+                table4_row.getCell(0).addParagraph().setSpacingAfter(0);
+            });
 
-            XWPFParagraph table4_pr4 = table4_row.getCell(0).addParagraph();
-            table4_pr4.setIndentationLeft(480);
-            table4_pr4.setSpacingAfter(50);
+            //문서 작성자
+            XWPFTable table5 = docxGenerator.createTable(1, 2);
+            docxGenerator.setTableText(table5, 0, 0, "문서 작성자", 9, true);
+            docxGenerator.setParagraphAlignment(table5, 0, 0, ParagraphAlignment.CENTER);
 
-            XWPFRun table4_run4 = table4_pr4.createRun();
-            table4_run4.setText("1) 특이사항 없음");
-
-            table4_row.getCell(0).addParagraph().setSpacingAfter(0);
-
-            XWPFParagraph table4_pr5 = table4_row.getCell(0).addParagraph();
-            table4_pr5.setIndentationLeft(120);
-            table4_pr5.setSpacingAfter(50);
-
-            XWPFRun table4_run5 = table4_pr5.createRun();
-            table4_run5.setText("3. 현장이슈 발생현황");
-
-            XWPFParagraph table4_pr6 = table4_row.getCell(0).addParagraph();
-            table4_pr6.setIndentationLeft(480);
-            table4_pr6.setSpacingAfter(50);
-
-            XWPFRun table4_run6 = table4_pr6.createRun();
-            table4_run6.setText("1) 특이사항 없음");
+            docxGenerator.setTableText(table5, 0, 1, userDetail.getMember().getName(), 9, true);
+            docxGenerator.widthCellsAcrossRow(table5, 0, 0, 2000);
+            docxGenerator.setIndentationLeft(table5, 0, 1, DEFAULT_INDENTATION_LEFT);
 
             ServletOutputStream servletOutputStream = response.getOutputStream();
 
@@ -167,7 +274,7 @@ public class DocxController {
             document.close();
             servletOutputStream.flush();
             servletOutputStream.close();
-        } catch (IOException e) {
+        } catch (IOException e) { //에러가 있으면 빈 word 출력하자.
             e.printStackTrace();
         }
     }

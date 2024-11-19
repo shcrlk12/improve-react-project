@@ -6,7 +6,6 @@ export const LOGOUT = "LOGOUT" as const;
 
 export type User = {
   id: string;
-  password?: string;
   name: string;
   role: UserRoleType;
   lastLoginTime?: string | null;

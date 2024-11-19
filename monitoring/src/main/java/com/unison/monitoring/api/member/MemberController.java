@@ -50,9 +50,9 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<ApiResponse<MemberDto.Response>> createMember(@RequestBody ApiRequest<MemberDto.Request> request, HttpServletRequest httpServletRequest){
 
-        Member member = MemberMapper.memberDtoToMember(request.getData().getAttributes());
+        Member member = MemberMapper.memberDtoToMember(request);
 
-        memberServiceImpl.createMember(member);
+        memberServiceImpl.createMember(request);
 
 
         //make response
@@ -86,7 +86,7 @@ public class MemberController {
     @PatchMapping
     public ResponseEntity<ApiResponse<MemberDto.Response>> updateMember(@RequestBody ApiRequest<MemberDto.Request> request, HttpServletRequest httpServletRequest){
 
-        Member member = MemberMapper.memberDtoToMember(request.getData().getAttributes());
+        Member member = MemberMapper.memberDtoToMember(request);
 
         memberServiceImpl.updateMember(member);
 

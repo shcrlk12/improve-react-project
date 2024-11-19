@@ -9,7 +9,10 @@ import com.unison.common.dto.ReportDataDto;
 import com.unison.common.jsonapi.JsonApiOrgHttpHeaders;
 import com.unison.common.jsonapi.response.ApiResponses;
 import com.unison.common.util.DateTimeUtils;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,15 +28,20 @@ import java.util.List;
 public class BatchController {
     private final UploadBatchService uploadBatchService;
 
+    @Getter
+    @AllArgsConstructor
+    public static class TimeObject {
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        private LocalDateTime startTime;
+        private LocalDateTime endTime;
+    }
     @GetMapping("/monitoring")
-    public ResponseEntity<ApiResponses<ReportDataDto.Response>> Test(String startTime, String endTime){
-        LocalDateTime startDate = DateTimeUtils.parseLocalDateTime(startTime);
-        LocalDateTime endDate;
+    public ResponseEntity<ApiResponses<ReportDataDto.Response>> Test(TimeObject timeObject){
+        LocalDateTime startDate = timeObject.getStartTime();
+        LocalDateTime endDate = timeObject.getEndTime();
 
-        if(endTime == null){
+        if(endDate == null){
             endDate = startDate.plusDays(1);
-        }else{
-            endDate = DateTimeUtils.parseLocalDateTime(endTime);
         }
 
         List<ReportData> reportDataList = uploadBatchService.getReportData(startDate, endDate);
@@ -50,14 +58,12 @@ public class BatchController {
     }
 
     @GetMapping("/alarms")
-    public ResponseEntity<ApiResponses<AlarmDto.Response>> Test2(String startTime, String endTime){
-        LocalDateTime startDate = DateTimeUtils.parseLocalDateTime(startTime);
-        LocalDateTime endDate;
- 
-        if(endTime == null){
+    public ResponseEntity<ApiResponses<AlarmDto.Response>> Test2(TimeObject timeObject){
+        LocalDateTime startDate = timeObject.getStartTime();
+        LocalDateTime endDate = timeObject.getEndTime();
+
+        if(endDate == null){
             endDate = startDate.plusDays(1);
-        }else{
-            endDate = DateTimeUtils.parseLocalDateTime(endTime);
         }
 
         List<Alarm> reportDataList = uploadBatchService.getAlarms(startDate, endDate);
