@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import java.io.*;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +90,11 @@ public class DocxController {
 
             docxGenerator.setPageMargin(BigInteger.valueOf(850), BigInteger.valueOf(850), BigInteger.valueOf(1440), BigInteger.valueOf(1440));
 
-            docxGenerator.addTitle(siteName.toUpperCase(Locale.ROOT) + " DAILY REPORT");
+            LocalDateTime currentDate = attributes.getDate();
+
+            String documentTitleDate = DateTimeUtils.formatLocalDateTime("yyyy-MM-dd", currentDate);
+
+            docxGenerator.addTitle(siteName.toUpperCase(Locale.ROOT) + " DAILY REPORT " + "[" + documentTitleDate + "]");
 
             docxGenerator.addText("일별 운전 현황");
 
@@ -106,13 +111,18 @@ public class DocxController {
             docxGenerator.setIndentationLeft(table1, 0, 2, DEFAULT_INDENTATION_LEFT);
             docxGenerator.setIndentationLeft(table1, 0, 3, DEFAULT_INDENTATION_LEFT);
 
+            DecimalFormat dfNoneDecimalPoint = new DecimalFormat("#,###");
+
             DecimalFormat df = new DecimalFormat("#,##0.00");
             String formattedDailyActivePower = df.format(attributes.getActivePower());
+
+            Integer ratedPower = attributes.getRatedPower();
+            String formattedRatedPower = df.format(attributes.getActivePower() / (ratedPower * 24) * 100);
 
             docxGenerator.setTableText(table1, 1, 0, "평균 풍속", 9, true);
             docxGenerator.setTableText(table1, 1, 1, String.format("%.02f m/s", attributes.getWindSpeed()), 9, true);
             docxGenerator.setTableText(table1, 1, 2, "발전량", 9, true);
-            docxGenerator.setTableText(table1, 1, 3, String.format("%s kWh (CF:28.52%%)", formattedDailyActivePower), 9, true);
+            docxGenerator.setTableText(table1, 1, 3, String.format("%s kWh (CF:%s%%)", formattedDailyActivePower, formattedRatedPower), 9, true);
 
             docxGenerator.setIndentationLeft(table1, 1, 0, DEFAULT_INDENTATION_LEFT);
             docxGenerator.setIndentationLeft(table1, 1, 1, DEFAULT_INDENTATION_LEFT);
@@ -124,8 +134,18 @@ public class DocxController {
             int dailyGeneratingHour = attributes.getGeneratingTime() / 3600;
             float dailyGeneratingMinute = attributes.getGeneratingTime() % 3600 / 60f;
 
+            if(dailyOperatingHour == 23 && Math.round(dailyOperatingMinute) == 60){
+                dailyOperatingHour = 24;
+                dailyOperatingMinute = 0;
+            }
+            if(dailyGeneratingHour == 23 && Math.round(dailyGeneratingMinute) == 60f){
+                dailyGeneratingHour = 24;
+                dailyGeneratingMinute = 0;
+            }
+            double operatingPercent = (double) attributes.getOperatingTime() / (24 * 60 * 60.0) * 100.0;
+
             docxGenerator.setTableText(table1, 2, 0,"운전 시간 (가동률)", 9, true);
-            docxGenerator.setTableText(table1, 2, 1, String.format("%02dh %02dm (62.98%%)", dailyOperatingHour, Math.round(dailyOperatingMinute)), 9, true);
+            docxGenerator.setTableText(table1, 2, 1, String.format("%02dh %02dm (%.02f%%)", dailyOperatingHour, Math.round(dailyOperatingMinute), operatingPercent), 9, true);
             docxGenerator.setTableText(table1, 2, 2,"발전시간", 9, true);
             docxGenerator.setTableText(table1, 2, 3, String.format("%02dh %02dm", dailyGeneratingHour, Math.round(dailyGeneratingMinute)), 9, true);
 
@@ -141,12 +161,16 @@ public class DocxController {
             String formattedCompassionate = DateTimeUtils.formatLocalDateTime("`yy.MM.dd 00:00", attributes.getStartDate());
             String formattedDate = DateTimeUtils.formatLocalDateTime("`yy.MM.dd 24:00", attributes.getDate());
 
+            Duration duration = Duration.between(attributes.getStartDate(), attributes.getDate().plusDays(1));
+
             String formattedTotalActivePower = df.format(attributes.getTotalActivePower());
+            String formattedTime = dfNoneDecimalPoint.format(duration.toHours());
+            String formattedAvailability = df.format(attributes.getTotalActivePower() / (attributes.getRatedPower() * (attributes.getTotalOperatingTime() / 3600.0)) * 100);
 
             docxGenerator.setTableText(table2, 0, 0, "운전기간", 9, true);
-            docxGenerator.setTableText(table2, 0, 1, String.format("%s ~ %s (43,560h)", formattedCompassionate, formattedDate), 9, true);
+            docxGenerator.setTableText(table2, 0, 1, String.format("%s ~ %s (%sh)", formattedCompassionate, formattedDate, formattedTime), 9, true);
             docxGenerator.setTableText(table2, 0, 2, "누적 발전량", 9, true);
-            docxGenerator.setTableText(table2, 0, 3, String.format("%s kWh (CF:28.52%%)", formattedTotalActivePower), 9, true);
+            docxGenerator.setTableText(table2, 0, 3, String.format("%s kWh (CF:%s%%)", formattedTotalActivePower, formattedAvailability), 9, true);
 
             docxGenerator.setIndentationLeft(table2, 0, 0, DEFAULT_INDENTATION_LEFT);
             docxGenerator.setIndentationLeft(table2, 0, 1, DEFAULT_INDENTATION_LEFT);
@@ -158,8 +182,10 @@ public class DocxController {
             int totalGeneratingHour = attributes.getTotalGeneratingTime() / 3600;
             float totalGeneratingMinute = attributes.getTotalGeneratingTime() % 3600 / 60f;
 
+            double operatingPercentage = attributes.getTotalOperatingTime() / (double)duration.toSeconds() * 100;
+
             docxGenerator.setTableText(table2, 1, 0, "누적 운전시간", 9, true);
-            docxGenerator.setTableText(table2, 1, 1, String.format("%02dh %02dm (62.98%%)", totalOperatingHour, Math.round(totalOperatingMinute)), 9, true);
+            docxGenerator.setTableText(table2, 1, 1, String.format("%02dh %02dm (%.02f%%)", totalOperatingHour, Math.round(totalOperatingMinute), operatingPercentage), 9, true);
             docxGenerator.setTableText(table2, 1, 2, "누적 발전시간", 9, true);
             docxGenerator.setTableText(table2, 1, 3, String.format("%02dh %02dm", totalGeneratingHour, Math.round(totalGeneratingMinute)), 9, true);
 
@@ -168,13 +194,19 @@ public class DocxController {
             docxGenerator.setIndentationLeft(table2, 1, 2, DEFAULT_INDENTATION_LEFT);
             docxGenerator.setIndentationLeft(table2, 1, 3, DEFAULT_INDENTATION_LEFT);
 
+            LocalDateTime firstQuarter = LocalDateTime.of(startDate.getYear(), startDate.getMonth().firstMonthOfQuarter() , 1, 0, 0);
+
+            int firstQuarterMonth = firstQuarter.getMonth().getValue();
+            int nextQuarterMonth = firstQuarter.plusMonths(2).getMonth().getValue();
+
             //출력 곡선
-            docxGenerator.addText("출력곡선(`24.07~`24.09)");
+            docxGenerator.addText(String.format("출력곡선(`24.%02d~`24.%02d)", firstQuarterMonth, nextQuarterMonth));
             docxGenerator.createImageTable(powerCurveImg.getInputStream());
 
             docxGenerator.addPageBreak();
+
             //출력 곡선
-            docxGenerator.addText("Time chart(24/08/24)");
+            docxGenerator.addText(String.format("Time chart(%02d/%02d/%02d)", currentDate.getYear() % 100, currentDate.getMonth().getValue(), currentDate.getDayOfMonth()));
             docxGenerator.createImageTable(timeChartImg.getInputStream());
 
             //에러 발생 현황

@@ -10,6 +10,7 @@ import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
 import { AlarmTableV2Props, AlarmType } from "./table/AlarmTableV2";
 import { EventBoxNote } from "./EventTextBox";
 import { SiteType } from "@reducers/appAction";
+import Swal from "sweetalert2";
 
 /**
  * Types
@@ -49,14 +50,19 @@ const PreviewContainer = ({ key, selectedSite, selectedDate }: PreviewContainerP
     const fetchDataAsync = async () => {
       try {
         const data = await fetchData<JsonApi<ResponseOfReportU151>>(
-          `http://${config.apiServer.ip}:${config.apiServer.port}/api/data/report?turbineUuid=${selectedSite.uuid}&writeDate=${selectedDate.toISOString(9)}`,
+          `http://${config.apiServer.ip}:${config.apiServer.port}/api/data/report?turbineUuid=${selectedSite.uuid}&writeDate=${selectedDate.toISOString()}`,
           {
             mode: "cors",
             method: "GET",
             credentials: "include",
           },
+          () =>
+            Swal.fire({
+              title: "데이터 에러",
+              text: "서버 데이터 에러 관리자에게 문의하세요.",
+              icon: "error",
+            }),
         );
-        console.log(data.attributes);
 
         setDailyOperatingTableProps(data.attributes as DailyOperatingTableProps);
         setTotalOperatingTableProps(data.attributes as TotalOperatingTableProps);
@@ -76,11 +82,8 @@ const PreviewContainer = ({ key, selectedSite, selectedDate }: PreviewContainerP
         }));
 
         setEventBoxNotes(data.attributes.eventBoxNotes);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
         setIsLoading(true);
-      }
+      } catch (error) {}
     };
 
     fetchDataAsync();

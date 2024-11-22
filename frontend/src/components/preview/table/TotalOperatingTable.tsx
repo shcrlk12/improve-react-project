@@ -41,7 +41,7 @@ const TotalOperatingTable: React.FC<{
           <ItemTitle>누적 발전량</ItemTitle>
           <ItemContent>
             {Number(totalActivePower.toFixed(2)).toLocaleString("ko-KR")} kWh (CF:{" "}
-            {((totalActivePower / (ratedPower * operatingTimeInHours)) * 100).toFixed(2)} %)
+            {((totalActivePower / (ratedPower * (totalOperatingTime / 3600))) * 100).toFixed(2)} %)
           </ItemContent>
         </ItemContainer>
       </InfoLine>

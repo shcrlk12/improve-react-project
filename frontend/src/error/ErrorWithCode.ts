@@ -1,8 +1,13 @@
 export class ErrorWithCode extends Error {
-  code: number;
+  private _code: number;
 
   constructor(code: number, message: string) {
     super(message);
-    this.code = code;
+    this._code = code;
+  }
+
+  // Getter for the code property
+  get code() {
+    return this._code;
   }
 }

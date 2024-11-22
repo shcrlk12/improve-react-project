@@ -9,7 +9,7 @@ INSERT INTO general_overview (uuid, site_name, rated_power, description, remark,
 
 -- Archived Data table
 INSERT INTO archived_data (general_overview_uuid, full_performance, partial_performance, out_of_electrical, out_of_environment, requested_shutdown, scheduled_maintenance, technical_standby, active_power, created_at, created_by) VALUES ('b016e89f-b126-4b47-8ea1-4bc42ded44dc', 0, 0, 0, 0, 0, 0, 0, 0, GETDATE(), 'System');
-INSERT INTO archived_data (general_overview_uuid, full_performance, partial_performance, out_of_electrical, out_of_environment, requested_shutdown, scheduled_maintenance, technical_standby, active_power, created_at, created_by) VALUES ('8a80252a-1ee6-4aa3-99da-519fa19fae46', 0, 0, 0, 0, 0, 0, 0, 0, GETDATE(), 'System');
+INSERT INTO archived_data (general_overview_uuid, full_performance, partial_performance, out_of_electrical, out_of_environment, requested_shutdown, scheduled_maintenance, technical_standby, active_power, created_at, created_by) VALUES ('8a80252a-1ee6-4aa3-99da-519fa19fae46', 87604478, 3807188, 183316, 39395912, 8225040, 1233796, 2306810, 236780719, GETDATE(), 'System');
 INSERT INTO archived_data (general_overview_uuid, full_performance, partial_performance, out_of_electrical, out_of_environment, requested_shutdown, scheduled_maintenance, technical_standby, active_power, created_at, created_by) VALUES ('e9884c5a-5a55-411b-bbfd-9b9fab8347a2', 0, 0, 0, 0, 0, 0, 0, 0, GETDATE(), 'System');
 
 -- Power Curve table
@@ -92,4 +92,13 @@ INSERT INTO power_curve (general_overview_uuid, wind_speed, active_power) VALUES
 INSERT INTO remark_meta (id, general_overview_uuid, title, default_description, created_at) VALUES (1, 'b016e89f-b126-4b47-8ea1-4bc42ded44dc', '주요 이벤트 현황', '1) 특이사항 없음', GETDATE());
 INSERT INTO remark_meta (id, general_overview_uuid, title, default_description, created_at) VALUES (2, 'b016e89f-b126-4b47-8ea1-4bc42ded44dc', '주요 에러 발생현황 및 조치사항', '1) 특이사항 없음', GETDATE());
 INSERT INTO remark_meta (id, general_overview_uuid, title, default_description, created_at) VALUES (3, 'b016e89f-b126-4b47-8ea1-4bc42ded44dc', '현장이슈 발생현황', '1) 특이사항 없음', GETDATE());
+
+INSERT INTO remark_meta (id, general_overview_uuid, title, default_description, created_at) VALUES (4, '8a80252a-1ee6-4aa3-99da-519fa19fae46', '주요 이벤트 현황', '1) 특이사항 없음', GETDATE());
+INSERT INTO remark_meta (id, general_overview_uuid, title, default_description, created_at) VALUES (5, '8a80252a-1ee6-4aa3-99da-519fa19fae46', '주요 에러 발생현황 및 조치사항', '1) 특이사항 없음', GETDATE());
+INSERT INTO remark_meta (id, general_overview_uuid, title, default_description, created_at) VALUES (6, '8a80252a-1ee6-4aa3-99da-519fa19fae46', '현장이슈 발생현황', '1) 특이사항 없음', GETDATE());
+
+INSERT INTO remark_meta (id, general_overview_uuid, title, default_description, created_at) VALUES (7, 'e9884c5a-5a55-411b-bbfd-9b9fab8347a2', '주요 이벤트 현황', '1) 특이사항 없음', GETDATE());
+INSERT INTO remark_meta (id, general_overview_uuid, title, default_description, created_at) VALUES (8, 'e9884c5a-5a55-411b-bbfd-9b9fab8347a2', '주요 에러 발생현황 및 조치사항', '1) 특이사항 없음', GETDATE());
+INSERT INTO remark_meta (id, general_overview_uuid, title, default_description, created_at) VALUES (9, 'e9884c5a-5a55-411b-bbfd-9b9fab8347a2', '현장이슈 발생현황', '1) 특이사항 없음', GETDATE());
+
 

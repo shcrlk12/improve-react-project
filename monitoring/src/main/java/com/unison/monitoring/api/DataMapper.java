@@ -9,6 +9,8 @@ import com.unison.common.jsonapi.request.ApiRequest;
 import com.unison.common.jsonapi.request.ApiRequests;
 import com.unison.monitoring.api.data.dto.ReportDto;
 import com.unison.monitoring.api.entity.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,7 +41,7 @@ public class DataMapper {
 
     }
 
-    public static List<ReportDto.Alarm> convertToReportDtoAlarmsGroups(List<AlarmEntity> alarmEntities){
+    public static List<ReportDto.Alarm> convertToReportDtoAlarmsGroups(List<AlarmEntity> alarmEntities, Map<String, String> alarmMap){
         List<ReportDto.Alarm> result = null;
 
         try{
@@ -52,7 +54,7 @@ public class DataMapper {
                     .map(alarmEntity -> new ReportDto.Alarm(
                             alarmEntity.getId().getTimestamp()
                             , Integer.parseInt(alarmEntity.getId().getAlarmNumber())
-                            , Optional.ofNullable(alarmEntity.getAlarmCode()).orElse("")
+                            , alarmMap.get(alarmEntity.getAlarmCode())
                             , Optional.ofNullable(alarmEntity.getRemark()).orElse(""))
                     )
                     .collect(Collectors.toList());

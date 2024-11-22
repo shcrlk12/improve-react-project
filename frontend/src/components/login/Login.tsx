@@ -15,7 +15,7 @@ import Swal from "sweetalert2";
 /**
  * Types
  */
-type ResponseOfLogin = {
+export type ResponseOfLogin = {
   message: string;
   role: UserRoleType;
   name: string;
@@ -85,6 +85,12 @@ const Login = () => {
           credentials: "include",
           body: formData,
         },
+        () =>
+          Swal.fire({
+            title: "로그인 실패",
+            text: "아이디/패스워드를 확인하세요.",
+            icon: "error",
+          }),
       );
 
       const {
@@ -94,13 +100,7 @@ const Login = () => {
 
       dispatch(loginSuccess({ id, name, role }));
       navigate("/report");
-    } catch (e) {
-      await Swal.fire({
-        title: "로그인 실패",
-        text: "아이디/패스워드를 확인하세요.",
-        icon: "error",
-      });
-    }
+    } catch (e) {}
   };
   return (
     <Section>

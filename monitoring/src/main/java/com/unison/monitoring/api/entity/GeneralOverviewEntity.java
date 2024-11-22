@@ -44,11 +44,9 @@ public class GeneralOverviewEntity implements Persistable<UUID> {
     private LocalDateTime commissionDate;
 
     @Column(nullable = false)
-    @Setter
     private LocalDateTime lastDataSyncDate;
 
     @Column(nullable = false)
-    @Setter
     private LocalDateTime lastAlarmSyncDate;
 
     @Column(nullable = false)

@@ -13,10 +13,15 @@ public interface BatchService{
 
     Mono<ApiResponses<AlarmDto.Response>> retrieveAlarmsFromU113() throws Exception;
 
+    Mono<ApiResponses<AlarmDto.Response>> retrieveAlarmsFromU120() throws Exception;
+
+    Mono<ApiResponses<AlarmDto.Response>> retrieveAlarmsFromU151() throws Exception;
+
+
     Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU113() throws Exception;
 
     Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU120();
 
-    Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU151();
+    Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU151() throws Exception;
 
 }

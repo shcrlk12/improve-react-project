@@ -1,0 +1,43 @@
+# 배포 용
+spring:
+  config:
+    activate:
+      on-profile: 151-prod # 환경 이름 설정
+
+
+  application:
+    name: batch-151-prod
+
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://127.0.0.1:1433;databaseName=WPPIS_DB;encrypt=true;trustServerCertificate=true;
+    username: wppis_user
+    password: unison
+    initialization-mode: never #data.sql 실행
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    #    show-sql: true
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000 # jpa n+1 문제 예방을 위함.
+  sql:
+    init:
+      mode: never
+#      schema-locations: classpath:/sql/schema.sql
+#      data-locations: classpath:/sql/data.sql
+server:
+  port: 5151
+  servlet:
+    session:
+      timeout: 43200 #1day
+
+#custom
+api-server:
+  ip: 127.0.0.1
+  port: 6789
+  domain: localhost
+
+site:
+  type: u151 #u151 or u113 or u120

@@ -23,7 +23,6 @@ const HeaderContainer = () => {
         title={title}
         userRole={user.user.role as UserRoleType}
         globalNavigationBar={globalNavigationBar}
-        logoOnClick={() => {}}
         logoutOnClick={handleLogout}
       />
     </>

@@ -43,9 +43,56 @@ public class BatchServiceImpl implements BatchService{
     @Override
     @Transactional
     public Mono<ApiResponses<AlarmDto.Response>> retrieveAlarmsFromU113() throws Exception {
-        String serverDomain = batchServerProperties.getU113Domain();
+        return retrieveAlarms(batchServerProperties.getU113Domain(), Constants.U113UUID);
 
-        GeneralOverviewEntity generalOverviewEntity = getTurbineAlarmsLastSyncDate(Constants.U113UUID);
+    }
+
+    @Override
+    public Mono<ApiResponses<AlarmDto.Response>> retrieveAlarmsFromU120() throws Exception {
+        return null;
+    }
+
+    @Override
+    public Mono<ApiResponses<AlarmDto.Response>> retrieveAlarmsFromU151() throws Exception {
+        return retrieveAlarms(batchServerProperties.getU151Domain(), Constants.U151UUID);
+
+    }
+
+    @Override
+    @Transactional
+    public Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU113() throws Exception {
+
+        return retrieveData(batchServerProperties.getU113Domain(), Constants.U113UUID);
+
+    }
+
+
+    @Override
+    public Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU120() {
+        return WebClient.create("http://127.0.0.1:5151")
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/api/data/monitoring")
+                        .queryParam("targetDate", "2024-05-01 00:00") // 쿼리 파라미터 추가
+                        .build())
+                .retrieve()
+                .onStatus(
+                        status -> status.is4xxClientError() || status.is5xxServerError(),
+                        clientResponse -> Mono.error(new Exception("Server Error"))
+                )
+                .bodyToMono(new ParameterizedTypeReference<ApiResponses<ReportDataDto.Response>>() {})
+                ;
+    }
+
+    @Override
+    public Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU151() throws Exception {
+
+        return retrieveData(batchServerProperties.getU151Domain(), Constants.U151UUID);
+    }
+
+
+    private Mono<ApiResponses<AlarmDto.Response>> retrieveAlarms(String serverDomain, UUID turbineUuid) throws Exception {
+        GeneralOverviewEntity generalOverviewEntity = getTurbineAlarmsLastSyncDate(turbineUuid);
 
         LocalDateTime lastSyncDate = generalOverviewEntity.getLastAlarmSyncDate();
         LocalDateTime today = LocalDateTime.of(
@@ -60,7 +107,7 @@ public class BatchServiceImpl implements BatchService{
             return Mono.empty();
 
         return webClientBuilder
-                    .baseUrl("http://" + serverDomain)
+                .baseUrl("http://" + serverDomain)
                 .build()
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -75,14 +122,8 @@ public class BatchServiceImpl implements BatchService{
                     generalOverviewRepository.save(generalOverviewEntity);
                 });
     }
-
-    @Override
-    @Transactional
-    public Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU113() throws Exception {
-
-        String serverDomain = batchServerProperties.getU113Domain();
-
-        GeneralOverviewEntity generalOverviewEntity = getTurbineDataLastSyncDate(Constants.U113UUID);
+    private Mono<ApiResponses<ReportDataDto.Response>> retrieveData(String serverDomain, UUID turbineUuid) throws Exception {
+        GeneralOverviewEntity generalOverviewEntity = getTurbineDataLastSyncDate(turbineUuid);
 
         LocalDateTime lastSyncDate = generalOverviewEntity.getLastDataSyncDate();
         LocalDateTime today = LocalDateTime.of(
@@ -115,35 +156,5 @@ public class BatchServiceImpl implements BatchService{
                     generalOverviewEntity.setLastDataSyncDate(today);
                     generalOverviewRepository.save(generalOverviewEntity);
                 });
-    }
-
-
-    @Override
-    public Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU120() {
-        return WebClient.create("http://127.0.0.1:5151")
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/api/data/monitoring")
-                        .queryParam("targetDate", "2024-05-01 00:00") // 쿼리 파라미터 추가
-                        .build())
-                .retrieve()
-                .onStatus(
-                        status -> status.is4xxClientError() || status.is5xxServerError(),
-                        clientResponse -> Mono.error(new Exception("Server Error"))
-                )
-                .bodyToMono(new ParameterizedTypeReference<ApiResponses<ReportDataDto.Response>>() {})
-                ;
-    }
-
-    @Override
-    public Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU151() {
-        return WebClient.create("http://127.0.0.1:5151")
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/api/data/monitoring")
-                        .queryParam("targetDate", "2024-05-01 00:00") // 쿼리 파라미터 추가
-                        .build())
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<ApiResponses<ReportDataDto.Response>>() {});
     }
 }

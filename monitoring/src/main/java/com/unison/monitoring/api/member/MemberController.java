@@ -52,10 +52,6 @@ public class MemberController {
 
         Member member = MemberMapper.memberDtoToMember(request);
 
-        memberServiceImpl.createMember(request);
-
-
-        //make response
         MemberDto.Response response = MemberMapper.memberToMemberDto(member);
 
         Resource<MemberDto.Response> resource = Resource.<MemberDto.Response>builder()
@@ -65,13 +61,22 @@ public class MemberController {
                 .build();
 
         String requestURL = httpServletRequest.getRequestURL().toString();
-        
+
         //링크 설정
         Links links = new Links(String.format("%s/%s", requestURL, member.getId()));
-        
+
         // 헤더 설정
         JsonApiOrgHttpHeaders headers = new JsonApiOrgHttpHeaders(String.format("%s/%s", requestURL, member.getId()));
 
+        try{
+            memberServiceImpl.createMember(request);
+        }catch(RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .headers(headers)
+                    .body(null);
+        }
+
+        //make response
         ApiResponse<MemberDto.Response> apiResponse = ApiResponse.<MemberDto.Response>builder()
                                                                         .data(resource)
                                                                         .links(links)
@@ -83,13 +88,18 @@ public class MemberController {
                 .body(apiResponse);
     }
 
-    @PatchMapping
-    public ResponseEntity<ApiResponse<MemberDto.Response>> updateMember(@RequestBody ApiRequest<MemberDto.Request> request, HttpServletRequest httpServletRequest){
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponse<MemberDto.Response>> updateMember(@PathVariable("id") String id, @RequestBody ApiRequest<MemberDto.Request> request, HttpServletRequest httpServletRequest) throws Exception {
+
+        if(!id.equals(request.getData().getId())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .headers(new JsonApiOrgHttpHeaders())
+                    .body(null);
+        }
 
         Member member = MemberMapper.memberDtoToMember(request);
 
-        memberServiceImpl.updateMember(member);
-
+        memberServiceImpl.updateMember(request);
 
         //make response
         MemberDto.Response response = MemberMapper.memberToMemberDto(member);

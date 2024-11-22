@@ -23,6 +23,6 @@ export const LoadingInner = styled.div`
   background-color: ${({ theme }) => theme.color.background};
 
   .loading-icon {
-    color: ${({ theme }) => theme.color.secondary};
+    color: ${({ theme }) => theme.color.primary};
   }
 `;

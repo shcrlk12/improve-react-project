@@ -6,7 +6,7 @@ import { Dispatch } from "react";
 import { useDispatch } from "react-redux";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { logout } from "@reducers/userActions";
-import Swal from "sweetalert2";
+import Swal, { SweetAlertResult } from "sweetalert2";
 
 const statusOk = async (response: Response) => {
   if (!response.ok) {
@@ -26,9 +26,14 @@ const useFetchData = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const fetchData = async <T>(url: string, option?: RequestInit, errorCallback?: (error: any) => void): Promise<T> => {
+  const fetchData = async <T>(
+    url: string,
+    option?: RequestInit,
+    errorPopup?: () => Promise<SweetAlertResult<any>>,
+  ): Promise<T> => {
     dispatch(setLoading());
 
+    let json;
     try {
       const response = await fetch(url, option);
       dispatch(resetLoading());
@@ -39,24 +44,27 @@ const useFetchData = () => {
         }
       }
 
-      const json = await response.json();
-      return json.data as T;
+      json = await response.json();
+      if (json.data === undefined || json.data === null)
+        throw new ErrorWithCode(ErrorCode.INCORRECT_DATA, "not correct fetch data.");
     } catch (e: any) {
-      if (errorCallback) {
-        errorCallback(e);
-      } else {
-        console.error("Error fetching data:", e);
-      }
       dispatch(resetLoading());
 
-      await Swal.fire({
-        title: "서버 연결 실패",
-        text: "백엔드 서버 연결 실패 관리자에게 문의하세요.",
-        icon: "error",
-      });
+      if (e instanceof TypeError) {
+        //network disconnect
+        await Swal.fire({
+          title: "서버 연결 실패",
+          text: "서버 연결 실패 관리자에게 문의하세요.",
+          icon: "error",
+        });
+        throw new ErrorWithCode(ErrorCode.NETWRORK_DISCONNECT, "network disconnect.");
+      } else {
+        if (errorPopup) await errorPopup();
+      }
 
       throw e;
     }
+    return json.data as T;
   };
 
   return fetchData;

@@ -3,6 +3,8 @@ spring:
     import:
       - classpath:/yml/application-local.yml
       - classpath:/yml/application-dev.yml
-      - classpath:/yml/application-prod.yml
+      - classpath:/yml/application-113-prod.yml
+      - classpath:/yml/application-151-prod.yml
+      - classpath:/yml/application-120-prod.yml
   profiles:
-    active: prod  #local, dev, prod
+    active: 151-prod  #local, dev, prod

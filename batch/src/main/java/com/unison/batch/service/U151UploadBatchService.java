@@ -1,5 +1,6 @@
 package com.unison.batch.service;
 
+import com.unison.batch.mapper.WindSpeedNtfConverter;
 import com.unison.common.domain.Alarm;
 import com.unison.common.domain.ReportData;
 import com.unison.common.util.DateTimeUtils;
@@ -29,7 +30,7 @@ public class U151UploadBatchService implements UploadBatchService {
                 "st_outElecSpTm, " +
                 "st_schMtncTm, " +
                 "rot_RotSpd, " +
-                "nac_WdSpdNac600s, " +
+                "nac_WdSpdNac1sAvg, " +
                 "nac_NacOutTmp, " +
                 "gdc_TurWAvg " +
                 "FROM wtur_10min_report " +
@@ -37,7 +38,6 @@ public class U151UploadBatchService implements UploadBatchService {
                 "AND device_id = ? " +
                 "AND measure_date >= ? AND measure_date < ? " +
                 "ORDER BY measure_date ASC";
-
         return jdbcTemplate.query(
                 sql,
                 ps -> {
@@ -48,20 +48,27 @@ public class U151UploadBatchService implements UploadBatchService {
 
                 },
                 (ResultSet rs, int rowNum)  ->
-                        new ReportData(
-                                rs.getString("measure_date"),
-                                rs.getString("st_fullPerTm"),
-                                rs.getString("st_parPerTm"),
-                                rs.getString("st_tecStdbyTm"),
-                                rs.getString("st_outEnvTm"),
-                                rs.getString("st_reqShtdnTm"),
-                                rs.getString("st_outElecSpTm"),
-                                rs.getString("st_schMtncTm"),
-                                rs.getString("rot_RotSpd"),
-                                String.valueOf(Double.parseDouble(rs.getString("nac_WdSpdNac600s")) * (6.142912/5) - 0.44362),
-                                rs.getString("nac_NacOutTmp"),
-                                String.valueOf(rs.getString("gdc_TurWAvg"))
-                        )
+                {
+                    Double ntfWindSpeed = WindSpeedNtfConverter.convertU151WindSpeedNtf(
+                            Double.parseDouble(rs.getString("nac_WdSpdNac1sAvg")),
+                            Double.parseDouble(rs.getString("nac_NacOutTmp"))
+                            );
+
+                    return new ReportData(
+                            rs.getString("measure_date"),
+                            rs.getString("st_fullPerTm"),
+                            rs.getString("st_parPerTm"),
+                            rs.getString("st_tecStdbyTm"),
+                            rs.getString("st_outEnvTm"),
+                            rs.getString("st_reqShtdnTm"),
+                            rs.getString("st_outElecSpTm"),
+                            rs.getString("st_schMtncTm"),
+                            rs.getString("rot_RotSpd"),
+                            String.valueOf(ntfWindSpeed),
+                            rs.getString("nac_NacOutTmp"),
+                            String.valueOf(rs.getString("gdc_TurWAvg"))
+                    );
+                }
         );
     }
 

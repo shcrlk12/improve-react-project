@@ -22,7 +22,7 @@ public class ReportDto {
         private Double activePower;
         private Integer operatingTime; // seconds
         private Integer generatingTime;
-
+        private Integer ratedPower;
         private LocalDateTime startDate;
         private Double totalActivePower;
         private Integer totalOperatingTime;

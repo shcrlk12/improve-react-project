@@ -14,11 +14,9 @@ import com.unison.monitoring.api.DailyDataStats;
 import com.unison.monitoring.api.DataMapper;
 import com.unison.monitoring.api.PowerCurveRepository;
 import com.unison.monitoring.api.data.dto.ReportDto;
+import com.unison.monitoring.api.domain.AlarmMapRegistry;
 import com.unison.monitoring.api.entity.*;
-import com.unison.monitoring.api.repository.AlarmRepository;
-import com.unison.monitoring.api.repository.DataRepository;
-import com.unison.monitoring.api.repository.RemarkDataRepository;
-import com.unison.monitoring.api.repository.RemarkMetaRepository;
+import com.unison.monitoring.api.repository.*;
 import com.unison.monitoring.security.UserDetailImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +38,8 @@ public class DataManagementServiceImpl implements DataManagementService{
     private final PowerCurveRepository powerCurveRepository;
     private final RemarkDataRepository remarkDataRepository;
     private final RemarkMetaRepository remarkMetaRepository;
+    private final ArchivedDataRepository archivedDataRepository;
+    private final AlarmMapRegistry alarmMapRegistry;
 
     @Override
     public LocalDateTime getLastUploadDate() {
@@ -118,9 +118,14 @@ public class DataManagementServiceImpl implements DataManagementService{
             throw new Exception("writeDate is wrong " + writeDate);
         }
 
-        String operatingPeriod = DateTimeUtils.formatLocalDateTime("`yyyy-MM-dd 00:00 ~ 24:00", writeDate);
+        ArchivedDataEntity archivedDataEntity = archivedDataRepository.findById(turbineUuid)
+                .orElseThrow(() -> new Exception("not found archived data because it is wrong uuid: " + turbineUuid));
 
-        GeneralOverviewEntity generalOverviewEntity = generalOverviewRepository.findById(turbineUuid).orElseThrow();
+        String operatingPeriod = DateTimeUtils.formatLocalDateTime("`yy-MM-dd 00:00 ~ 24:00", writeDate);
+
+        GeneralOverviewEntity generalOverviewEntity = generalOverviewRepository.findById(turbineUuid)
+                .orElseThrow(() -> new Exception("not found turbine uuid: " + turbineUuid));
+
         LocalDateTime commissionStartDate = generalOverviewEntity.getCommissionDate();
         DailyDataStats totalDataStats = dataRepository.findDailyDataByUuidAnd(turbineUuid, commissionStartDate, writeDate.plusDays(1)).orElseThrow();
 
@@ -138,9 +143,10 @@ public class DataManagementServiceImpl implements DataManagementService{
                     .operatingTime(DailyDataStats.getOperatingTime().intValue())
                     .generatingTime(DailyDataStats.getGeneratingTime().intValue())
                     .startDate(commissionStartDate)
-                    .totalActivePower(totalDataStats.getTotalActivePower() / 6)
-                    .totalOperatingTime(totalDataStats.getOperatingTime().intValue())
-                    .totalGeneratingTime(totalDataStats.getGeneratingTime().intValue())
+                    .totalActivePower((totalDataStats.getTotalActivePower() + archivedDataEntity.getActivePower()) / 6)
+                    .totalOperatingTime(totalDataStats.getOperatingTime().intValue() + archivedDataEntity.getOperatingTime())
+                    .totalGeneratingTime(totalDataStats.getGeneratingTime().intValue() + archivedDataEntity.getGeneratingTime())
+                    .ratedPower(generalOverviewEntity.getRatedPower())
                     .build();
         }catch(Exception e){
             result = ReportDto.Response.builder()
@@ -152,9 +158,10 @@ public class DataManagementServiceImpl implements DataManagementService{
                     .operatingTime(0)
                     .generatingTime(0)
                     .startDate(commissionStartDate)
-                    .totalActivePower(totalDataStats.getTotalActivePower() / 6)
-                    .totalOperatingTime(totalDataStats.getOperatingTime().intValue())
-                    .totalGeneratingTime(totalDataStats.getGeneratingTime().intValue())
+                    .totalActivePower((totalDataStats.getTotalActivePower() + archivedDataEntity.getActivePower()) / 6)
+                    .totalOperatingTime(totalDataStats.getOperatingTime().intValue() + archivedDataEntity.getOperatingTime())
+                    .totalGeneratingTime(totalDataStats.getGeneratingTime().intValue() + archivedDataEntity.getGeneratingTime())
+                    .ratedPower(generalOverviewEntity.getRatedPower())
                     .build();
         }
         return result;
@@ -222,7 +229,9 @@ public class DataManagementServiceImpl implements DataManagementService{
     public List<ReportDto.Alarm> getAlarmsByTime(UUID turbineUuid, LocalDateTime startDate, LocalDateTime endDate) {
         List<AlarmEntity> alarmEntities = alarmRepository.findByTurbineUuidAndTimestamp(turbineUuid, startDate, endDate);
 
-        return DataMapper.convertToReportDtoAlarmsGroups(alarmEntities);
+        Map<String, String> alarmsMap = alarmMapRegistry.getAlarmMap(turbineUuid);
+
+        return DataMapper.convertToReportDtoAlarmsGroups(alarmEntities, alarmsMap);
     }
 
     @Override

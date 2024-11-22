@@ -18,6 +18,7 @@ public class BatchScheduler {
     private final DataManagementService dataManagementService;
 
     //10분 마다 실행.
+//    @Scheduled(cron = "0 0/10 * * * *")
     @Scheduled(cron = "0 * * * * *")
     public void run() throws Exception {
 
@@ -44,40 +45,29 @@ public class BatchScheduler {
                 })
                 .subscribe();
 
-//        //U113
-//        batchService.retrieveDataFromU113(date2)
-//                .map(DataMapper::apiResponsesToListReportData)
-//                .doOnNext(reportDataList -> {
-//                    try {
-//                        dataManagementService.uploadData(reportDataList, Constants.U113UUID);
-//                    } catch (Exception e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                })
-//                .subscribe();
-//
-//        batchService.retrieveAlarmsFromU113(date2)
-//                .map(DataMapper::apiResponsesToAlarmList)
-//                .doOnNext(alarmList -> {
-//                    try {
-//                        dataManagementService.uploadAlarms(alarmList, Constants.U113UUID);
-//                    } catch (Exception e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                })
-//                .subscribe();
-//
-//        //U113
-//        batchService.retrieveDataFromU113(date3)
-//                .map(DataMapper::apiResponsesToListReportData)
-//                .doOnNext(reportDataList -> {
-//                    try {
-//                        dataManagementService.uploadData(reportDataList, Constants.U113UUID);
-//                    } catch (Exception e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                })
-//                .subscribe();
+        //U151
+        batchService.retrieveDataFromU151()
+                .map(DataMapper::apiResponsesToListReportData)
+                .doOnNext(reportDataList -> {
+                    try {
+                        dataManagementService.uploadData(reportDataList, Constants.U151UUID);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .subscribe();
+
+        batchService.retrieveAlarmsFromU151()
+                .map(DataMapper::apiResponsesToAlarmList)
+                .doOnNext(alarmList -> {
+                    try {
+                        dataManagementService.uploadAlarms(alarmList, Constants.U151UUID);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .subscribe();
+
 //
 //        batchService.retrieveAlarmsFromU113(date3)
 //                .map(DataMapper::apiResponsesToAlarmList)

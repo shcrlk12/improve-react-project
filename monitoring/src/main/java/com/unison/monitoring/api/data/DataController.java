@@ -13,6 +13,8 @@ import com.unison.common.util.DateTimeUtils;
 import com.unison.monitoring.api.ApiResponseErrorsBuilder;
 import com.unison.monitoring.api.data.dto.ReportDto;
 import com.unison.monitoring.api.data.service.DataManagementService;
+import com.unison.monitoring.api.entity.MemberEntity;
+import com.unison.monitoring.security.UserDetailImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -57,6 +61,29 @@ public class DataController {
                 .body(apiResponse);
     }
 
+    @GetMapping("auth")
+    public ResponseEntity<ApiResponse<UserDto.Response>> auth(HttpServletRequest httpServletRequest){
+        MemberEntity memberEntity = ((UserDetailImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMember();
+
+        JsonApiOrgHttpHeaders headers = new JsonApiOrgHttpHeaders();
+
+        Resource<UserDto.Response> resource = Resource.<UserDto.Response>builder()
+                .id(memberEntity.getId())
+                .type(UserDto.TYPE)
+                .attributes(new UserDto.Response(memberEntity.getRole(), memberEntity.getName(), "인증 성공"))
+                .build();
+        
+        ApiResponse<UserDto.Response> apiResponse = ApiResponse.<UserDto.Response>builder()
+                .data(resource)
+                .links(Links.create(httpServletRequest))
+                .jsonapi(new JsonApi())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .headers(headers)
+                .body(apiResponse);
+        
+    }
     @PostMapping
     public void uploadData(@RequestBody ApiRequests<ReportDataDto.Response> request) throws Exception {
 //        dataManagementService.uploadData(DataMapper.apiResponseToListReportData(request));
@@ -67,11 +94,13 @@ public class DataController {
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         private LocalDateTime writeDate;
     }
-    @GetMapping("/report") // 나중에 uuid로 수정
+
+
+    @GetMapping("/report")
     public ResponseEntity<ApiResponse<ReportDto.Response>> u151Report(HttpServletRequest httpServletRequest, UUID turbineUuid, TimeObject timeObject){
         LocalDateTime writeDate = timeObject.getWriteDate();
-        ZonedDateTime koreanWriteDate = writeDate.atZone(ZoneId.of("UTC")) // UTC로 가정한 후
-                    .withZoneSameInstant(ZoneId.of("Asia/Seoul")); // 한국 시간으로 변환
+        ZonedDateTime koreanWriteDate = writeDate.atZone(ZoneId.of("UTC"))
+                    .withZoneSameInstant(ZoneId.of("Asia/Seoul"));
 
 
         LocalDateTime startDate = LocalDateTime.of(koreanWriteDate.getYear(), koreanWriteDate.getMonth(), koreanWriteDate.getDayOfMonth(), 0, 0);

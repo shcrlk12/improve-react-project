@@ -16,8 +16,8 @@ const StyledLocalNavigationBar = styled.div<{ display: string }>`
   width: 150px;
 
   padding: 12px;
-  background-color: ${({ theme }) => theme.color.lightPrimary};
-  border: 1px solid ${({ theme }) => theme.color.lightSecondary};
+  background-color: ${({ theme }) => theme.color.textOnSecondary};
+  border: 1px solid ${({ theme }) => theme.color.primary};
   opacity: 0.9;
   border-radius: 4px;
 
@@ -53,7 +53,8 @@ const LocalNavigationBarInnter = styled.ul`
       &:hover {
         font-weight: bold;
         color: ${({ theme }) => theme.color.darkPrimary};
-        border-bottom: 2px solid ${({ theme }) => theme.color.darkSecondary};
+        background-color: rgba(0, 0, 0, 0.1);
+        border-bottom: 2px solid ${({ theme }) => theme.color.primary};
       }
     }
   }
@@ -89,8 +90,7 @@ const LocalNavigationBar = ({
     <StyledLocalNavigationBar
       display={isShow ? "true" : "false"}
       onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+      onMouseLeave={onMouseLeave}>
       <LocalNavigationBarInnter>
         {navigationItems.map(
           (item, index) =>
@@ -98,7 +98,7 @@ const LocalNavigationBar = ({
               <li key={index}>
                 <Link to={item.link}>{item.name}</Link>
               </li>
-            )
+            ),
         )}
       </LocalNavigationBarInnter>
     </StyledLocalNavigationBar>

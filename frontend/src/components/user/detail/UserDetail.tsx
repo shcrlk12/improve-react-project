@@ -12,6 +12,9 @@ import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import styled from "styled-components";
 import Swal from "sweetalert2";
+import theme from "./../../../configs/theme/theme";
+import { ErrorWithCode } from "@src/error/ErrorWithCode";
+import { ErrorCode } from "@src/error/ErrorCode";
 
 /**
  * Styles
@@ -57,11 +60,11 @@ const InputItem = styled.div`
 
 const Select = styled.select`
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.color.secondary};
+  border: 1px solid ${({ theme }) => theme.color.primary};
   height: 36px;
   width: 100%;
   font-size: ${({ theme }) => theme.font.size.medium};
-  color: ${({ theme }) => theme.color.secondary};
+  color: ${({ theme }) => theme.color.primary};
   padding: 0 10px;
 
   &:focus {
@@ -96,14 +99,15 @@ const UserDetail = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
-  const roleRef = useRef<HTMLSelectElement>(null);
 
   const navigate = useNavigate();
   const fetchData = useFetch();
   const user = useSelector((store: RootState) => store.userReducer.user);
 
-  const [roleChange, isRoleChange] = useState<boolean>(false);
-
+  const [userDetailId, setUserDetailId] = useState<string>("");
+  const [disableUserIdInput, setDisableUserIdInput] = useState<boolean>(true);
+  const [roleChange, isRoleChange] = useState<boolean>(true);
+  const [userDetailRole, setUserDetailRole] = useState<UserRoleType>(ROLE_USER);
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
@@ -113,72 +117,123 @@ const UserDetail = () => {
 
   useEffect(() => {
     setName(user.name);
+    setUserDetailRole(user.role as UserRoleType);
+    setUserDetailId(user.id);
 
-    if (isAuthorization(user.role as UserRoleType, ROLE_MANAGER as UserRoleType)) {
+    if (location.pathname === routes.USER.MY_INFOMATION.INDEX) {
+      setDisableUserIdInput(true);
       isRoleChange(true);
+    } else if (location.pathname === routes.USER.ADD.INDEX) {
+      setDisableUserIdInput(false);
+      isRoleChange(false);
     }
-  }, [user]);
+  }, [user, location.pathname]);
 
-  const createUser = async () => {
+  const isValidCheck = async () => {
     if (password.length === 0) {
       await Swal.fire({
         title: "비밀번호 오류",
         text: "비밀번호를 입력하세요",
         icon: "warning",
       });
-      return;
-    }
-    if (password !== confirmPassword) {
+      return false;
+    } else if (password !== confirmPassword) {
       await Swal.fire({
         title: "비밀번호 오류",
         text: "확인 비밀번호가 다릅니다.",
         icon: "warning",
       });
-      return;
-    }
-    if (name.length <= 0) {
+      return false;
+    } else if (name.length <= 0) {
       await Swal.fire({
         title: "이름 오류",
         text: "이름을 입력하세요.",
         icon: "warning",
       });
-      return;
+      return false;
     }
+
+    return true;
+  };
+  const createUser = async () => {
+    if ((await isValidCheck()) == false) return;
 
     let request = createPostRequestObject<UserOfRequest>();
-
-    request.data = {
-      id: user.id,
-      type: "users",
-      attributes: { name: name, pw: password, role: user.role },
+    request = {
+      data: {
+        id: userDetailId,
+        type: "users",
+        attributes: { name: name, pw: password, role: userDetailRole },
+      },
     };
-    const response = await fetchData(`http://${config.apiServer.ip}:${config.apiServer.port}/api/users`, {
-      method: "POST",
-      credentials: "include",
-      body: JSON.stringify(request),
-      headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
-    });
-
-    if (response.status === 201) {
-      //ACCEPT
-      await Swal.fire({
-        title: "유저 추가",
-        text: "성공",
-        icon: "success",
+    try {
+      const response = await fetchData(`http://${config.apiServer.ip}:${config.apiServer.port}/api/users`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(request),
+        headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
       });
+      if (response.status === 201) {
+        //ACCEPT
+        await Swal.fire({
+          title: "유저 추가",
+          text: "성공",
+          icon: "success",
+        });
+      }
+    } catch (e: unknown) {
+      if (e instanceof ErrorWithCode) {
+        if (e.code === ErrorCode.BAD_REQUEST) {
+          await Swal.fire({
+            title: "유저 추가 실패",
+            text: "중복된 유저 추가",
+            icon: "error",
+          });
+        }
+      } else {
+        console.error("Unexpected error:", e);
+      }
     }
-    return response;
   };
 
   const modifyUser = async () => {
-    let request = createPostRequestObject<UserOfRequest>();
+    if ((await isValidCheck()) == false) return;
 
-    const response = await fetchData(`http://${config.apiServer.ip}:${config.apiServer.port}/api/users/${user.id}`, {
-      method: "PATCH",
-      credentials: "include",
-      body: JSON.stringify(request),
-      headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
-    });
+    let request = createPostRequestObject<UserOfRequest>();
+    request = {
+      data: {
+        id: userDetailId,
+        type: "users",
+        attributes: { name: name, pw: password, role: userDetailRole },
+      },
+    };
+
+    try {
+      const response = await fetchData(`http://${config.apiServer.ip}:${config.apiServer.port}/api/users/${user.id}`, {
+        method: "PATCH",
+        credentials: "include",
+        body: JSON.stringify(request),
+        headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
+      });
+      if (response.status === 200) {
+        //OK
+        await Swal.fire({
+          title: "유저 수정",
+          text: "성공",
+          icon: "success",
+        });
+      }
+    } catch (e: unknown) {
+      if (e instanceof ErrorWithCode) {
+        if (e.code === ErrorCode.BAD_REQUEST) {
+          await Swal.fire({
+            title: "유저 수정 실패",
+            text: "잘못된 요청. 관리자한테 문의하세요.",
+            icon: "error",
+          });
+        }
+      }
+    }
   };
 
   return (
@@ -187,7 +242,17 @@ const UserDetail = () => {
       <BodyInputContainer>
         <InputItem>
           <div>User id</div>
-          <InputType1 type="email" placeholder="email" ref={emailRef} disable={true} text={user.id} />
+          <InputType1
+            type="email"
+            placeholder="email"
+            ref={emailRef}
+            disable={disableUserIdInput}
+            text={userDetailId}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              event.preventDefault();
+              setUserDetailId(event.target.value);
+            }}
+          />
         </InputItem>
         <InputItem>
           <div>Password</div>
@@ -230,11 +295,15 @@ const UserDetail = () => {
         </InputItem>
         <InputItem>
           <div>Role</div>
-          <Select disabled={roleChange} ref={roleRef}>
+          <Select
+            disabled={roleChange}
+            value={userDetailRole}
+            onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+              event.preventDefault();
+              setUserDetailRole(event.currentTarget.value as UserRoleType);
+            }}>
             {AUTHENTICATED_ROLES.map((role) => (
-              <option value={role} selected={user.role === role ? true : false}>
-                {role}
-              </option>
+              <option value={role}>{role}</option>
             ))}
           </Select>
         </InputItem>

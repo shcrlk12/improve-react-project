@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import HeaderContainer from "@components/header/HeaderContainer";
 import LoginPage from "@pages/LoginPage";
-import { Navigate, Route, Routes } from "react-router";
+import { Navigate, Route, Routes, useNavigate } from "react-router";
 import U136Page from "@pages/report/U151Page";
 import { routes } from "@config/routes";
 import ManagementPage from "@pages/user/ManagementPage";
@@ -12,75 +12,59 @@ import { ROLE_ADMIN, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_USER, UserRoleType } fro
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./main";
 import { useEffect, useMemo } from "react";
-import useFetchData from "./hooks/useFetchData";
+import { ResponseOfLogin } from "@components/login/Login";
 import { JsonApi } from "./jsonApiOrg/JsonApiOrg";
 import { config } from "@config/config";
-import { selectSite, setSites, SiteType } from "@reducers/appAction";
+import useFetchData from "./hooks/useFetchData";
+import { loginSuccess } from "@reducers/userActions";
 
 type PageRole = {
   path: string;
   component: any;
 };
 
-type SiteTypeDto = {
-  name: string;
-  remark: string;
-  ratedPower: number;
-};
-
 function App() {
   const userRole = useSelector((store: RootState) => store.userReducer.user.role) as UserRoleType;
-  const sites = useSelector((store: RootState) => store.appReducer.sites);
-
   const fetchData = useFetchData();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      try {
-        const data = await fetchData<Array<JsonApi<SiteTypeDto>>>(
-          `http://${config.apiServer.ip}:${config.apiServer.port}/api/data/sites`,
-          {
-            mode: "cors",
-            method: "GET",
-            credentials: "include",
-          },
-        );
+      const data = await fetchData<JsonApi<ResponseOfLogin>>(
+        `http://${config.apiServer.ip}:${config.apiServer.port}/api/data/auth`,
+        {
+          mode: "cors",
+          method: "GET",
+          credentials: "include",
+        },
+      );
+      const {
+        id,
+        attributes: { role, name },
+      } = data;
 
-        const sites: SiteType[] = data.map(
-          (item) =>
-            ({
-              uuid: item.id,
-              name: item.attributes.name.toUpperCase(),
-              remark: item.attributes.remark,
-              ratedPower: item.attributes.ratedPower,
-            }) as SiteType,
-        );
-
-        dispatch(setSites(sites));
-        dispatch(selectSite(sites[0]));
-      } catch (error) {}
+      dispatch(loginSuccess({ id, name, role }));
+      navigate("/report");
     };
 
-    fetchDataAsync();
-  }, [userRole]);
+    try {
+      fetchDataAsync();
+    } catch (e) {}
+  }, []);
 
-  const getRouteByRole = (userRole: UserRoleType, siteTypes: SiteType[]) => {
+  const getRouteByRole = (userRole: UserRoleType) => {
     const anonymousRoleRoutes: PageRole[] = [{ path: routes.LOGIN.INDEX, component: <LoginPage /> }];
 
     const userRoleRoutes: PageRole[] = [
       ...anonymousRoleRoutes,
       { path: routes.USER.MY_INFOMATION.INDEX, component: <ModifyPage /> },
+      { path: routes.REPORT.INDEX, component: <Navigate to={routes.REPORT.U113.INDEX} /> },
+      { path: routes.REPORT.U113.INDEX, component: <U136Page /> },
+      { path: routes.REPORT.U151.INDEX, component: <U136Page /> },
+      { path: routes.REPORT.U120.INDEX, component: <U136Page /> },
     ];
 
-    siteTypes.forEach((item, index) => {
-      const url = routes.REPORT.INDEX + "/" + item.uuid;
-
-      if (index === 0) {
-        userRoleRoutes.push({ path: routes.REPORT.INDEX, component: <Navigate to={url} /> });
-      }
-      userRoleRoutes.push({ path: url, component: <U136Page /> });
-    });
     const managerRoleRoutes: PageRole[] = [...userRoleRoutes];
 
     const adminRoleRoutes: PageRole[] = [
@@ -112,7 +96,7 @@ function App() {
     return roleRoutes.map((route) => <Route key={route.path} path={route.path} element={route.component} />);
   };
 
-  const routesByRole = useMemo(() => getRouteByRole(userRole, sites), [sites, userRole]);
+  const routesByRole = useMemo(() => getRouteByRole(userRole), [userRole]);
 
   return (
     <>

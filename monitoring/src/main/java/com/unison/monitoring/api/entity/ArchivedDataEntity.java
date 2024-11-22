@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -20,7 +21,10 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 public class ArchivedDataEntity {
     @Id
-    @OneToOne(fetch = FetchType.LAZY)
+    private UUID uuid;
+
+    @MapsId(value = "uuid")
+    @OneToOne(targetEntity = GeneralOverviewEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "general_overview_uuid")
     private GeneralOverviewEntity generalOverviewEntity;
 
@@ -56,4 +60,18 @@ public class ArchivedDataEntity {
     @ColumnDefault("'System'")
     private String createdBy;
 
+    public int getOperatingTime(){
+        return fullPerformance
+                        + partialPerformance
+                        + outOfElectrical
+                        + outOfEnvironment
+                        + requestedShutdown
+                        + scheduledMaintenance
+                        + technicalStandby;
+    }
+
+    public int getGeneratingTime(){
+        return fullPerformance
+                        + partialPerformance;
+    }
 }

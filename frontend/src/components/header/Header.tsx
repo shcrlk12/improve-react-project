@@ -6,11 +6,12 @@ import styled from "styled-components";
 import { isAuthenticated } from "@src/utils/user";
 import GlobalNavigationBar from "./navigation/GlobalNavigationBar";
 import { PrimaryButton } from "@karden/utils/button";
-import { useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import userReducer from "./../../reducers/userReducer";
 import { RootState } from "@src/main";
+import { routes } from "@config/routes";
 
 /**
  * Style
@@ -68,7 +69,6 @@ type HeaderProps = {
   title: string;
   globalNavigationBar: GlobalNavigationBarType[];
   userRole: UserRoleType;
-  logoOnClick: React.MouseEventHandler<HTMLImageElement>;
   logoutOnClick: React.MouseEventHandler<HTMLButtonElement>;
 };
 
@@ -78,19 +78,25 @@ type HeaderProps = {
  * @author Karden
  * @created 2024-07-17
  */
-const Header = ({ title, globalNavigationBar, userRole, logoOnClick, logoutOnClick }: HeaderProps) => {
+const Header = ({ title, globalNavigationBar, userRole, logoutOnClick }: HeaderProps) => {
   const location = useLocation();
 
   const isLoginPage = location.pathname === "/login";
   const isUserAuthenticated = isAuthenticated(userRole);
-
+  const navigate = useNavigate();
   const userName = useSelector((store: RootState) => store.userReducer.user.name);
 
   return (
     <StyledHeader>
       <HeaderInner>
         <LeftHeaderContainer>
-          <Logo src={logo} alt="unison logo" onClick={logoOnClick} />
+          <Logo
+            src={logo}
+            alt="unison logo"
+            onClick={() => {
+              navigate(routes.REPORT.INDEX);
+            }}
+          />
           <PageTitle>{title}</PageTitle>
         </LeftHeaderContainer>
         {isUserAuthenticated && !isLoginPage && (

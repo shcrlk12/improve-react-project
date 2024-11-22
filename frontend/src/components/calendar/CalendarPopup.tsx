@@ -71,8 +71,6 @@ const CalendarPopup = ({ date, setDate }: CalendarPopupProps) => {
   const [tempSelectedDate, setTempSelectedDate] = useState<Date>(date);
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
-  console.log(date);
-
   return (
     <CalendarContainer>
       <ShowCurrentDate

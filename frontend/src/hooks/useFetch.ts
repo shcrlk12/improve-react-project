@@ -2,6 +2,8 @@ import { resetLoading, setLoading } from "@reducers/appAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { expireSession } from "./useFetchData";
+import { ErrorWithCode } from "@src/error/ErrorWithCode";
+import { ErrorCode } from "@src/error/ErrorCode";
 
 /**
  * Custom hook that simplifies the usage of the fetch function.
@@ -28,8 +30,8 @@ const useFetch = () => {
       if (!response.ok) {
         if (response.status === 401) {
           expireSession(dispatch, navigate);
-        }
-        throw new Error(`HTTP error! status: ${response.status}`);
+        } else if (response.status === 400)
+          throw new ErrorWithCode(ErrorCode.BAD_REQUEST, `HTTP error! status: ${response.status}`);
       }
 
       return response as Response;

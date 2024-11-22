@@ -2,11 +2,11 @@
 spring:
   config:
     activate:
-      on-profile: prod # 환경 이름 설정
+      on-profile: 113-prod # 환경 이름 설정
 
 
   application:
-    name: batch-prod
+    name: batch-113-prod
 
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -40,4 +40,4 @@ api-server:
   domain: localhost
 
 site:
-  type: u151 #u151 or u113 or u120
+  type: u113 #u151 or u113 or u120

@@ -31,6 +31,22 @@ const DailyOperatingTable: React.FC<{
 
   const formattedDate = format(writtenDate, "yyyy년 MM월 dd일");
 
+  let formattedOperatingTime =
+    Number(Math.floor(operatingTime / 3600)).toLocaleString("ko-KR") +
+    "h " +
+    ((operatingTime % 3600) / 60).toFixed(0) +
+    "m";
+
+  let formattedGeneratingTime =
+    Number(Math.floor(generatingTime / 3600)).toLocaleString("ko-KR") +
+    "h " +
+    ((generatingTime % 3600) / 60).toFixed(0) +
+    "m";
+
+  if (formattedOperatingTime === "23h 60m") formattedOperatingTime = "24h 00m";
+
+  if (formattedGeneratingTime === "23h 60m") formattedGeneratingTime = "24h 00m";
+
   return (
     <StyledOperatingTable>
       <Title>일별 운전 현황</Title>
@@ -61,16 +77,12 @@ const DailyOperatingTable: React.FC<{
         <ItemContainer>
           <ItemTitle>운전 시간 (가동률)</ItemTitle>
           <ItemContent>
-            {Number(Math.floor(operatingTime / 3600)).toLocaleString("ko-KR")}h{" "}
-            {((operatingTime % 3600) / 60).toFixed(0)}m ({((operatingTime / (3600 * 24)) * 100).toFixed(2)}%)
+            {formattedOperatingTime} ({((operatingTime / (3600 * 24)) * 100).toFixed(2)}%)
           </ItemContent>
         </ItemContainer>
         <ItemContainer>
           <ItemTitle>발전시간</ItemTitle>
-          <ItemContent>
-            {Number(Math.floor(generatingTime / 3600)).toLocaleString("ko-KR")}h{" "}
-            {((generatingTime % 3600) / 60).toFixed(0)}m
-          </ItemContent>
+          <ItemContent>{formattedGeneratingTime}</ItemContent>
         </ItemContainer>
       </InfoLine>
     </StyledOperatingTable>
