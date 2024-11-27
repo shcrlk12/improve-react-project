@@ -5,6 +5,8 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "noEmit": true,

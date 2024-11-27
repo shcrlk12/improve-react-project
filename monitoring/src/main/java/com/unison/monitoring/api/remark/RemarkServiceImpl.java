@@ -26,7 +26,7 @@ public class RemarkServiceImpl implements RemarkService{
 
     @Override
     public List<Remark> getRemarksInADay(UUID turbineUuid, LocalDateTime startDate) throws Exception {
-        List<RemarkMetaEntity> remarkMetaEntities = remarkMetaRepository.findByGeneralOverviewEntityUuidOrderById(turbineUuid);
+        List<RemarkMetaEntity> remarkMetaEntities = remarkMetaRepository.findByGeneralOverviewEntityUuidOrderByOrderId(turbineUuid);
 
         if(remarkMetaEntities.isEmpty())
             throw new Exception("remark meta data empty");
@@ -34,7 +34,6 @@ public class RemarkServiceImpl implements RemarkService{
 
         List<RemarkDataEntity> remarkDataEntities = remarkDataRepository.findByUuidAndTimestampOrderById(
                 turbineUuid,
-                remarkMetaEntities.stream().map(RemarkMetaEntity::getId).toList(),
                 startDate,
                 startDate.plusDays(1)
         );

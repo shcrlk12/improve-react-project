@@ -68,6 +68,12 @@ public class MemberEntity implements Persistable<String> {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void deleteMember(String updatedBy){
+        this.isActive = false;
+        this.updatedBy = updatedBy;
+        this.updatedAt = LocalDateTime.now();
+    }
+
     @Override
     public boolean isNew() {
         return this.updatedAt == null;

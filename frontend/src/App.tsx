@@ -17,6 +17,7 @@ import { JsonApi } from "./jsonApiOrg/JsonApiOrg";
 import { config } from "@config/config";
 import useFetchData from "./hooks/useFetchData";
 import { loginSuccess } from "@reducers/userActions";
+import MyInformation from "@pages/user/MyInfomation";
 
 type PageRole = {
   path: string;
@@ -32,7 +33,7 @@ function App() {
   useEffect(() => {
     const fetchDataAsync = async () => {
       const data = await fetchData<JsonApi<ResponseOfLogin>>(
-        `http://${config.apiServer.ip}:${config.apiServer.port}/api/data/auth`,
+        `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/data/auth`,
         {
           mode: "cors",
           method: "GET",
@@ -58,11 +59,11 @@ function App() {
 
     const userRoleRoutes: PageRole[] = [
       ...anonymousRoleRoutes,
-      { path: routes.USER.MY_INFOMATION.INDEX, component: <ModifyPage /> },
+      { path: routes.USER.MY_INFOMATION.INDEX, component: <MyInformation /> },
       { path: routes.REPORT.INDEX, component: <Navigate to={routes.REPORT.U113.INDEX} /> },
       { path: routes.REPORT.U113.INDEX, component: <U136Page /> },
       { path: routes.REPORT.U151.INDEX, component: <U136Page /> },
-      { path: routes.REPORT.U120.INDEX, component: <U136Page /> },
+      // { path: routes.REPORT.U120.INDEX, component: <U136Page /> },
     ];
 
     const managerRoleRoutes: PageRole[] = [...userRoleRoutes];

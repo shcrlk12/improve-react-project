@@ -7,6 +7,7 @@ import com.unison.common.jsonapi.Links;
 import com.unison.common.jsonapi.Resource;
 import com.unison.common.jsonapi.request.ApiRequest;
 import com.unison.common.jsonapi.response.ApiResponse;
+import com.unison.common.jsonapi.response.ApiResponses;
 import com.unison.monitoring.api.domain.Member;
 import com.unison.monitoring.api.mapper.MemberMapper;
 import com.unison.monitoring.api.member.service.MemberServiceImpl;
@@ -16,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -23,16 +26,14 @@ public class MemberController {
     private final MemberServiceImpl memberServiceImpl;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<MemberDto.Response>> readMember(@PathVariable("id") String id, HttpServletRequest httpServletRequest){
-
-        Member member = memberServiceImpl.getMemberById(id);
+    public ResponseEntity<ApiResponse<MemberDto.Response>> readMember(@PathVariable("id") String id, HttpServletRequest httpServletRequest) throws Exception {
 
         //make response
-        MemberDto.Response response = MemberMapper.memberToMemberDto(member);
+        MemberDto.Response response = memberServiceImpl.getMemberById(id);
 
         Resource<MemberDto.Response> resource = Resource.<MemberDto.Response>builder()
                 .type(MemberDto.TYPE)
-                .id(member.getId())
+                .id(response.getId())
                 .attributes(response)
                 .build();
 
@@ -47,6 +48,31 @@ public class MemberController {
                 .body(apiResponse);
     }
 
+    @GetMapping()
+    public ResponseEntity<ApiResponses<MemberDto.Response>> getMembers(HttpServletRequest httpServletRequest) throws Exception {
+
+        //make response
+        List<MemberDto.Response> responses = memberServiceImpl.getMembers();
+
+
+        List<Resource<MemberDto.Response>> resources = responses.stream().map(resopnse ->
+                                            Resource.<MemberDto.Response>builder()
+                                                    .type(MemberDto.TYPE)
+                                                    .id(resopnse.getId())
+                                                    .attributes(resopnse)
+                                                    .build()
+                                            ).toList();
+
+        ApiResponses<MemberDto.Response> apiResponse = ApiResponses.<MemberDto.Response>builder()
+                .data(resources)
+                .links(Links.create(httpServletRequest))
+                .jsonapi(new JsonApi())
+                .build();
+
+        return ResponseEntity.ok()
+                .headers(new JsonApiOrgHttpHeaders())
+                .body(apiResponse);
+    }
     @PostMapping
     public ResponseEntity<ApiResponse<MemberDto.Response>> createMember(@RequestBody ApiRequest<MemberDto.Request> request, HttpServletRequest httpServletRequest){
 
@@ -130,7 +156,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<MemberDto.Response>> deleteMember(@PathVariable("id") String id){
+    public ResponseEntity<ApiResponse<MemberDto.Response>> deleteMember(@PathVariable("id") String id) throws Exception {
 
         memberServiceImpl.deleteMemberById(id);
 

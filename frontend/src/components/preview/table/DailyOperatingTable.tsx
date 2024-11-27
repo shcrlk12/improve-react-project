@@ -27,8 +27,6 @@ const DailyOperatingTable: React.FC<{
   const { operatingPeriod, writtenDate, windSpeed, activePower, operatingTime, generatingTime, ratedPower } =
     dailyOperatingTableProps;
 
-  console.log(ratedPower);
-
   const formattedDate = format(writtenDate, "yyyy년 MM월 dd일");
 
   let formattedOperatingTime =

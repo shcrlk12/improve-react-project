@@ -1,34 +1,17 @@
 import React from "react";
-import {
-  Column,
-  CompactTable,
-} from "@table-library/react-table-library/compact";
+import { Column } from "@table-library/react-table-library/compact";
 import { useTheme } from "@table-library/react-table-library/theme";
 import { getTheme } from "@table-library/react-table-library/baseline";
-import {
-  Data,
-  TableNode,
-} from "@table-library/react-table-library/types/table";
+import { Data, TableNode } from "@table-library/react-table-library/types/table";
 import { format } from "date-fns";
 
-import {
-  Table,
-  Header,
-  HeaderRow,
-  Body,
-  Row,
-  HeaderCell,
-  Cell,
-} from "@table-library/react-table-library/table";
-import { useReactTable } from "@tanstack/react-table";
+import { Table, Header, HeaderRow, Body, Row, HeaderCell, Cell } from "@table-library/react-table-library/table";
 
 export type AlarmTableProps = {
   data: Data<TableNode>;
 };
 // 페이지 네이션 + Editable로 만들자.
-const AlarmTable: React.FC<{ alarmTableProps: AlarmTableProps }> = ({
-  alarmTableProps,
-}) => {
+const AlarmTable: React.FC<{ alarmTableProps: AlarmTableProps }> = ({ alarmTableProps }) => {
   const [data, setData] = React.useState<Data<TableNode>>(alarmTableProps.data);
 
   const theme = useTheme(getTheme());
@@ -62,9 +45,7 @@ const AlarmTable: React.FC<{ alarmTableProps: AlarmTableProps }> = ({
             margin: 0,
           }}
           value={item.note}
-          onChange={(event) =>
-            handleUpdate(event.target.value, item.id, "note")
-          }
+          onChange={(event) => handleUpdate(event.target.value, item.id, "note")}
         />
       ),
     },
@@ -101,9 +82,7 @@ const AlarmTable: React.FC<{ alarmTableProps: AlarmTableProps }> = ({
               <Body>
                 {tableList.map((item) => (
                   <Row key={item.id} item={item}>
-                    <Cell stiff>
-                      {format(item.time, "yyyy-MM-dd HH:mm:ss")}
-                    </Cell>
+                    <Cell stiff>{format(item.time, "yyyy-MM-dd HH:mm:ss")}</Cell>
                     <Cell>{item.erorrCode}</Cell>
                     <Cell>{item.errorContent}</Cell>
                     <Cell>{item.note}</Cell>

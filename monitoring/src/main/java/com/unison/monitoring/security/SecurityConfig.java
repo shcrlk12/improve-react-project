@@ -43,18 +43,6 @@ public class SecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Arrays.asList(
-                            String.format("http://%s:%s", corsProperties.getIp(), corsProperties.getPort()),
-                            String.format("http://%s:%s", corsProperties.getDomain(), corsProperties.getPort())
-                    ));
-                    config.setAllowedMethods(Collections.singletonList("*"));
-                    config.setAllowCredentials(true);
-                    config.setAllowedHeaders(Collections.singletonList("*"));
-                    config.setMaxAge(248461212L); //1시간
-                    return config;
-                }))
                 .headers((headerConfig) ->
                         headerConfig
                                 .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)

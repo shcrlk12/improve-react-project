@@ -22,7 +22,10 @@ import java.util.UUID;
 @DynamicUpdate
 public class RemarkMetaEntity {
     @Id
-    Integer id;
+    UUID uuid;
+
+    @Column(nullable = false)
+    Integer orderId;
 
     @Column(nullable = false)
     String title;

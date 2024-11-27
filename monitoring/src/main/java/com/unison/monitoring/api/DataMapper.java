@@ -20,7 +20,7 @@ public class DataMapper {
     public static List<ReportDto.PowerCurve> convertToReportDtoReferencePowerCurve(List<PowerCurveEntity> powerCurveEntities){
 
         return powerCurveEntities.stream()
-                .map(powerCurveEntity -> new ReportDto.PowerCurve(powerCurveEntity.getWindSpeed(), powerCurveEntity.getActivePower()))
+                .map(powerCurveEntity -> new ReportDto.PowerCurve(String.format("%.02f", powerCurveEntity.getWindSpeed()), String.format("%.02f", powerCurveEntity.getActivePower())))
                 .collect(Collectors.toList());
     }
 
@@ -28,7 +28,7 @@ public class DataMapper {
 
         return dataEntities.stream()
                 .filter(dataEntity -> dataEntity.getFullPerformance() == 600)
-                .map(dataEntity -> new ReportDto.PowerCurve(dataEntity.getWindSpeed(), dataEntity.getActivePower()))
+                .map(dataEntity -> new ReportDto.PowerCurve(String.format("%.02f", dataEntity.getWindSpeed()), String.format("%.02f", dataEntity.getActivePower())))
                 .collect(Collectors.toList());
 
     }
@@ -36,7 +36,7 @@ public class DataMapper {
     public static List<ReportDto.TimeChart> convertToReportDtoTimeChartGroups(List<DataEntity> dataEntities){
 
         return dataEntities.stream()
-                .map(dataEntity -> new ReportDto.TimeChart(dataEntity.getId().getTimestamp(), dataEntity.getRotorSpeed(), dataEntity.getWindSpeed(), dataEntity.getActivePower()))
+                .map(dataEntity -> new ReportDto.TimeChart(dataEntity.getId().getTimestamp(), String.format("%.02f", dataEntity.getRotorSpeed()), String.format("%.02f", dataEntity.getWindSpeed()), String.format("%.02f", dataEntity.getActivePower())))
                 .collect(Collectors.toList());
 
     }
@@ -70,7 +70,7 @@ public class DataMapper {
 
         try{
             result = remarkEntities.stream()
-                    .sorted(Comparator.comparing(o -> o.getRemarkMetaEntity().getId()))
+                    .sorted(Comparator.comparing(o -> o.getRemarkMetaEntity().getOrderId()))
                     .map(remarkDataEntity -> new ReportDto.Remark(remarkDataEntity.getRemarkMetaEntity().getTitle(), remarkDataEntity.getDescription(), remarkDataEntity.getUuid()))
                     .collect(Collectors.toList());
         }catch(Exception e){
@@ -119,7 +119,7 @@ public class DataMapper {
                     .map(remarkDataEntity ->
                             Remark.builder()
                                     .title(remarkDataEntity.getRemarkMetaEntity().getTitle())
-                                    .order(remarkDataEntity.getRemarkMetaEntity().getId())
+                                    .order(remarkDataEntity.getRemarkMetaEntity().getOrderId())
                                     .content(remarkDataEntity.getDescription())
                                 .build()
                     )

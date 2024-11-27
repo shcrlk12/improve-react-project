@@ -15,7 +15,7 @@ spring:
     url: jdbc:sqlserver://127.0.0.1:1433;databaseName=Monitoring;encrypt=true;trustServerCertificate=true;
     username: sa
     password:
-    initialization-mode: always #test-data.sql 실행
+    initialization-mode: always #00. test-data.sql 실행
 
   jpa:
     hibernate:
@@ -28,7 +28,7 @@ spring:
   sql:
     init:
       mode: always
-      data-locations: classpath:/sql/test-data.sql
+      data-locations: classpath:/sql/00. test-data.sql
 
 server:
   port: 6789

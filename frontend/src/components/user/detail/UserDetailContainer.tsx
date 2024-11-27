@@ -1,4 +1,5 @@
 import UserDetail from "./UserDetail";
+import { User } from "@reducers/userActions";
 
 /**
  * UserDetailContainer Component
@@ -8,8 +9,12 @@ import UserDetail from "./UserDetail";
  * @author Karden
  * @created 2024-07-19
  */
-const UserDetailContainer = () => {
-  return <UserDetail></UserDetail>;
+
+type UserDetailContainerProps = {
+  user: User;
+};
+const UserDetailContainer = ({ user }: UserDetailContainerProps) => {
+  return <UserDetail user={user}></UserDetail>;
 };
 
 export default UserDetailContainer;

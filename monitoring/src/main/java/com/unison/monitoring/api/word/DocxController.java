@@ -184,10 +184,13 @@ public class DocxController {
 
             double operatingPercentage = attributes.getTotalOperatingTime() / (double)duration.toSeconds() * 100;
 
+            String dfTotalOperatingHourdf = dfNoneDecimalPoint.format(totalOperatingHour);
+            String dfTotalGeneratingHour = dfNoneDecimalPoint.format(totalGeneratingHour);
+
             docxGenerator.setTableText(table2, 1, 0, "누적 운전시간", 9, true);
-            docxGenerator.setTableText(table2, 1, 1, String.format("%02dh %02dm (%.02f%%)", totalOperatingHour, Math.round(totalOperatingMinute), operatingPercentage), 9, true);
+            docxGenerator.setTableText(table2, 1, 1, String.format("%sh %02dm (%.02f%%)", dfTotalOperatingHourdf, Math.round(totalOperatingMinute), operatingPercentage), 9, true);
             docxGenerator.setTableText(table2, 1, 2, "누적 발전시간", 9, true);
-            docxGenerator.setTableText(table2, 1, 3, String.format("%02dh %02dm", totalGeneratingHour, Math.round(totalGeneratingMinute)), 9, true);
+            docxGenerator.setTableText(table2, 1, 3, String.format("%sh %02dm", dfTotalGeneratingHour, Math.round(totalGeneratingMinute)), 9, true);
 
             docxGenerator.setIndentationLeft(table2, 1, 0, DEFAULT_INDENTATION_LEFT);
             docxGenerator.setIndentationLeft(table2, 1, 1, DEFAULT_INDENTATION_LEFT);
@@ -200,15 +203,20 @@ public class DocxController {
             int nextQuarterMonth = firstQuarter.plusMonths(2).getMonth().getValue();
 
             //출력 곡선
+            InputStream powwerCurveInputStream = powerCurveImg.getInputStream();
             docxGenerator.addText(String.format("출력곡선(`24.%02d~`24.%02d)", firstQuarterMonth, nextQuarterMonth));
-            docxGenerator.createImageTable(powerCurveImg.getInputStream());
+            docxGenerator.createImageTable(powwerCurveInputStream);
 
+            powwerCurveInputStream.close();
             docxGenerator.addPageBreak();
 
             //출력 곡선
-            docxGenerator.addText(String.format("Time chart(%02d/%02d/%02d)", currentDate.getYear() % 100, currentDate.getMonth().getValue(), currentDate.getDayOfMonth()));
-            docxGenerator.createImageTable(timeChartImg.getInputStream());
+            InputStream timeChartInputStream = timeChartImg.getInputStream();
 
+            docxGenerator.addText(String.format("Time chart(%02d/%02d/%02d)", currentDate.getYear() % 100, currentDate.getMonth().getValue(), currentDate.getDayOfMonth()));
+            docxGenerator.createImageTable(timeChartInputStream);
+
+            timeChartInputStream.close();
             //에러 발생 현황
             List<ReportDto.Alarm> alarms = attributes.getAlarms();
 

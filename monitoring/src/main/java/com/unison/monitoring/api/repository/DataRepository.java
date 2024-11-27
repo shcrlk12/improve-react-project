@@ -29,4 +29,23 @@ public interface DataRepository extends JpaRepository<DataEntity, DataEntity.Id>
                                                    @Param("startTimestamp") LocalDateTime startTimestamp,
                                                    @Param("endTimestamp") LocalDateTime endTimestamp);
 
+
+
+    @Query(value = "SELECT SUM(dailyPower) as totalPower " +
+            "FROM (" +
+            "    SELECT CONVERT(CHAR(8), timestamp, 2) AS date," +
+            "           AVG(active_power) AS dailyPower" +
+            "    FROM [Monitoring].[dbo].[data] d " +
+            "    WHERE d.general_overview_uuid = :uuid " +
+            "       AND d.timestamp >= :startTimestamp " +
+            "       AND d.timestamp < :endTimestamp " +
+            "    GROUP BY CONVERT(CHAR(8), timestamp, 2)" +
+            ") AS subquery",
+            nativeQuery = true)
+    Optional<Double> findTotalActivePowerLikeScada(@Param("uuid") UUID uuid,
+                                                    @Param("startTimestamp") LocalDateTime startTimestamp,
+                                                    @Param("endTimestamp") LocalDateTime endTimestamp);
+
+
+
 }

@@ -63,6 +63,7 @@ public class DataController {
 
     @GetMapping("auth")
     public ResponseEntity<ApiResponse<UserDto.Response>> auth(HttpServletRequest httpServletRequest){
+        System.out.println("auth");
         MemberEntity memberEntity = ((UserDetailImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMember();
 
         JsonApiOrgHttpHeaders headers = new JsonApiOrgHttpHeaders();

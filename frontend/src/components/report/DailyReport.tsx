@@ -121,7 +121,6 @@ type DailyReportType = {
   selectedSite: SiteType;
   selectedDate: Date;
   setSelectedDate: Dispatch<SetStateAction<Date>>;
-  handleSiteClick: MouseEventHandler<HTMLDivElement>;
 };
 
 type DailyReportRemarkOfRequest = {
@@ -137,7 +136,7 @@ type DailyReportRemarkOfRequest = {
  * @created 2024-07-17
  */
 
-const DailyReport = ({ sites, selectedSite, selectedDate, setSelectedDate, handleSiteClick }: DailyReportType) => {
+const DailyReport = ({ sites, selectedSite, selectedDate, setSelectedDate }: DailyReportType) => {
   const [remark, setRemark] = useState<string>("");
   const [previewRefreshKey, setRreviewRefreshKey] = useState<number>(0);
   const [isShowPreview, setIsShowPreview] = useState<boolean>(false);
@@ -179,7 +178,7 @@ const DailyReport = ({ sites, selectedSite, selectedDate, setSelectedDate, handl
     };
 
     const response = await fetchData(
-      `http://${config.apiServer.ip}:${config.apiServer.port}/api/data/remarks/${selectedSite.uuid}`,
+      `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/data/remarks/${selectedSite.uuid}`,
       {
         method: "PATCH",
         credentials: "include",

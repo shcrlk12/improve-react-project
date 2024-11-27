@@ -29,7 +29,7 @@ public class RemarkDataEntity implements Persistable<UUID> {
     private GeneralOverviewEntity generalOverviewEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "remark_meta_id")
+    @JoinColumn(name = "remark_meta_uuid")
     private RemarkMetaEntity remarkMetaEntity;
 
     @Column(nullable = false)

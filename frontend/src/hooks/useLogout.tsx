@@ -18,7 +18,7 @@ const useLogout = () => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    fetch(`http://${config.apiServer.ip}:${config.apiServer.port}/logout`, {
+    fetch(`${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/logout`, {
       mode: "cors",
       method: "GET",
       credentials: "include",

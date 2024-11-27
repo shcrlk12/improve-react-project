@@ -1,8 +1,12 @@
 package com.unison.monitoring.api.domain;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -11,12 +15,16 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 public class AlarmsConfig {
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     private Map<String, String> u151Map = new HashMap<>();
     private Map<String, String> u113Map = new HashMap<>();
     private Map<String, String> u120Map = new HashMap<>();
@@ -24,13 +32,13 @@ public class AlarmsConfig {
     @PostConstruct
      void init() {
         //u151
-        u151Map = configAlarmsMap("src/main/resources/config/u151-wppis-config.xml");
+        u151Map = configAlarmsMap("config/u151-wppis-config.xml");
 
         //u113
-        u113Map = configAlarmsMap("src/main/resources/config/u113-wppis-config.xml");
+        u113Map = configAlarmsMap("config/u113-wppis-config.xml");
 
         //u120 test
-        u120Map = configAlarmsMap("src/main/resources/config/u113-wppis-config.xml");
+        u120Map = configAlarmsMap("config/u113-wppis-config.xml");
     }
 
     @Bean
@@ -57,8 +65,10 @@ public class AlarmsConfig {
             DocumentBuilder builder = factory.newDocumentBuilder();
 
             // XML 파일 로드
-            File file = new File(path);
-            Document document = builder.parse(file);
+            ClassPathResource classPathResource = new ClassPathResource(path);
+            InputStream inputStream = classPathResource.getInputStream();
+
+            Document document = builder.parse(inputStream);
             document.getDocumentElement().normalize();
 
             Element wppis = document.getDocumentElement();

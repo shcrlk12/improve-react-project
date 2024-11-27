@@ -24,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -121,13 +122,14 @@ public class DataManagementServiceImpl implements DataManagementService{
         ArchivedDataEntity archivedDataEntity = archivedDataRepository.findById(turbineUuid)
                 .orElseThrow(() -> new Exception("not found archived data because it is wrong uuid: " + turbineUuid));
 
-        String operatingPeriod = DateTimeUtils.formatLocalDateTime("`yy-MM-dd 00:00 ~ 24:00", writeDate);
+        String operatingPeriod = DateTimeUtils.formatLocalDateTime("`yy.MM.dd 00:00 ~ 24:00", writeDate);
 
         GeneralOverviewEntity generalOverviewEntity = generalOverviewRepository.findById(turbineUuid)
                 .orElseThrow(() -> new Exception("not found turbine uuid: " + turbineUuid));
 
         LocalDateTime commissionStartDate = generalOverviewEntity.getCommissionDate();
         DailyDataStats totalDataStats = dataRepository.findDailyDataByUuidAnd(turbineUuid, commissionStartDate, writeDate.plusDays(1)).orElseThrow();
+        Double totalActivePower = dataRepository.findTotalActivePowerLikeScada(turbineUuid, commissionStartDate, writeDate.plusDays(1)).orElseThrow();
 
         ReportDto.Response result;
 
@@ -143,7 +145,7 @@ public class DataManagementServiceImpl implements DataManagementService{
                     .operatingTime(DailyDataStats.getOperatingTime().intValue())
                     .generatingTime(DailyDataStats.getGeneratingTime().intValue())
                     .startDate(commissionStartDate)
-                    .totalActivePower((totalDataStats.getTotalActivePower() + archivedDataEntity.getActivePower()) / 6)
+                    .totalActivePower((totalActivePower * 24) + archivedDataEntity.getActivePower())
                     .totalOperatingTime(totalDataStats.getOperatingTime().intValue() + archivedDataEntity.getOperatingTime())
                     .totalGeneratingTime(totalDataStats.getGeneratingTime().intValue() + archivedDataEntity.getGeneratingTime())
                     .ratedPower(generalOverviewEntity.getRatedPower())
@@ -158,7 +160,7 @@ public class DataManagementServiceImpl implements DataManagementService{
                     .operatingTime(0)
                     .generatingTime(0)
                     .startDate(commissionStartDate)
-                    .totalActivePower((totalDataStats.getTotalActivePower() + archivedDataEntity.getActivePower()) / 6)
+                    .totalActivePower((totalActivePower * 24) + archivedDataEntity.getActivePower())
                     .totalOperatingTime(totalDataStats.getOperatingTime().intValue() + archivedDataEntity.getOperatingTime())
                     .totalGeneratingTime(totalDataStats.getGeneratingTime().intValue() + archivedDataEntity.getGeneratingTime())
                     .ratedPower(generalOverviewEntity.getRatedPower())
@@ -236,13 +238,13 @@ public class DataManagementServiceImpl implements DataManagementService{
 
     @Override
     public List<ReportDto.Remark> getRemarksByTime(UUID turbineUuid, LocalDateTime startDate, LocalDateTime endDate) {
-        List<RemarkMetaEntity> remarkMetaEntities = remarkMetaRepository.findByGeneralOverviewEntityUuidOrderById(turbineUuid);
+        List<RemarkMetaEntity> remarkMetaEntities = remarkMetaRepository.findByGeneralOverviewEntityUuidOrderByOrderId(turbineUuid);
 
         List<Integer> remarkIds = remarkMetaEntities.stream()
-                .map(RemarkMetaEntity::getId)
+                .map(RemarkMetaEntity::getOrderId)
                 .toList();
 
-        List<RemarkDataEntity> remarkEntities = remarkDataRepository.findByUuidAndTimestampOrderById(turbineUuid, remarkIds, startDate, endDate);
+        List<RemarkDataEntity> remarkEntities = remarkDataRepository.findByUuidAndTimestampOrderById(turbineUuid, startDate, endDate);
 
         if(remarkEntities.isEmpty()){
             remarkEntities = remarkMetaEntities.stream()
@@ -269,10 +271,19 @@ public class DataManagementServiceImpl implements DataManagementService{
     @Override
     public List<Resource<RemarkDto.Response>> createRemarks(ApiRequests<RemarkDto.Request> request) throws Exception {
         List<Resource<RemarkDto.Response>> response;
+        System.out.println("createRemarks");
 
-        MemberEntity memberEntity = ((UserDetailImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMember();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailImpl userDetail = (UserDetailImpl)authentication.getPrincipal();
 
-        List<RemarkMetaEntity> remarkMetaEntities = remarkMetaRepository.findAll();
+
+        UUID turbineUuid = request.getData().stream()
+                .findFirst()
+                .orElseThrow()
+                .getAttributes()
+                .getTurbineUuid();
+
+        List<RemarkMetaEntity> remarkMetaEntities = remarkMetaRepository.findByGeneralOverviewEntityUuidOrderByOrderId(turbineUuid);
 
         if(remarkMetaEntities.isEmpty())
             throw new Exception("Meta Entity empty");
@@ -289,7 +300,7 @@ public class DataManagementServiceImpl implements DataManagementService{
                                             .findFirst()
                                             .orElseThrow()
                                 )
-                                .createdBy(memberEntity.getName())
+                                .createdBy(userDetail.getMember().getId())
                                 .createdAt(LocalDateTime.now())
                                 .generalOverviewEntity(new GeneralOverviewEntity(dataInRequest.getAttributes().getTurbineUuid()))
                                 .build()

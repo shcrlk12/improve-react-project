@@ -43,7 +43,6 @@ const PowerCurveGraph = React.memo(
           tick = tick - (tick % 100);
           newArr.push(tick * i);
         }
-        console.log(newArr);
 
         return newArr;
       };

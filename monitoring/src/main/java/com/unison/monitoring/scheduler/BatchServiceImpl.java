@@ -90,7 +90,7 @@ public class BatchServiceImpl implements BatchService{
         return retrieveData(batchServerProperties.getU151Domain(), Constants.U151UUID);
     }
 
-
+    @Transactional
     private Mono<ApiResponses<AlarmDto.Response>> retrieveAlarms(String serverDomain, UUID turbineUuid) throws Exception {
         GeneralOverviewEntity generalOverviewEntity = getTurbineAlarmsLastSyncDate(turbineUuid);
 
@@ -106,6 +106,13 @@ public class BatchServiceImpl implements BatchService{
         if(lastSyncDate.isEqual(today))
             return Mono.empty();
 
+        LocalDateTime nextMonthDate = lastSyncDate.plusMonths(1);
+        LocalDateTime endTime;
+        if(nextMonthDate.isBefore(today))
+            endTime = nextMonthDate;
+        else
+            endTime = today;
+
         return webClientBuilder
                 .baseUrl("http://" + serverDomain)
                 .build()
@@ -113,15 +120,17 @@ public class BatchServiceImpl implements BatchService{
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/data/alarms")
                         .queryParam("startTime", lastSyncDate)
-                        .queryParam("endTime", today)
+                        .queryParam("endTime", endTime)
                         .build())
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ApiResponses<AlarmDto.Response>>() {})
                 .doOnSuccess(response -> {
-                    generalOverviewEntity.setLastAlarmSyncDate(today);
+                    generalOverviewEntity.setLastAlarmSyncDate(endTime);
                     generalOverviewRepository.save(generalOverviewEntity);
                 });
     }
+
+    @Transactional
     private Mono<ApiResponses<ReportDataDto.Response>> retrieveData(String serverDomain, UUID turbineUuid) throws Exception {
         GeneralOverviewEntity generalOverviewEntity = getTurbineDataLastSyncDate(turbineUuid);
 
@@ -137,6 +146,13 @@ public class BatchServiceImpl implements BatchService{
         if(lastSyncDate.isEqual(today))
             return Mono.empty();
 
+        LocalDateTime nextMonthDate = lastSyncDate.plusMonths(1);
+        LocalDateTime endTime;
+        if(nextMonthDate.isBefore(today))
+            endTime = nextMonthDate;
+        else
+            endTime = today;
+
         return webClientBuilder
                 .baseUrl("http://" + serverDomain)
                 .build()
@@ -144,7 +160,7 @@ public class BatchServiceImpl implements BatchService{
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/data/monitoring")
                         .queryParam("startTime", lastSyncDate)
-                        .queryParam("endTime", today)
+                        .queryParam("endTime", endTime)
                         .build())
                 .retrieve()
                 .onStatus(
@@ -153,7 +169,7 @@ public class BatchServiceImpl implements BatchService{
                 )
                 .bodyToMono(new ParameterizedTypeReference<ApiResponses<ReportDataDto.Response>>() {})
                 .doOnSuccess(response -> {
-                    generalOverviewEntity.setLastDataSyncDate(today);
+                    generalOverviewEntity.setLastDataSyncDate(endTime);
                     generalOverviewRepository.save(generalOverviewEntity);
                 });
     }

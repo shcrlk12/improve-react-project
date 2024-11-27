@@ -7,11 +7,11 @@ import { useDispatch } from "react-redux";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { logout } from "@reducers/userActions";
 import Swal, { SweetAlertResult } from "sweetalert2";
+import { UnknownAction } from "@reduxjs/toolkit";
 
 const statusOk = async (response: Response) => {
   if (!response.ok) {
     const data = await response.json();
-    console.log(data);
 
     throw new ErrorWithCode(data.code, data.message);
   }

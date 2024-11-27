@@ -9,6 +9,7 @@ import useFetchData from "@src/hooks/useFetchData";
 import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
 import { config } from "@config/config";
 import Swal from "sweetalert2";
+import { UserRoleType } from "@config/userRole";
 
 type SiteTypeDto = {
   name: string;
@@ -34,7 +35,7 @@ const DailyReportContainer = () => {
     const fetchDataAsync = async () => {
       try {
         const data = await fetchData<Array<JsonApi<SiteTypeDto>>>(
-          `http://${config.apiServer.ip}:${config.apiServer.port}/api/data/sites`,
+          `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/data/sites`,
           {
             mode: "cors",
             method: "GET",

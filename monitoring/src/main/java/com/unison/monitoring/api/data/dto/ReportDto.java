@@ -38,17 +38,17 @@ public class ReportDto {
     @Getter
     @AllArgsConstructor
     public static class PowerCurve{
-        private Double windSpeed;
-        private Double activePower;
+        private String windSpeed;
+        private String activePower;
     }
 
     @Getter
     @AllArgsConstructor
     public static class TimeChart{
         private LocalDateTime timestamp;
-        private Double rotorSpeed;
-        private Double windSpeed;
-        private Double activePower;
+        private String rotorSpeed;
+        private String windSpeed;
+        private String activePower;
     }
 
     @Getter

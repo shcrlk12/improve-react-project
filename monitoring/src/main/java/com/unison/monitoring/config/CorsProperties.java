@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class CorsProperties {
+    private String protocol;
     private String ip;
     private String port;
     private String domain;

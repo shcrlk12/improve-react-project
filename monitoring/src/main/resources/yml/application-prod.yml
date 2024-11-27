@@ -7,3 +7,48 @@ spring:
   application:
     name: monitoring-prod
 
+  security:
+    debug: false
+
+  datasource:
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://127.0.0.1:1433;databaseName=Monitoring;encrypt=true;trustServerCertificate=true;
+    username: wppis_user
+    password: unison
+    initialization-mode: never #00. test-data.sql 실행 안함
+
+  jpa:
+    hibernate:
+      ddl-auto: validate # validate - 테이블 유효성만 검사
+    show-sql: false
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000 # jpa n+1 문제 예방을 위함.
+  sql:
+    init:
+      mode: never
+#        data-locations: classpath:/sql/00. test-data.sql
+
+server:
+  port: 6789
+  servlet:
+    session:
+      timeout: 43200 # 1day
+
+## custom setting
+cors:
+  protocol: https
+  ip: 172.19.102.139
+  port: 443
+  domain: localhost
+
+api-server:
+  ip: 127.0.0.1
+  port: 5151
+  domain: localhost
+
+batch-server:
+  u113: 125.136.87.142
+  u120: 113.160.206.239
+  u151: 125.136.87.155
+  port: 5151

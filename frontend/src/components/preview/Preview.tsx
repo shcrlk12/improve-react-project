@@ -112,10 +112,10 @@ const Preview = ({
     downloadFile(reportResponse);
   };
 
-  const generateBlobFromCanvas = (ref: React.RefObject<HTMLDivElement>): Blob => {
+  const generateBlobFromCanvas = (ref: React.RefObject<HTMLDivElement>): Promise<Blob> => {
     return new Promise((resolve) => {
       html2canvas(ref.current!).then((canvas) => {
-        canvas.toBlob((blob) => resolve(blob));
+        canvas.toBlob((blob) => resolve(blob!));
       });
     });
   };
@@ -138,7 +138,7 @@ const Preview = ({
       newEventBoxNotes.push({ title: item.title, content: item.content, uuid });
 
       request.data.push({
-        id: uuid,
+        id: uuid!,
         type: "remarks",
         attributes: { content: item.content, title: item.title, turbineUuid: selectedSite.uuid, timestamp: date },
       });
@@ -153,21 +153,27 @@ const Preview = ({
       httpMethod = "PATCH";
     }
 
-    const response = await fetchData(`http://${config.apiServer.ip}:${config.apiServer.port}/api/data/remarks`, {
-      method: httpMethod,
-      credentials: "include",
-      body: JSON.stringify(request),
-      headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
-    });
+    const response = await fetchData(
+      `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/data/remarks`,
+      {
+        method: httpMethod,
+        credentials: "include",
+        body: JSON.stringify(request),
+        headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
+      },
+    );
     return response;
   };
 
   const generateReport = (formData: FormData) => {
-    return fetchData(`http://${config.apiServer.ip}:${config.apiServer.port}/api/docx/daily-report`, {
-      method: "POST",
-      credentials: "include",
-      body: formData,
-    });
+    return fetchData(
+      `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/docx/daily-report`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      },
+    );
   };
 
   const downloadFile = async (response: Response) => {
@@ -218,6 +224,7 @@ const Preview = ({
               event.preventDefault();
 
               const content = event.currentTarget.value;
+
               setEventBoxNote((prev) => prev.map((data, idx) => (index === idx ? { ...data, content } : data)));
             }}
           />

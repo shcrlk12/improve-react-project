@@ -78,7 +78,7 @@ const Login = () => {
       const formData = new FormData(event.currentTarget);
 
       const data = await fetchData<JsonApi<ResponseOfLogin>>(
-        `http://${config.apiServer.ip}:${config.apiServer.port}/api/login`,
+        `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/login`,
         {
           mode: "cors",
           method: "POST",
@@ -108,8 +108,8 @@ const Login = () => {
         <form onSubmit={loginSubmit}>
           <LoginHeader>Login</LoginHeader>
           <InputContainer>
-            <InputLabel>Email</InputLabel>
-            <InputType1 type="email" name="username" placeholder="email" />
+            <InputLabel>Id</InputLabel>
+            <InputType1 type="text" name="username" placeholder="id" />
           </InputContainer>
           <InputContainer>
             <InputLabel>password</InputLabel>

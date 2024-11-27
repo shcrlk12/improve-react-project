@@ -19,13 +19,21 @@ public class CookieAttributeFilter implements Filter {
                          FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         chain.doFilter(request, response);
-        addSameSite(httpServletResponse , "None");
+        // you can use this when you use https protocol
+        addSameSite(httpServletResponse , "Lax");
     }
 
     private void addSameSite(HttpServletResponse response, String sameSite) {
         Collection<String> headers = response.getHeaders(HttpHeaders.SET_COOKIE);
         for (String header : headers) {
             response.setHeader(HttpHeaders.SET_COOKIE, String.format("%s; Secure; %s", header, "SameSite=" + sameSite));
+        }
+    }
+
+    private void addHttpOnly(HttpServletResponse response) {
+        Collection<String> headers = response.getHeaders(HttpHeaders.SET_COOKIE);
+        for (String header : headers) {
+            response.setHeader(HttpHeaders.SET_COOKIE, String.format("%s; Secure;", header));
         }
     }
 }

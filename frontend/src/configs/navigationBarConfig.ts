@@ -30,11 +30,11 @@ export const globalNavigationBar: GlobalNavigationBarType[] = [
         link: routes.REPORT.U151.INDEX,
         userRole: ROLE_USER,
       },
-      {
-        name: "U120",
-        link: routes.REPORT.U120.INDEX,
-        userRole: ROLE_USER,
-      },
+      // {
+      //   name: "U120",
+      //   link: routes.REPORT.U120.INDEX,
+      //   userRole: ROLE_USER,
+      // },
     ],
   },
   {

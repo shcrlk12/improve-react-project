@@ -50,7 +50,7 @@ const PreviewContainer = ({ key, selectedSite, selectedDate }: PreviewContainerP
     const fetchDataAsync = async () => {
       try {
         const data = await fetchData<JsonApi<ResponseOfReportU151>>(
-          `http://${config.apiServer.ip}:${config.apiServer.port}/api/data/report?turbineUuid=${selectedSite.uuid}&writeDate=${selectedDate.toISOString()}`,
+          `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/data/report?turbineUuid=${selectedSite.uuid}&writeDate=${selectedDate.toISOString()}`,
           {
             mode: "cors",
             method: "GET",
@@ -90,8 +90,6 @@ const PreviewContainer = ({ key, selectedSite, selectedDate }: PreviewContainerP
   }, [key]);
 
   useEffect(() => {
-    console.log(selectedDate);
-
     setDate(selectedDate.toString());
   }, [selectedDate]);
 

@@ -1,20 +1,17 @@
 import { config } from "@config/config";
 import { AUTHENTICATED_ROLES, routes } from "@config/routes";
-import { ROLE_MANAGER, ROLE_USER, UserRoleType } from "@config/userRole";
+import { ROLE_USER, UserRoleType } from "@config/userRole";
 import { PrimaryButton, SecondaryButton } from "@karden/utils/button";
 import { InputType1 } from "@karden/utils/Input";
 import useFetch from "@src/hooks/useFetch";
-import { ACCEPT, CONTENT_TYPE, createPostRequestObject, createPostRequestsObject } from "@src/jsonApiOrg/JsonApiOrg";
-import { RootState } from "@src/main";
-import { isAuthorization } from "@src/utils/user";
+import { ACCEPT, CONTENT_TYPE, createPostRequestObject } from "@src/jsonApiOrg/JsonApiOrg";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-import theme from "./../../../configs/theme/theme";
 import { ErrorWithCode } from "@src/error/ErrorWithCode";
 import { ErrorCode } from "@src/error/ErrorCode";
+import { User } from "@reducers/userActions";
 
 /**
  * Styles
@@ -88,13 +85,16 @@ const ButtonContainer = styled.div`
  * @created 2024-07-19
  */
 
-type UserOfRequest = {
+export type UserOfRequest = {
   pw: string;
   role: string;
   name: string;
 };
 
-const UserDetail = () => {
+type UserDetailProps = {
+  user: User;
+};
+const UserDetail = ({ user }: UserDetailProps) => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
@@ -102,12 +102,11 @@ const UserDetail = () => {
 
   const navigate = useNavigate();
   const fetchData = useFetch();
-  const user = useSelector((store: RootState) => store.userReducer.user);
 
   const [userDetailId, setUserDetailId] = useState<string>("");
   const [disableUserIdInput, setDisableUserIdInput] = useState<boolean>(true);
   const [roleChange, isRoleChange] = useState<boolean>(true);
-  const [userDetailRole, setUserDetailRole] = useState<UserRoleType>(ROLE_USER);
+  const [userDetailRole, setUserDetailRole] = useState<UserRoleType>(user.role as UserRoleType);
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
@@ -125,6 +124,8 @@ const UserDetail = () => {
       isRoleChange(true);
     } else if (location.pathname === routes.USER.ADD.INDEX) {
       setDisableUserIdInput(false);
+      isRoleChange(false);
+    } else if (location.pathname.includes(routes.USER.MODIFY.INDEX.split("/*")[0])) {
       isRoleChange(false);
     }
   }, [user, location.pathname]);
@@ -144,7 +145,7 @@ const UserDetail = () => {
         icon: "warning",
       });
       return false;
-    } else if (name.length <= 0) {
+    } else if (name == "") {
       await Swal.fire({
         title: "이름 오류",
         text: "이름을 입력하세요.",
@@ -167,12 +168,15 @@ const UserDetail = () => {
       },
     };
     try {
-      const response = await fetchData(`http://${config.apiServer.ip}:${config.apiServer.port}/api/users`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(request),
-        headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
-      });
+      const response = await fetchData(
+        `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/users`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: JSON.stringify(request),
+          headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
+        },
+      );
       if (response.status === 201) {
         //ACCEPT
         await Swal.fire({
@@ -209,12 +213,15 @@ const UserDetail = () => {
     };
 
     try {
-      const response = await fetchData(`http://${config.apiServer.ip}:${config.apiServer.port}/api/users/${user.id}`, {
-        method: "PATCH",
-        credentials: "include",
-        body: JSON.stringify(request),
-        headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
-      });
+      const response = await fetchData(
+        `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/users/${user.id}`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          body: JSON.stringify(request),
+          headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
+        },
+      );
       if (response.status === 200) {
         //OK
         await Swal.fire({
@@ -243,8 +250,8 @@ const UserDetail = () => {
         <InputItem>
           <div>User id</div>
           <InputType1
-            type="email"
-            placeholder="email"
+            type="text"
+            placeholder="id"
             ref={emailRef}
             disable={disableUserIdInput}
             text={userDetailId}
@@ -316,6 +323,7 @@ const UserDetail = () => {
           onClick={() => {
             if (location.pathname === routes.USER.MY_INFOMATION.INDEX) modifyUser();
             else if (location.pathname === routes.USER.ADD.INDEX) createUser();
+            else if (location.pathname.includes(routes.USER.MODIFY.INDEX.split("/*")[0])) modifyUser();
           }}
         />
         <SecondaryButton

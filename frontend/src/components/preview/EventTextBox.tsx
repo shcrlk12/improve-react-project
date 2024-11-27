@@ -20,7 +20,7 @@ const EventTextBox = ({ title, content, uuid, setContent }: EventTextBoxProps) =
         style={{ fontSize: "16px", padding: "4px", marginTop: "6px" }}
         cols={75}
         rows={6}
-        value={content ? content : "특이사항 없음."}
+        value={content ? content : ""}
         onChange={setContent}></textarea>
     </div>
   );
