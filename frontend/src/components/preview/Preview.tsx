@@ -9,12 +9,13 @@ import { PrimaryButton } from "@karden/utils/button";
 import { ChangeEvent, SetStateAction, useEffect, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import { endOfQuarter, format, startOfQuarter } from "date-fns";
-import { SiteType } from "@reducers/appAction";
-import { config } from "@config/config";
+import { setLoading, SiteType } from "@reducers/appAction";
+import { config, getRestApiServerUrl } from "@config/config";
 import useFetch from "@src/hooks/useFetch";
-import { ACCEPT, CONTENT_TYPE, createPostRequestsObject, JsonApiRequestsPost } from "@src/jsonApiOrg/JsonApiOrg";
+import { createPostRequestsObject, JsonApiRequestsPost, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
 import { constants } from "@src/constants";
 import Swal from "sweetalert2";
+import { useDispatch } from "react-redux";
 
 export type PreviewProps = {
   selectedSite: SiteType;
@@ -66,6 +67,7 @@ const Preview = ({
 
   const powerCurveGraphRef = useRef<HTMLDivElement>(null);
   const dailyRWPGraphRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setEventBoxNote([...eventBoxNotesProps]);
@@ -94,6 +96,8 @@ const Preview = ({
     });
 
     if (!result.isConfirmed) return;
+
+    dispatch(setLoading());
 
     const powerCurveBlob = await generateBlobFromCanvas(powerCurveGraphRef);
     const dailyRWPBlob = await generateBlobFromCanvas(dailyRWPGraphRef);
@@ -153,27 +157,21 @@ const Preview = ({
       httpMethod = "PATCH";
     }
 
-    const response = await fetchData(
-      `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/data/remarks`,
-      {
-        method: httpMethod,
-        credentials: "include",
-        body: JSON.stringify(request),
-        headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
-      },
-    );
+    const response = await fetchData(getRestApiServerUrl("/data/remarks"), {
+      method: httpMethod,
+      credentials: "include",
+      body: JSON.stringify(request),
+      headers: { "Content-Type": jsonOrgConfig.CONTENT_TYPE, Accept: jsonOrgConfig.ACCEPT },
+    });
     return response;
   };
 
   const generateReport = (formData: FormData) => {
-    return fetchData(
-      `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/docx/daily-report`,
-      {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      },
-    );
+    return fetchData(getRestApiServerUrl("/docx/daily-report"), {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
   };
 
   const downloadFile = async (response: Response) => {

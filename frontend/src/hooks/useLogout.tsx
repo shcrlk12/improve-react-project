@@ -1,8 +1,9 @@
-import { config } from "@config/config";
+import { config, getRestApiServerUrl } from "@config/config";
 import { routes } from "@config/routes";
 import { logout } from "@reducers/userActions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
+import { jsonOrgConfig } from "./../jsonApiOrg/JsonApiOrg";
 
 /**
  * Handles the logout action.
@@ -18,13 +19,13 @@ const useLogout = () => {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
-    fetch(`${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/logout`, {
+    fetch(getRestApiServerUrl(`/logout`), {
       mode: "cors",
-      method: "GET",
+      method: "POST",
       credentials: "include",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        Accept: jsonOrgConfig.ACCEPT,
+        "Content-Type": jsonOrgConfig.CONTENT_TYPE,
       },
     });
     navigate(routes.LOGIN.INDEX);

@@ -3,7 +3,7 @@ import UserList from "./UserList";
 import useFetchData from "@src/hooks/useFetchData";
 import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
 import { UserOfRequest } from "../detail/UserDetail";
-import { config } from "@config/config";
+import { config, getRestApiServerUrl } from "@config/config";
 
 /**
  * UserListContainer Component
@@ -19,14 +19,11 @@ const UserListContainer = () => {
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      const data = await fetchData<Array<JsonApi<UserOfRequest>>>(
-        `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/users`,
-        {
-          mode: "cors",
-          method: "GET",
-          credentials: "include",
-        },
-      );
+      const data = await fetchData<Array<JsonApi<UserOfRequest>>>(getRestApiServerUrl(`/users`), {
+        mode: "cors",
+        method: "GET",
+        credentials: "include",
+      });
       setUsers(data);
     };
 

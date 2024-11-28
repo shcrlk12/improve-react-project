@@ -71,8 +71,8 @@ public class SecurityConfig{
                 )
                 .logout((logout) ->
                         logout.deleteCookies("JSESSIONID")
-                                .invalidateHttpSession(false)
-                                .logoutUrl("/logout")
+                                .invalidateHttpSession(true)
+                                .logoutUrl("/api/logout")
                                 .logoutSuccessHandler(appLogoutSuccessHandler)
                 ).exceptionHandling((handling) ->
                         handling

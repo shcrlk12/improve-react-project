@@ -14,7 +14,7 @@ import { RootState } from "./main";
 import { useEffect, useMemo } from "react";
 import { ResponseOfLogin } from "@components/login/Login";
 import { JsonApi } from "./jsonApiOrg/JsonApiOrg";
-import { config } from "@config/config";
+import { config, getRestApiServerUrl } from "@config/config";
 import useFetchData from "./hooks/useFetchData";
 import { loginSuccess } from "@reducers/userActions";
 import MyInformation from "@pages/user/MyInfomation";
@@ -32,14 +32,11 @@ function App() {
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      const data = await fetchData<JsonApi<ResponseOfLogin>>(
-        `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/data/auth`,
-        {
-          mode: "cors",
-          method: "GET",
-          credentials: "include",
-        },
-      );
+      const data = await fetchData<JsonApi<ResponseOfLogin>>(getRestApiServerUrl("/data/auth"), {
+        mode: "cors",
+        method: "GET",
+        credentials: "include",
+      });
       const {
         id,
         attributes: { role, name },

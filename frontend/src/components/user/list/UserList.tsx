@@ -18,14 +18,14 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import Paper from "@mui/material/Paper";
 import { UserOfRequest } from "../detail/UserDetail";
-import { ACCEPT, CONTENT_TYPE, JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
+import { JsonApi, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
 import { UserRoleType, UserType } from "@config/userRole";
 import DangerButton from "./../../../../node_modules/@karden/utils/button/DangerButton";
 import { PrimaryButton } from "@karden/utils/button";
 import { useNavigate } from "react-router";
 import { routes } from "@config/routes";
 import useFetch from "@src/hooks/useFetch";
-import { config } from "@config/config";
+import { config, getRestApiServerUrl } from "@config/config";
 import Swal from "sweetalert2";
 
 /**
@@ -190,14 +190,11 @@ const UserList = ({ users }: UserListProps) => {
                           if (!result.isConfirmed) return;
 
                           try {
-                            await fetchData(
-                              `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/users/${row.id}`,
-                              {
-                                method: "DELETE",
-                                credentials: "include",
-                                headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
-                              },
-                            );
+                            await fetchData(getRestApiServerUrl(`/users/${row.id}`), {
+                              method: "DELETE",
+                              credentials: "include",
+                              headers: { "Content-Type": jsonOrgConfig.CONTENT_TYPE, Accept: jsonOrgConfig.ACCEPT },
+                            });
 
                             await Swal.fire({
                               title: "유저 삭제",

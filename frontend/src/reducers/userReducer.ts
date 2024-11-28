@@ -1,4 +1,4 @@
-import { ROLE_ANONYMOUS } from "@config/userRole";
+import { ROLE_ANONYMOUS, UserRoleType } from "@config/userRole";
 import { LOGIN_SUCCESS, LOGOUT, User, loginSuccess, logout } from "./userActions";
 
 //Action Type
@@ -15,9 +15,9 @@ const initialState: UserState = {
   user: {
     id: "",
     name: "",
-    role: ROLE_ANONYMOUS,
+    role: ROLE_ANONYMOUS as UserRoleType,
     lastLoginTime: null,
-  },
+  } as User,
 };
 
 const userReducer = (state: UserState = initialState, action: UserAction) => {

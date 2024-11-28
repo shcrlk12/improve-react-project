@@ -3,7 +3,7 @@ import { PowerCurveGraphProps } from "@components/graph/PowerCurveGraph";
 import { DailyRWPGraphProps } from "@components/graph/DailyRWPGraph";
 import { useEffect, useState } from "react";
 import useFetchData from "@src/hooks/useFetchData";
-import { config } from "@config/config";
+import { config, getRestApiServerUrl } from "@config/config";
 import { TotalOperatingTableProps } from "./table/TotalOperatingTable";
 import { DailyOperatingTableProps } from "./table/DailyOperatingTable";
 import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
@@ -50,7 +50,7 @@ const PreviewContainer = ({ key, selectedSite, selectedDate }: PreviewContainerP
     const fetchDataAsync = async () => {
       try {
         const data = await fetchData<JsonApi<ResponseOfReportU151>>(
-          `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/data/report?turbineUuid=${selectedSite.uuid}&writeDate=${selectedDate.toISOString()}`,
+          getRestApiServerUrl(`/data/report?turbineUuid=${selectedSite.uuid}&writeDate=${selectedDate.toISOString()}`),
           {
             mode: "cors",
             method: "GET",

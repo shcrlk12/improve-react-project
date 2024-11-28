@@ -4,7 +4,6 @@ import { ROLE_ADMIN, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_USER } from "./userRole"
 export const ALL_ROLES = [ROLE_ANONYMOUS, ROLE_USER, ROLE_MANAGER, ROLE_ADMIN];
 export const AUTHENTICATED_ROLES = [ROLE_USER, ROLE_MANAGER, ROLE_ADMIN];
 export const MANAGE_ROLES = [ROLE_MANAGER, ROLE_ADMIN];
-export const USER_ROLES = [ROLE_USER];
 
 export const routes = {
   LOGIN: { INDEX: "/login", permit: ALL_ROLES },

@@ -18,8 +18,10 @@ export type JsonApiRequestsPost<T> = {
   data: Array<Resourse<T>>;
 };
 
-export const CONTENT_TYPE = "application/vnd.api+json";
-export const ACCEPT = "application/vnd.api+json";
+export const jsonOrgConfig = {
+  CONTENT_TYPE: "application/vnd.api+json",
+  ACCEPT: "application/vnd.api+json",
+};
 
 export const createPostRequestsObject = <T>(): JsonApiRequestsPost<T> => {
   const result: JsonApiRequestsPost<T> = { data: [] as Array<Resourse<T>> };

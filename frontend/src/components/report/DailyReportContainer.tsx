@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@src/main";
 import useFetchData from "@src/hooks/useFetchData";
 import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
-import { config } from "@config/config";
+import { config, getRestApiServerUrl } from "@config/config";
 import Swal from "sweetalert2";
 import { UserRoleType } from "@config/userRole";
 
@@ -35,7 +35,7 @@ const DailyReportContainer = () => {
     const fetchDataAsync = async () => {
       try {
         const data = await fetchData<Array<JsonApi<SiteTypeDto>>>(
-          `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/data/sites`,
+          getRestApiServerUrl(`/data/sites`),
           {
             mode: "cors",
             method: "GET",

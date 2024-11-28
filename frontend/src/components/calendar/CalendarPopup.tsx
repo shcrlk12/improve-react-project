@@ -84,8 +84,6 @@ const CalendarPopup = ({ date, setDate }: CalendarPopupProps) => {
           <DateCalendar
             value={dayjs(tempSelectedDate.toISOString())}
             onChange={(value) => {
-              console.log(value.toDate());
-
               setTempSelectedDate(value.toDate());
             }}
           />

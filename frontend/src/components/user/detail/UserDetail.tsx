@@ -1,10 +1,10 @@
-import { config } from "@config/config";
+import { config, getRestApiServerUrl } from "@config/config";
 import { AUTHENTICATED_ROLES, routes } from "@config/routes";
 import { ROLE_USER, UserRoleType } from "@config/userRole";
 import { PrimaryButton, SecondaryButton } from "@karden/utils/button";
 import { InputType1 } from "@karden/utils/Input";
 import useFetch from "@src/hooks/useFetch";
-import { ACCEPT, CONTENT_TYPE, createPostRequestObject } from "@src/jsonApiOrg/JsonApiOrg";
+import { createPostRequestObject, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import styled from "styled-components";
@@ -168,15 +168,12 @@ const UserDetail = ({ user }: UserDetailProps) => {
       },
     };
     try {
-      const response = await fetchData(
-        `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/users`,
-        {
-          method: "POST",
-          credentials: "include",
-          body: JSON.stringify(request),
-          headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
-        },
-      );
+      const response = await fetchData(getRestApiServerUrl(`/users`), {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(request),
+        headers: { "Content-Type": jsonOrgConfig.CONTENT_TYPE, Accept: jsonOrgConfig.ACCEPT },
+      });
       if (response.status === 201) {
         //ACCEPT
         await Swal.fire({
@@ -213,15 +210,12 @@ const UserDetail = ({ user }: UserDetailProps) => {
     };
 
     try {
-      const response = await fetchData(
-        `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/users/${user.id}`,
-        {
-          method: "PATCH",
-          credentials: "include",
-          body: JSON.stringify(request),
-          headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
-        },
-      );
+      const response = await fetchData(getRestApiServerUrl(`/users/${user.id}`), {
+        method: "PATCH",
+        credentials: "include",
+        body: JSON.stringify(request),
+        headers: { "Content-Type": jsonOrgConfig.CONTENT_TYPE, Accept: jsonOrgConfig.ACCEPT },
+      });
       if (response.status === 200) {
         //OK
         await Swal.fire({

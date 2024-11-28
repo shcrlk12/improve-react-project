@@ -3,7 +3,7 @@ import styled from "styled-components";
 import InputType1 from "@karden/utils/Input/InputType1";
 import { PrimaryButton } from "@karden/utils/button";
 import useFetchData from "@src/hooks/useFetchData";
-import { config } from "@config/config";
+import { config, getRestApiServerUrl } from "@config/config";
 import { FormEvent } from "react";
 import { loginSuccess } from "@reducers/userActions";
 import { useDispatch } from "react-redux";
@@ -78,7 +78,7 @@ const Login = () => {
       const formData = new FormData(event.currentTarget);
 
       const data = await fetchData<JsonApi<ResponseOfLogin>>(
-        `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/login`,
+        getRestApiServerUrl("/login"),
         {
           mode: "cors",
           method: "POST",

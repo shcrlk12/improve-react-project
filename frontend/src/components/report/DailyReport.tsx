@@ -9,8 +9,8 @@ import { useLocation, useNavigate } from "react-router";
 import { replaceLastPath } from "@src/utils/path";
 import { useDispatch, useSelector } from "react-redux";
 import useFetch from "@src/hooks/useFetch";
-import { ACCEPT, CONTENT_TYPE, createPostRequestObject } from "@src/jsonApiOrg/JsonApiOrg";
-import { config } from "@config/config";
+import { createPostRequestObject, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
+import { config, getRestApiServerUrl } from "@config/config";
 import { RootState } from "@src/main";
 import Swal from "sweetalert2";
 
@@ -177,15 +177,12 @@ const DailyReport = ({ sites, selectedSite, selectedDate, setSelectedDate }: Dai
       },
     };
 
-    const response = await fetchData(
-      `${config.apiServer.protocol}://${config.apiServer.ip}:${config.apiServer.port}/api/data/remarks/${selectedSite.uuid}`,
-      {
-        method: "PATCH",
-        credentials: "include",
-        body: JSON.stringify(request),
-        headers: { "Content-Type": CONTENT_TYPE, Accept: ACCEPT },
-      },
-    );
+    const response = await fetchData(getRestApiServerUrl(`/data/remarks/${selectedSite.uuid}`), {
+      method: "PATCH",
+      credentials: "include",
+      body: JSON.stringify(request),
+      headers: { "Content-Type": jsonOrgConfig.CONTENT_TYPE, Accept: jsonOrgConfig.ACCEPT },
+    });
   };
   const createHeaderItem = useMemo((): JSX.Element[] => {
     return sites.map((item) => (

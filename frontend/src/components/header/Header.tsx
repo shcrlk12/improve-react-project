@@ -1,5 +1,5 @@
 import { GlobalNavigationBarType } from "@src/configs/navigationBarConfig";
-import { UserRoleType } from "@src/configs/userRole";
+import { UserRoleType, UserType } from "@src/configs/userRole";
 import logo from "@images/logo/UnisonLogo140px.png";
 
 import styled from "styled-components";
@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import userReducer from "./../../reducers/userReducer";
 import { RootState } from "@src/main";
 import { routes } from "@config/routes";
+import useLogout from "@src/hooks/useLogout";
+import { User } from "@reducers/userActions";
 
 /**
  * Style
@@ -68,8 +70,7 @@ const StyledUserName = styled.div`
 type HeaderProps = {
   title: string;
   globalNavigationBar: GlobalNavigationBarType[];
-  userRole: UserRoleType;
-  logoutOnClick: React.MouseEventHandler<HTMLButtonElement>;
+  user: User;
 };
 
 /**
@@ -78,13 +79,13 @@ type HeaderProps = {
  * @author Karden
  * @created 2024-07-17
  */
-const Header = ({ title, globalNavigationBar, userRole, logoutOnClick }: HeaderProps) => {
+const Header = ({ title, globalNavigationBar, user }: HeaderProps) => {
   const location = useLocation();
+  const handleLogout = useLogout();
+  const isUserAuthenticated = isAuthenticated(user.role);
+  const navigate = useNavigate();
 
   const isLoginPage = location.pathname === "/login";
-  const isUserAuthenticated = isAuthenticated(userRole);
-  const navigate = useNavigate();
-  const userName = useSelector((store: RootState) => store.userReducer.user.name);
 
   return (
     <StyledHeader>
@@ -101,9 +102,9 @@ const Header = ({ title, globalNavigationBar, userRole, logoutOnClick }: HeaderP
         </LeftHeaderContainer>
         {isUserAuthenticated && !isLoginPage && (
           <RightHeaderContainer>
-            <GlobalNavigationBar globalNavigationBar={globalNavigationBar} userRole={userRole} />
-            <StyledUserName> {userName}</StyledUserName>
-            <PrimaryButton text="Logout" onClick={logoutOnClick} />
+            <GlobalNavigationBar globalNavigationBar={globalNavigationBar} userRole={user.role} />
+            <StyledUserName> {user.name}</StyledUserName>
+            <PrimaryButton text="Logout" onClick={handleLogout} />
           </RightHeaderContainer>
         )}
       </HeaderInner>

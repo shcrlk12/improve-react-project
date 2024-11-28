@@ -5,6 +5,7 @@ import useTitle from "@src/hooks/useTitle";
 import useLogout from "@src/hooks/useLogout";
 import { useSelector } from "react-redux";
 import { RootState } from "@src/main";
+import { User } from "@reducers/userActions";
 
 /**
  * Render and involve bussiness logic of header component
@@ -14,17 +15,11 @@ import { RootState } from "@src/main";
  */
 const HeaderContainer = () => {
   const title = useTitle();
-  const handleLogout = useLogout();
-  const user = useSelector((store: RootState) => store.userReducer);
+  const user = useSelector((store: RootState) => store.userReducer.user);
 
   return (
     <>
-      <Header
-        title={title}
-        userRole={user.user.role as UserRoleType}
-        globalNavigationBar={globalNavigationBar}
-        logoutOnClick={handleLogout}
-      />
+      <Header title={title} user={user as User} globalNavigationBar={globalNavigationBar} />
     </>
   );
 };
