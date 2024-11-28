@@ -33,7 +33,8 @@ export type DailyRWPGraphProps = {
 const DailyRWPGraph = React.memo(
   forwardRef<HTMLDivElement, DailyRWPGraphProps>(({ title, timeChart, ratedPower }, ref) => {
     if (arePropsEmpty(timeChart)) return null;
-    timeChart = timeChart.map((item) => ({
+
+    const foramttedTimeChart = timeChart.map((item) => ({
       ...item,
       timestamp: format(new Date(item.timestamp), "HH:mm"),
     }));
@@ -55,7 +56,7 @@ const DailyRWPGraph = React.memo(
           <LineChart
             width={900}
             height={450}
-            data={timeChart}
+            data={foramttedTimeChart}
             margin={{
               top: 5,
               right: 30,

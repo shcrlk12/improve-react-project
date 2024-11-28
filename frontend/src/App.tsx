@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./main";
 import { useEffect, useMemo } from "react";
 import { ResponseOfLogin } from "@components/login/Login";
-import { JsonApi } from "./jsonApiOrg/JsonApiOrg";
+import { JsonApi, jsonOrgConfig } from "./jsonApiOrg/JsonApiOrg";
 import { config, getRestApiServerUrl } from "@config/config";
 import useFetchData from "./hooks/useFetchData";
 import { loginSuccess } from "@reducers/userActions";
@@ -36,6 +36,7 @@ function App() {
         mode: "cors",
         method: "GET",
         credentials: "include",
+        headers: { "Content-Type": jsonOrgConfig.CONTENT_TYPE, Accept: jsonOrgConfig.ACCEPT },
       });
       const {
         id,

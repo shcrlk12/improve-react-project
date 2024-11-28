@@ -11,6 +11,7 @@ import { useNavigate } from "react-router";
 import { UserRoleType } from "@config/userRole";
 import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
 import Swal from "sweetalert2";
+import { routes } from "@config/routes";
 
 /**
  * Types
@@ -99,7 +100,7 @@ const Login = () => {
       } = data;
 
       dispatch(loginSuccess({ id, name, role }));
-      navigate("/report");
+      navigate(routes.REPORT.INDEX);
     } catch (e) {}
   };
   return (

@@ -68,7 +68,7 @@ type CalendarPopupProps = {
  * @created 2024-07-19
  */
 const CalendarPopup = ({ date, setDate }: CalendarPopupProps) => {
-  const [tempSelectedDate, setTempSelectedDate] = useState<Date>(date);
+  const [calendarCate, setCalendarCate] = useState<Date>(date);
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
 
   return (
@@ -82,9 +82,9 @@ const CalendarPopup = ({ date, setDate }: CalendarPopupProps) => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <PopupContainer style={{ display: isCalendarVisible ? "flex" : "none" }}>
           <DateCalendar
-            value={dayjs(tempSelectedDate.toISOString())}
+            value={dayjs(calendarCate.toISOString())}
             onChange={(value) => {
-              setTempSelectedDate(value.toDate());
+              setCalendarCate(value.toDate());
             }}
           />
           <ButtonWrapper>
@@ -92,7 +92,7 @@ const CalendarPopup = ({ date, setDate }: CalendarPopupProps) => {
               type="button"
               text="확인"
               onClick={() => {
-                setDate(tempSelectedDate);
+                setDate(calendarCate);
                 setIsCalendarVisible(false);
               }}
             />

@@ -6,7 +6,7 @@ import { selectSite, setSites, SiteType } from "@reducers/appAction";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@src/main";
 import useFetchData from "@src/hooks/useFetchData";
-import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
+import { JsonApi, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
 import { config, getRestApiServerUrl } from "@config/config";
 import Swal from "sweetalert2";
 import { UserRoleType } from "@config/userRole";
@@ -40,6 +40,7 @@ const DailyReportContainer = () => {
             mode: "cors",
             method: "GET",
             credentials: "include",
+            headers: { "Content-Type": jsonOrgConfig.CONTENT_TYPE, Accept: jsonOrgConfig.ACCEPT },
           },
           () =>
             Swal.fire({

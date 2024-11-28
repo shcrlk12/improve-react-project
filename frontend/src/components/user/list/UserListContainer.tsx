@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import UserList from "./UserList";
 import useFetchData from "@src/hooks/useFetchData";
-import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
+import { JsonApi, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
 import { UserOfRequest } from "../detail/UserDetail";
 import { config, getRestApiServerUrl } from "@config/config";
 
@@ -23,6 +23,10 @@ const UserListContainer = () => {
         mode: "cors",
         method: "GET",
         credentials: "include",
+        headers: {
+          Accept: jsonOrgConfig.ACCEPT,
+          "Content-Type": jsonOrgConfig.CONTENT_TYPE,
+        },
       });
       setUsers(data);
     };

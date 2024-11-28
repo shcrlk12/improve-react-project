@@ -6,7 +6,7 @@ import useFetchData from "@src/hooks/useFetchData";
 import { config, getRestApiServerUrl } from "@config/config";
 import { TotalOperatingTableProps } from "./table/TotalOperatingTable";
 import { DailyOperatingTableProps } from "./table/DailyOperatingTable";
-import { JsonApi } from "@src/jsonApiOrg/JsonApiOrg";
+import { JsonApi, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
 import { AlarmTableV2Props, AlarmType } from "./table/AlarmTableV2";
 import { EventBoxNote } from "./EventTextBox";
 import { SiteType } from "@reducers/appAction";
@@ -55,6 +55,7 @@ const PreviewContainer = ({ key, selectedSite, selectedDate }: PreviewContainerP
             mode: "cors",
             method: "GET",
             credentials: "include",
+            headers: { "Content-Type": jsonOrgConfig.CONTENT_TYPE, Accept: jsonOrgConfig.ACCEPT },
           },
           () =>
             Swal.fire({
