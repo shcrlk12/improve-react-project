@@ -15,7 +15,7 @@ import { useEffect, useMemo } from "react";
 import { ResponseOfLogin } from "@components/login/Login";
 import { JsonApi, jsonOrgConfig } from "./jsonApiOrg/JsonApiOrg";
 import { config, getRestApiServerUrl } from "@config/config";
-import useFetchData from "./hooks/useFetchData";
+import useFetchJsonData from "./hooks/useFetchJsonData";
 import { loginSuccess } from "@reducers/userActions";
 import MyInformation from "@pages/user/MyInfomation";
 
@@ -26,7 +26,7 @@ type PageRole = {
 
 function App() {
   const userRole = useSelector((store: RootState) => store.userReducer.user.role) as UserRoleType;
-  const fetchData = useFetchData();
+  const fetchData = useFetchJsonData();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

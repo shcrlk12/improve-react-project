@@ -1,52 +1,41 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { resetLoading, setLoading } from "@reducers/appAction";
-import { ErrorCode } from "@src/error/ErrorCode";
-import { ErrorWithCode } from "@src/error/ErrorWithCode";
-import { Dispatch } from "react";
 import { useDispatch } from "react-redux";
-import { NavigateFunction, useNavigate } from "react-router-dom";
-import { logout } from "@reducers/userActions";
+import { useNavigate } from "react-router";
+import { expireSession } from "./useFetchJsonData";
+import { ErrorWithCode } from "@src/error/ErrorWithCode";
+import { ErrorCode } from "@src/error/ErrorCode";
 import Swal, { SweetAlertResult } from "sweetalert2";
-import { UnknownAction } from "@reduxjs/toolkit";
 
-const statusOk = async (response: Response) => {
-  if (!response.ok) {
-    const data = await response.json();
-
-    throw new ErrorWithCode(data.code, data.message);
-  }
-};
-
-export const expireSession = (dispatch: Dispatch<UnknownAction>, navigate: NavigateFunction) => {
-  dispatch(logout());
-  navigate("/login");
-};
-
+/**
+ * Custom hook that simplifies the usage of the fetch function.
+ * Provides utilities and wrappers to perform HTTP requests more easily.
+ *
+ * @returns {function} improved fetch function .
+ *
+ * @author Karden
+ * @created 2024-07-17
+ */
 const useFetchData = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const fetchData = async <T>(
+  const fetchData = async (
     url: string,
     option?: RequestInit,
     errorPopup?: () => Promise<SweetAlertResult<any>>,
-  ): Promise<T> => {
+  ): Promise<Response> => {
     dispatch(setLoading());
 
-    let json;
     try {
       const response = await fetch(url, option);
-      dispatch(resetLoading());
-
       if (!response.ok) {
         if (response.status === 401) {
           expireSession(dispatch, navigate);
-        }
+        } else if (response.status === 400)
+          throw new ErrorWithCode(ErrorCode.BAD_REQUEST, `HTTP error! status: ${response.status}`);
       }
 
-      json = await response.json();
-      if (json.data === undefined || json.data === null)
-        throw new ErrorWithCode(ErrorCode.INCORRECT_DATA, "not correct fetch data.");
+      return response as Response;
     } catch (e: any) {
       dispatch(resetLoading());
 
@@ -63,8 +52,9 @@ const useFetchData = () => {
       }
 
       throw e;
+    } finally {
+      dispatch(resetLoading());
     }
-    return json.data as T;
   };
 
   return fetchData;

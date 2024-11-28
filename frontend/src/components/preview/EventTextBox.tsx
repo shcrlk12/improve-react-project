@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import { constants } from "./../../constants";
+import { constants } from "../../configs/constants";
 
 export type EventBoxNote = {
   title: string;

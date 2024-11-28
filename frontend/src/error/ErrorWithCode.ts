@@ -6,7 +6,6 @@ export class ErrorWithCode extends Error {
     this._code = code;
   }
 
-  // Getter for the code property
   get code() {
     return this._code;
   }

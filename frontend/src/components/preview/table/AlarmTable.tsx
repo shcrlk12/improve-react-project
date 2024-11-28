@@ -1,100 +1,155 @@
-import React from "react";
-import { Column } from "@table-library/react-table-library/compact";
-import { useTheme } from "@table-library/react-table-library/theme";
-import { getTheme } from "@table-library/react-table-library/baseline";
-import { Data, TableNode } from "@table-library/react-table-library/types/table";
+import React, { useEffect, useState } from "react";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import { format } from "date-fns";
+import styled from "styled-components";
+import { arePropsEmpty } from "@src/utils/props";
 
-import { Table, Header, HeaderRow, Body, Row, HeaderCell, Cell } from "@table-library/react-table-library/table";
+//TData
+export type AlarmType = {
+  timestamp: Date | string;
+  alarmCode: number | string;
+  alarmName: string;
+  remarks: string;
+};
 
 export type AlarmTableProps = {
-  data: Data<TableNode>;
+  alarms: AlarmType[];
 };
-// 페이지 네이션 + Editable로 만들자.
-const AlarmTable: React.FC<{ alarmTableProps: AlarmTableProps }> = ({ alarmTableProps }) => {
-  const [data, setData] = React.useState<Data<TableNode>>(alarmTableProps.data);
 
-  const theme = useTheme(getTheme());
+const columnHelper = createColumnHelper<AlarmType>();
 
-  const COLUMNS: Column<TableNode>[] = [
-    {
-      label: "발생 시간",
-      renderCell: (item) => format(item.time, "yyyy-MM-dd HH:mm:ss"),
-      resize: true,
-    },
-    {
-      label: "에러코드",
-      renderCell: (item) => item.erorrCode,
-      resize: true,
-    },
-    {
-      label: "내용",
-      renderCell: (item) => item.errorContent,
-      resize: true,
-    },
-    {
-      label: "비고",
-      renderCell: (item) => (
-        <input
-          type="text"
-          style={{
-            width: "100%",
-            border: "none",
-            fontSize: "1rem",
-            padding: 0,
-            margin: 0,
-          }}
-          value={item.note}
-          onChange={(event) => handleUpdate(event.target.value, item.id, "note")}
-        />
-      ),
-    },
-  ];
+const TableContainer = styled.div`
+  width: 100%;
+`;
+const columns = [
+  columnHelper.accessor("timestamp", {
+    cell: (info) => info.getValue(),
+    header: () => <span>발생 시간</span>,
+    footer: (info) => info.column.id,
+    enableResizing: true,
+    size: 200,
+  }),
+  columnHelper.accessor("alarmCode", {
+    cell: (info) => <i>{info.getValue()}</i>,
+    header: () => <span>에러코드</span>,
+    footer: (info) => info.column.id,
+    enableResizing: true,
+    size: 100,
+  }),
+  columnHelper.accessor("alarmName", {
+    cell: (info) => info.getValue(),
+    header: () => <span>내용</span>,
+    footer: (info) => info.column.id,
+    enableResizing: true,
+    size: 450,
+  }),
+  columnHelper.accessor("remarks", {
+    header: () => <span>비고</span>,
+    footer: (info) => info.column.id,
+    enableResizing: true,
+    size: 150,
+  }),
+];
 
-  const handleUpdate = (value: any, id: any, property: string) => {
-    setData((state) => ({
-      ...state,
-      nodes: state.nodes.map((node) => {
-        if (node.id === id) {
-          return { ...node, [property]: value };
-        } else {
-          return node;
-        }
-      }),
-    }));
-  };
+const AlarmTable = React.memo(({ alarms }: AlarmTableProps) => {
+  const [alarmData, setAlarmData] = React.useState<AlarmType[]>([] as AlarmType[]);
+  const rerender = React.useReducer(() => ({}), {})[1];
+  const [pagination, setPagination] = useState({
+    pageIndex: 0, //initial page index
+    pageSize: 20, //default page size
+  });
+
+  useEffect(() => {
+    if (alarms.length === 0) {
+      alarms.push({ alarmCode: "", timestamp: "", alarmName: "", remarks: "" } as AlarmType);
+    }
+    if (!arePropsEmpty(alarms)) setAlarmData([...alarms]);
+  }, [alarms]);
+
+  const table = useReactTable({
+    data: alarmData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
+    columnResizeMode: "onChange",
+    columnResizeDirection: "ltr",
+    state: {
+      pagination,
+    },
+    defaultColumn: {
+      minSize: 50,
+    },
+  });
 
   return (
-    <>
-      <div style={{ width: "100%" }}>
-        <Table data={data} theme={theme}>
-          {(tableList: typeof data.nodes) => (
-            <>
-              <Header>
-                <HeaderRow>
-                  <HeaderCell resize>발생시간</HeaderCell>
-                  <HeaderCell resize>에러코드</HeaderCell>
-                  <HeaderCell resize>내용</HeaderCell>
-                  <HeaderCell>비고</HeaderCell>
-                </HeaderRow>
-              </Header>
-
-              <Body>
-                {tableList.map((item) => (
-                  <Row key={item.id} item={item}>
-                    <Cell stiff>{format(item.time, "yyyy-MM-dd HH:mm:ss")}</Cell>
-                    <Cell>{item.erorrCode}</Cell>
-                    <Cell>{item.errorContent}</Cell>
-                    <Cell>{item.note}</Cell>
-                  </Row>
-                ))}
-              </Body>
-            </>
-          )}
-        </Table>
+    <TableContainer>
+      <table>
+        <thead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id} style={{ width: `${header.getSize()}px` }}>
+                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  <div
+                    className={`resizer ${header.column.getIsResizing() ? "isResizing" : ""}`}
+                    onMouseDown={header.getResizeHandler()}></div>
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>
+                  {(() => {
+                    if (cell.getValue() instanceof Date) {
+                      return format(cell.getValue() as Date, "yyyy-MM-dd HH:mm:ss");
+                    } else if (cell.getContext().column.id === "note") {
+                      return <input type="text" style={{ background: "none", border: "none" }} />;
+                    } else {
+                      return String(cell.getValue());
+                    }
+                  })()}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "10px",
+          marginTop: "10px",
+        }}>
+        <button className="border rounded p-1" onClick={() => table.firstPage()} disabled={!table.getCanPreviousPage()}>
+          {"<<"}
+        </button>
+        <button
+          className="border rounded p-1"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}>
+          {"<"}
+        </button>
+        <button className="border rounded p-1" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+          {">"}
+        </button>
+        <button className="border rounded p-1" onClick={() => table.lastPage()} disabled={!table.getCanNextPage()}>
+          {">>"}
+        </button>
       </div>
-    </>
+    </TableContainer>
   );
-};
+});
 
 export default AlarmTable;

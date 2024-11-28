@@ -2,7 +2,7 @@
 import styled from "styled-components";
 import InputType1 from "@karden/utils/Input/InputType1";
 import { PrimaryButton } from "@karden/utils/button";
-import useFetchData from "@src/hooks/useFetchData";
+import useFetchJsonData from "@src/hooks/useFetchJsonData";
 import { config, getRestApiServerUrl } from "@config/config";
 import { FormEvent } from "react";
 import { loginSuccess } from "@reducers/userActions";
@@ -70,7 +70,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const fetchData = useFetchData();
+  const fetchData = useFetchJsonData();
 
   const loginSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

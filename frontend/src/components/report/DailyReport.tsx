@@ -8,7 +8,7 @@ import { selectSite, setSites, SiteType } from "@reducers/appAction";
 import { useLocation, useNavigate } from "react-router";
 import { replaceLastPath } from "@src/utils/path";
 import { useDispatch, useSelector } from "react-redux";
-import useFetch from "@src/hooks/useFetch";
+import useFetchData from "@src/hooks/useFetchData";
 import { createPostRequestObject, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
 import { config, getRestApiServerUrl } from "@config/config";
 import { RootState } from "@src/main";
@@ -145,7 +145,7 @@ const DailyReport = ({ sites, selectedSite, selectedDate, setSelectedDate }: Dai
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const fetchData = useFetch();
+  const fetchData = useFetchData();
   const user = useSelector((store: RootState) => store.userReducer.user);
 
   useEffect(() => {

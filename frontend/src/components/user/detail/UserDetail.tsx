@@ -3,7 +3,7 @@ import { AUTHENTICATED_ROLES, routes } from "@config/routes";
 import { ROLE_USER, UserRoleType } from "@config/userRole";
 import { PrimaryButton, SecondaryButton } from "@karden/utils/button";
 import { InputType1 } from "@karden/utils/Input";
-import useFetch from "@src/hooks/useFetch";
+import useFetchData from "@src/hooks/useFetchData";
 import { createPostRequestObject, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
@@ -101,7 +101,7 @@ const UserDetail = ({ user }: UserDetailProps) => {
   const nameRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
-  const fetchData = useFetch();
+  const fetchData = useFetchData();
 
   const [userDetailId, setUserDetailId] = useState<string>("");
   const [disableUserIdInput, setDisableUserIdInput] = useState<boolean>(true);

@@ -2,12 +2,12 @@ import Preview from "./Preview";
 import { PowerCurveGraphProps } from "@components/graph/PowerCurveGraph";
 import { DailyRWPGraphProps } from "@components/graph/DailyRWPGraph";
 import { useEffect, useState } from "react";
-import useFetchData from "@src/hooks/useFetchData";
+import useFetchJsonData from "@src/hooks/useFetchJsonData";
 import { config, getRestApiServerUrl } from "@config/config";
 import { TotalOperatingTableProps } from "./table/TotalOperatingTable";
 import { DailyOperatingTableProps } from "./table/DailyOperatingTable";
 import { JsonApi, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
-import { AlarmTableV2Props, AlarmType } from "./table/AlarmTableV2";
+import { AlarmTableProps, AlarmType } from "./table/AlarmTable";
 import { EventBoxNote } from "./EventTextBox";
 import { SiteType } from "@reducers/appAction";
 import Swal from "sweetalert2";
@@ -24,7 +24,7 @@ type ResponseOfReportU151 = {
   TotalOperatingTableProps &
   PowerCurveGraphProps &
   DailyRWPGraphProps &
-  AlarmTableV2Props;
+  AlarmTableProps;
 
 type PreviewContainerProps = {
   key: number;
@@ -32,7 +32,7 @@ type PreviewContainerProps = {
   selectedDate: Date;
 };
 const PreviewContainer = ({ key, selectedSite, selectedDate }: PreviewContainerProps) => {
-  const fetchData = useFetchData();
+  const fetchData = useFetchJsonData();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dailyRWPGraphProps, setDailyRWPGraphProps] = useState<DailyRWPGraphProps>({} as DailyRWPGraphProps);
   const [powerCurveGraphProps, setPowerCurveGraphProps] = useState<PowerCurveGraphProps>({} as PowerCurveGraphProps);

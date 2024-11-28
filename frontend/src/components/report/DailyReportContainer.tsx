@@ -5,7 +5,7 @@ import { replaceLastPath } from "@src/utils/path";
 import { selectSite, setSites, SiteType } from "@reducers/appAction";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@src/main";
-import useFetchData from "@src/hooks/useFetchData";
+import useFetchJsonData from "@src/hooks/useFetchJsonData";
 import { JsonApi, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
 import { config, getRestApiServerUrl } from "@config/config";
 import Swal from "sweetalert2";
@@ -27,7 +27,7 @@ const DailyReportContainer = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(Date.now() - 24 * 60 * 60 * 1000));
   const selectedSite = useSelector((store: RootState) => store.appReducer.selectedSite);
   const sites = useSelector((store: RootState) => store.appReducer.sites);
-  const fetchData = useFetchData();
+  const fetchData = useFetchJsonData();
   const dispatch = useDispatch();
   const userRole = useSelector((store: RootState) => store.userReducer.user.role) as UserRoleType;
 

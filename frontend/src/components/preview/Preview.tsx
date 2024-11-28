@@ -2,7 +2,7 @@ import DailyRWPGraph, { DailyRWPGraphProps } from "@components/graph/DailyRWPGra
 import PowerCurveGraph, { PowerCurveGraphProps } from "@components/graph/PowerCurveGraph";
 import DailyOperatingTable, { DailyOperatingTableProps } from "@components/preview/table/DailyOperatingTable";
 import TotalOperatingTable, { TotalOperatingTableProps } from "./table/TotalOperatingTable";
-import AlarmTableV2, { AlarmType } from "./table/AlarmTableV2";
+import AlarmTable, { AlarmType } from "./table/AlarmTable";
 import EventTextBox, { EventBoxNote } from "./EventTextBox";
 import styled from "styled-components";
 import { PrimaryButton } from "@karden/utils/button";
@@ -11,9 +11,9 @@ import html2canvas from "html2canvas";
 import { endOfQuarter, format, startOfQuarter } from "date-fns";
 import { setLoading, SiteType } from "@reducers/appAction";
 import { config, getRestApiServerUrl } from "@config/config";
-import useFetch from "@src/hooks/useFetch";
+import useFetchData from "@src/hooks/useFetchData";
 import { createPostRequestsObject, JsonApiRequestsPost, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
-import { constants } from "@src/constants";
+import { constants } from "@config/constants";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 
@@ -73,7 +73,7 @@ const Preview = ({
     setEventBoxNote([...eventBoxNotesProps]);
   }, [eventBoxNotesProps]);
 
-  const fetchData = useFetch();
+  const fetchData = useFetchData();
   let formattedDate, formattedTimechartDate, formattedPowerCurveDate;
 
   if (date !== "") {
@@ -99,21 +99,24 @@ const Preview = ({
 
     dispatch(setLoading());
 
-    const powerCurveBlob = await generateBlobFromCanvas(powerCurveGraphRef);
-    const dailyRWPBlob = await generateBlobFromCanvas(dailyRWPGraphRef);
+    //delay for making blob
+    setTimeout(async () => {
+      const powerCurveBlob = await generateBlobFromCanvas(powerCurveGraphRef);
+      const dailyRWPBlob = await generateBlobFromCanvas(dailyRWPGraphRef);
 
-    const formData = new FormData();
+      const formData = new FormData();
 
-    formData.append("powerCurve", powerCurveBlob!);
-    formData.append("timeChart", dailyRWPBlob!);
-    formData.append("turbineUuid", selectedSite.uuid);
-    formData.append("writeDate", date);
-    formData.append("siteName", selectedSite.name);
+      formData.append("powerCurve", powerCurveBlob!);
+      formData.append("timeChart", dailyRWPBlob!);
+      formData.append("turbineUuid", selectedSite.uuid);
+      formData.append("writeDate", date);
+      formData.append("siteName", selectedSite.name);
 
-    const remarksResponse = await sendRemarksRequest();
+      const remarksResponse = await sendRemarksRequest();
 
-    const reportResponse = await generateReport(formData);
-    downloadFile(reportResponse);
+      const reportResponse = await generateReport(formData);
+      downloadFile(reportResponse);
+    }, 250);
   };
 
   const generateBlobFromCanvas = (ref: React.RefObject<HTMLDivElement>): Promise<Blob> => {
@@ -212,7 +215,7 @@ const Preview = ({
           timeChart={dailyRWPGraphProps.timeChart}
           ratedPower={ratedPower}
         />
-        <AlarmTableV2 alarms={alarmsProps} />
+        <AlarmTable alarms={alarmsProps} />
         {eventBoxNote.map((eventText, index) => (
           <EventTextBox
             title={index + 1 + ". " + eventText.title}

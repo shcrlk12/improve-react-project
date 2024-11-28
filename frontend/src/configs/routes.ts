@@ -1,4 +1,4 @@
-import { constants } from "@src/constants";
+import { constants } from "@config/constants";
 import { ROLE_ADMIN, ROLE_ANONYMOUS, ROLE_MANAGER, ROLE_USER } from "./userRole";
 
 export const ALL_ROLES = [ROLE_ANONYMOUS, ROLE_USER, ROLE_MANAGER, ROLE_ADMIN];

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import UserList from "./UserList";
-import useFetchData from "@src/hooks/useFetchData";
+import useFetchJsonData from "@src/hooks/useFetchJsonData";
 import { JsonApi, jsonOrgConfig } from "@src/jsonApiOrg/JsonApiOrg";
 import { UserOfRequest } from "../detail/UserDetail";
 import { config, getRestApiServerUrl } from "@config/config";
@@ -14,7 +14,7 @@ import { config, getRestApiServerUrl } from "@config/config";
  * @created 2024-07-19
  */
 const UserListContainer = () => {
-  const fetchData = useFetchData();
+  const fetchData = useFetchJsonData();
   const [users, setUsers] = useState<Array<JsonApi<UserOfRequest>>>([] as Array<JsonApi<UserOfRequest>>);
 
   useEffect(() => {

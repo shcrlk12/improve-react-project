@@ -24,7 +24,7 @@ import DangerButton from "./../../../../node_modules/@karden/utils/button/Danger
 import { PrimaryButton } from "@karden/utils/button";
 import { useNavigate } from "react-router";
 import { routes } from "@config/routes";
-import useFetch from "@src/hooks/useFetch";
+import useFetchData from "@src/hooks/useFetchData";
 import { config, getRestApiServerUrl } from "@config/config";
 import Swal from "sweetalert2";
 
@@ -114,7 +114,7 @@ const UserListTableContainer = styled.div`
  */
 const UserList = ({ users }: UserListProps) => {
   const navigate = useNavigate();
-  const fetchData = useFetch();
+  const fetchData = useFetchData();
 
   const [page, setPage] = useState(0);
   const [userList, setUserList] = useState<Array<UserType>>([] as Array<UserType>);
