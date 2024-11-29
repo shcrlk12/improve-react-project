@@ -204,18 +204,18 @@ const DailyReport = ({ sites, selectedSite, selectedDate, setSelectedDate }: Dai
       <MainContainer style={{ width: "450px" }}>
         <SignificantContainer>
           <SignificantHeader>특이사항</SignificantHeader>
-          <SignificantEditor>
-            <TextArea1
-              text={remark}
-              onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
-                event.preventDefault();
+          <textarea
+            name="text"
+            style={{ fontSize: "16px", padding: "4px", marginTop: "6px" }}
+            cols={50}
+            rows={8}
+            value={remark}
+            disabled={isDisableRemarkBox}
+            onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+              event.preventDefault();
 
-                setRemark(event.currentTarget.value);
-              }}
-              rows={8}
-              disabled={isDisableRemarkBox}
-            />
-          </SignificantEditor>
+              setRemark(event.currentTarget.value);
+            }}></textarea>
           <SignificantButtonContainer>
             <PrimaryButton
               type="submit"
@@ -235,7 +235,7 @@ const DailyReport = ({ sites, selectedSite, selectedDate, setSelectedDate }: Dai
                     await uploadRemark();
 
                     const newSites = sites.map((site) =>
-                      site.uuid === selectedSite.uuid ? { ...site, remark } : site,
+                      site.uuid === selectedSite.uuid ? { ...site, remark } : site
                     );
                     dispatch(setSites(newSites));
                     setIsDisableRemarkBox(true);

@@ -61,7 +61,7 @@ function App() {
       { path: routes.REPORT.INDEX, component: <Navigate to={routes.REPORT.U113.INDEX} /> },
       { path: routes.REPORT.U113.INDEX, component: <U136Page /> },
       { path: routes.REPORT.U151.INDEX, component: <U136Page /> },
-      // { path: routes.REPORT.U120.INDEX, component: <U136Page /> },
+      { path: routes.REPORT.U120.INDEX, component: <U136Page /> },
     ];
 
     const managerRoleRoutes: PageRole[] = [...userRoleRoutes];

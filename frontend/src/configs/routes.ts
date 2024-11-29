@@ -18,10 +18,10 @@ export const routes = {
       INDEX: "/report/" + constants.u113Uuid,
       permit: AUTHENTICATED_ROLES,
     },
-    // U120: {
-    //   INDEX: "/report/" + constants.u120Uuid,
-    //   permit: AUTHENTICATED_ROLES,
-    // },
+    U120: {
+      INDEX: "/report/" + constants.u120Uuid,
+      permit: AUTHENTICATED_ROLES,
+    },
   },
   USER: {
     INDEX: "/user",
@@ -48,7 +48,7 @@ export const routes = {
 export const titleMathcers = [
   { route: routes.LOGIN.INDEX, title: "Login" },
   { route: routes.REPORT.U151.INDEX, title: "U151 일일 보고서 생성" },
-  // { route: routes.REPORT.U120.INDEX, title: "U120 일일 보고서 생성" },
+  { route: routes.REPORT.U120.INDEX, title: "U120 일일 보고서 생성" },
   { route: routes.REPORT.U113.INDEX, title: "U113 일일 보고서 생성" },
   { route: routes.USER.MANAGEMENT.INDEX, title: "유저 관리" },
   { route: routes.USER.ADD.INDEX, title: "유저 추가" },
