@@ -20,7 +20,7 @@ public interface BatchService{
 
     Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU113() throws Exception;
 
-    Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU120();
+    Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU120() throws Exception;
 
     Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU151() throws Exception;
 

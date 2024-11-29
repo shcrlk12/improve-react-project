@@ -221,6 +221,7 @@ const DailyReport = ({ sites, selectedSite, selectedDate, setSelectedDate }: Dai
               type="submit"
               text="저장"
               width="30%"
+              disabled={isDisableRemarkBox}
               onClick={async () => {
                 if (!isDisableRemarkBox) {
                   const result = await Swal.fire({

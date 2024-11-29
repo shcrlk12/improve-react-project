@@ -37,8 +37,8 @@ public class AlarmsConfig {
         //u113
         u113Map = configAlarmsMap("config/u113-wppis-config.xml");
 
-        //u120 test
-        u120Map = configAlarmsMap("config/u113-wppis-config.xml");
+        //u120
+        u120Map = configAlarmsMap("config/u120-wppis-config.xml");
     }
 
     @Bean

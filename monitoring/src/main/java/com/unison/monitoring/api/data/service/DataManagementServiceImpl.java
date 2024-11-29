@@ -208,7 +208,7 @@ public class DataManagementServiceImpl implements DataManagementService{
                             .id(DataEntity.Id.builder()
                                     .timestamp(tempDate)
                                     .build())
-                            .windSpeed(0.0)
+                            .rotorSpeed(0.0)
                             .activePower(0.0)
                             .windSpeed(0.0)
                             .nacOutTmp(0.0)

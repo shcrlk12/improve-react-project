@@ -10,7 +10,7 @@ spring:
 
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://127.0.0.1:1433;databaseName=WPPIS_DB_U120;encrypt=true;trustServerCertificate=true;
+    url: jdbc:sqlserver://127.0.0.1:1433;databaseName=WPPIS_DB;encrypt=true;trustServerCertificate=true;
     username: wppis_user
     password: unison
     initialization-mode: never #data.sql 실행
@@ -28,7 +28,7 @@ spring:
 #      schema-locations: classpath:/sql/schema.sql
 #      data-locations: classpath:/sql/data.sql
 server:
-  port: 5151
+  port: 5743
   servlet:
     session:
       timeout: 43200

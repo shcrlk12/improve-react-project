@@ -49,7 +49,7 @@ public class BatchServiceImpl implements BatchService{
 
     @Override
     public Mono<ApiResponses<AlarmDto.Response>> retrieveAlarmsFromU120() throws Exception {
-        return null;
+        return retrieveAlarms(batchServerProperties.getU120Domain(), Constants.U120UUID);
     }
 
     @Override
@@ -68,20 +68,9 @@ public class BatchServiceImpl implements BatchService{
 
 
     @Override
-    public Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU120() {
-        return WebClient.create("http://127.0.0.1:5151")
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/api/data/monitoring")
-                        .queryParam("targetDate", "2024-05-01 00:00") // 쿼리 파라미터 추가
-                        .build())
-                .retrieve()
-                .onStatus(
-                        status -> status.is4xxClientError() || status.is5xxServerError(),
-                        clientResponse -> Mono.error(new Exception("Server Error"))
-                )
-                .bodyToMono(new ParameterizedTypeReference<ApiResponses<ReportDataDto.Response>>() {})
-                ;
+    public Mono<ApiResponses<ReportDataDto.Response>> retrieveDataFromU120() throws Exception {
+        return retrieveData(batchServerProperties.getU120Domain(), Constants.U120UUID);
+
     }
 
     @Override

@@ -125,7 +125,6 @@ public class DataController {
             //4 alarm 데이터
             attributes.setAlarms(dataManagementService.getAlarmsByTime(turbineUuid, startDate, endDate));
 
-
             //5 remarks 데이터
             attributes.setEventBoxNotes(dataManagementService.getRemarksByTime(turbineUuid, startDate, endDate));
 

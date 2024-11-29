@@ -67,5 +67,28 @@ public class BatchScheduler {
                     }
                 })
                 .subscribe();
+
+        //U120
+        batchService.retrieveDataFromU120()
+                .map(DataMapper::apiResponsesToListReportData)
+                .doOnNext(reportDataList -> {
+                    try {
+                        dataManagementService.uploadData(reportDataList, Constants.U120UUID);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .subscribe();
+
+        batchService.retrieveAlarmsFromU120()
+                .map(DataMapper::apiResponsesToAlarmList)
+                .doOnNext(alarmList -> {
+                    try {
+                        dataManagementService.uploadAlarms(alarmList, Constants.U120UUID);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .subscribe();
     }
 }
