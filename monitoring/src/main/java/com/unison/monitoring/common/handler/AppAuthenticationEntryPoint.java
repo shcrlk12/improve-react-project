@@ -1,7 +1,6 @@
-package com.unison.monitoring.handler;
+package com.unison.monitoring.common.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unison.monitoring.error.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Component
 public class AppAuthenticationEntryPoint implements AuthenticationEntryPoint {

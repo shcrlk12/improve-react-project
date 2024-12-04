@@ -1,10 +1,10 @@
-package com.unison.monitoring.handler;
+package com.unison.monitoring.common.handler;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.unison.monitoring.member.entity.MemberEntity;
 import com.unison.monitoring.member.repository.MemberRepository;
-import com.unison.monitoring.security.UserDetailImpl;
+import com.unison.monitoring.common.security.UserDetailImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

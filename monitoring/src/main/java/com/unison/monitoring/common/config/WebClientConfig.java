@@ -1,5 +1,6 @@
-package com.unison.monitoring.config;
+package com.unison.monitoring.common.config;
 
+import com.unison.monitoring.common.properties.ApiServerProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

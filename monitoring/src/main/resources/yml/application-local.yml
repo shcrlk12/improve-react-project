@@ -38,6 +38,7 @@ server:
 
 ## custom setting
 cors:
+  protocol: http
   ip: 127.0.0.1
   port: 5173
   domain: localhost
@@ -49,6 +50,10 @@ api-server:
 
 batch-server:
   u113: 125.136.87.142
-  u120: 125.136.87.142
+  u113-port: 5151
+
+  u120: 113.160.206.239
+  u120-port: 5743
+
   u151: 125.136.87.155
-  port: 5151
+  u151-port: 5151

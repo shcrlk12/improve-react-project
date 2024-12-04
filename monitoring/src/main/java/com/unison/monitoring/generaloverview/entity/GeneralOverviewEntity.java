@@ -1,6 +1,6 @@
-package com.unison.monitoring.api.entity;
+package com.unison.monitoring.generaloverview.entity;
 
-import com.unison.monitoring.security.UserDetailImpl;
+import com.unison.monitoring.common.security.UserDetailImpl;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;

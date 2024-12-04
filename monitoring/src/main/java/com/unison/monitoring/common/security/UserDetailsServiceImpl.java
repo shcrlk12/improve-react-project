@@ -1,4 +1,4 @@
-package com.unison.monitoring.security;
+package com.unison.monitoring.common.security;
 
 import com.unison.monitoring.member.entity.MemberEntity;
 import com.unison.monitoring.member.repository.MemberRepository;

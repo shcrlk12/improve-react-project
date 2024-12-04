@@ -114,7 +114,7 @@ const Preview = ({
 
       const remarksResponse = await sendRemarksRequest();
 
-      const reportResponse = await generateReport(formData);
+      const reportResponse = await generateReport(selectedSite.uuid, formData);
       downloadFile(reportResponse);
     }, 250);
   };
@@ -160,7 +160,7 @@ const Preview = ({
       httpMethod = "PATCH";
     }
 
-    const response = await fetchData(getRestApiServerUrl("/data/remarks"), {
+    const response = await fetchData(getRestApiServerUrl(`/${selectedSite.uuid}/remarks`), {
       method: httpMethod,
       credentials: "include",
       body: JSON.stringify(request),
@@ -169,8 +169,8 @@ const Preview = ({
     return response;
   };
 
-  const generateReport = (formData: FormData) => {
-    return fetchData(getRestApiServerUrl("/docx/daily-report"), {
+  const generateReport = (turbineUuid: string, formData: FormData) => {
+    return fetchData(getRestApiServerUrl(`/reports/${turbineUuid}/daily`), {
       method: "POST",
       credentials: "include",
       body: formData,

@@ -1,55 +1,59 @@
-package com.unison.monitoring.api.entity;
+package com.unison.monitoring.remarks.entity;
 
 import com.unison.monitoring.generaloverview.entity.GeneralOverviewEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Getter
-@Table(name = "RemarkMeta")
+@Table(name = "RemarkData")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
-public class RemarkMetaEntity {
+@Setter
+public class RemarkDataEntity implements Persistable<UUID> {
     @Id
     UUID uuid;
 
     @Column(nullable = false)
-    Integer orderId;
-
-    @Column(nullable = false)
-    String title;
+    private LocalDateTime timestamp;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "general_overview_uuid", nullable = false)
-    GeneralOverviewEntity generalOverviewEntity;
+    @JoinColumn(name = "general_overview_uuid")
+    private GeneralOverviewEntity generalOverviewEntity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "remark_meta_uuid")
+    private RemarkMetaEntity remarkMetaEntity;
 
     @Column(nullable = false)
-    String defaultDescription;
+    private String description;
 
     @Column(nullable = false)
-    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    @ColumnDefault("'System'")
     private String createdBy;
 
-    @UpdateTimestamp
     @Column(nullable = true)
     private LocalDateTime updatedAt;
 
     @Column(nullable = true)
     private String updatedBy;
+
+    @Override
+    public UUID getId() {
+        return uuid;
+    }
+
+    @Override
+    public boolean isNew() {
+        return this.updatedAt == null;
+    }
 }

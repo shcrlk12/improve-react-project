@@ -1,16 +1,16 @@
-package com.unison.monitoring.api.mapper;
+package com.unison.monitoring.member.mapper;
 
 import com.unison.common.dto.MemberDto;
 import com.unison.common.jsonapi.request.ApiRequest;
-import com.unison.monitoring.api.domain.Member;
-import com.unison.monitoring.api.entity.MemberEntity;
+import com.unison.monitoring.member.dto.Member;
+import com.unison.monitoring.member.entity.MemberEntity;
 
 import java.util.List;
 
 
 public class MemberMapper {
 
-    public static Member memberDtoToMember(ApiRequest<MemberDto.Request> memberRequest){
+    public static Member toMemberDto(ApiRequest<MemberDto.Request> memberRequest){
         MemberDto.Request memberDtoRequest = memberRequest.getData().getAttributes();
 
         return Member.builder()
@@ -21,7 +21,7 @@ public class MemberMapper {
                 .build();
     }
 
-    public static MemberDto.Response memberToMemberDto(MemberEntity member){
+    public static MemberDto.Response toResponseDto(MemberEntity member){
 
         return MemberDto.Response.builder()
                 .id(member.getId())
@@ -30,15 +30,15 @@ public class MemberMapper {
                 .build();
     }
 
-    public static List<MemberDto.Response> memberToMemberDto(List<MemberEntity> members){
+    public static List<MemberDto.Response> toResponseDto(List<MemberEntity> members){
 
 
         return members.stream()
-                .map(MemberMapper::memberToMemberDto)
+                .map(MemberMapper::toResponseDto)
                 .toList();
     }
 
-    public static MemberDto.Response memberToMemberDto(Member member){
+    public static MemberDto.Response toResponseDto(Member member){
 
         return MemberDto.Response.builder()
                 .name(member.getName())

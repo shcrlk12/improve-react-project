@@ -1,8 +1,8 @@
-package com.unison.monitoring.handler;
+package com.unison.monitoring.common.handler;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.unison.monitoring.error.ErrorCode;
+import com.unison.monitoring.common.exception.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import static com.unison.monitoring.util.ErrorCodeMatcher.getErrorCode;
+import static com.unison.monitoring.common.utils.ErrorCodeMatcher.getErrorCode;
 
 @Component
 public class AppAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {

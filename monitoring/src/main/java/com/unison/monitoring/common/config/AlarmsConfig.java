@@ -1,4 +1,4 @@
-package com.unison.monitoring.api.domain;
+package com.unison.monitoring.common.config;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;

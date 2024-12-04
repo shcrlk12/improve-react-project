@@ -35,7 +35,7 @@ const DailyReportContainer = () => {
     const fetchDataAsync = async () => {
       try {
         const data = await fetchData<Array<JsonApi<SiteTypeDto>>>(
-          getRestApiServerUrl(`/data/sites`),
+          getRestApiServerUrl(`/overview`),
           {
             mode: "cors",
             method: "GET",
@@ -47,7 +47,7 @@ const DailyReportContainer = () => {
               title: "데이터 에러",
               text: "서버 데이터 에러 관리자에게 문의하세요.",
               icon: "error",
-            }),
+            })
         );
 
         const sites: SiteType[] = data.map(
@@ -57,7 +57,7 @@ const DailyReportContainer = () => {
               name: item.attributes.name.toUpperCase(),
               remark: item.attributes.remark,
               ratedPower: item.attributes.ratedPower,
-            }) as SiteType,
+            } as SiteType)
         );
 
         dispatch(setSites(sites));

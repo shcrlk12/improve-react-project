@@ -1,4 +1,4 @@
-package com.unison.monitoring.api.domain;
+package com.unison.monitoring.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -5,4 +5,4 @@ spring:
       - classpath:/yml/application-dev.yml
       - classpath:/yml/application-prod.yml
   profiles:
-    active: prod  #local, dev, prod
+    active: local  #local, dev, prod

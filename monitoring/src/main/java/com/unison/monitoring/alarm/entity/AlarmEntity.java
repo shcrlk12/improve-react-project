@@ -1,4 +1,4 @@
-package com.unison.monitoring.api.entity;
+package com.unison.monitoring.alarm.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

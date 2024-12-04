@@ -1,8 +1,7 @@
-package com.unison.monitoring.api.member.service;
+package com.unison.monitoring.member.service;
 
 import com.unison.common.dto.MemberDto;
 import com.unison.common.jsonapi.request.ApiRequest;
-import com.unison.monitoring.api.domain.Member;
 
 import java.util.List;
 

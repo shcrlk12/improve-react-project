@@ -177,7 +177,7 @@ const DailyReport = ({ sites, selectedSite, selectedDate, setSelectedDate }: Dai
       },
     };
 
-    const response = await fetchData(getRestApiServerUrl(`/data/remarks/${selectedSite.uuid}`), {
+    const response = await fetchData(getRestApiServerUrl(`/${selectedSite.uuid}/remark/daily`), {
       method: "PATCH",
       credentials: "include",
       body: JSON.stringify(request),

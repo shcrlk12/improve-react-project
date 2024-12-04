@@ -181,7 +181,6 @@ public class DocxGeneratorImpl implements DocxGenerator{
         tcPr.addNewVMerge().setVal(STMerge.Enum.forString("restart")); // 병합 시작
 
         for(int i = startRow + 1; i <= endRow; i++){
-            System.out.println(table.getNumberOfRows());
             table.getRow(i).getCell(column).getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.Enum.forString("continue"));
         }
     }

@@ -1,4 +1,4 @@
-package com.unison.monitoring.config;
+package com.unison.monitoring.common.properties;
 
 
 import lombok.Getter;

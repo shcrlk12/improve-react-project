@@ -1,16 +1,13 @@
-package com.unison.monitoring.api.member.service;
+package com.unison.monitoring.member.service;
 
 import com.unison.common.dto.MemberDto;
-import com.unison.common.jsonapi.Resource;
 import com.unison.common.jsonapi.request.ApiRequest;
-import com.unison.monitoring.api.domain.Member;
-import com.unison.monitoring.api.entity.MemberEntity;
-import com.unison.monitoring.api.mapper.MemberMapper;
-import com.unison.monitoring.api.member.MemberRepository;
-import com.unison.monitoring.security.UserDetailImpl;
+import com.unison.monitoring.member.entity.MemberEntity;
+import com.unison.monitoring.member.mapper.MemberMapper;
+import com.unison.monitoring.member.repository.MemberRepository;
+import com.unison.monitoring.common.security.UserDetailImpl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.expression.ExpressionException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,11 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class MemberServiceImpl implements MemberCRUDService{
+public class MemberServiceImpl implements MemberCRUDService {
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -51,7 +47,7 @@ public class MemberServiceImpl implements MemberCRUDService{
 
         MemberEntity memberEntity = memberRepository.findById(memberId).orElseThrow(() -> new Exception("not valid user id: " + memberId));
 
-        return MemberMapper.memberToMemberDto(memberEntity);
+        return MemberMapper.toResponseDto(memberEntity);
     }
 
     @Override
@@ -59,7 +55,7 @@ public class MemberServiceImpl implements MemberCRUDService{
 
         List<MemberEntity> memberEntity = memberRepository.findByIsActiveTrue();
 
-        return MemberMapper.memberToMemberDto(memberEntity);
+        return MemberMapper.toResponseDto(memberEntity);
     }
 
     @Override

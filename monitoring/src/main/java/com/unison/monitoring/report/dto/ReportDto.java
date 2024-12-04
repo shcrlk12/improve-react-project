@@ -1,10 +1,13 @@
-package com.unison.monitoring.common.dto;
+package com.unison.monitoring.report.dto;
 
+import com.unison.monitoring.alarm.dto.AlarmDto;
+import com.unison.monitoring.common.dto.TimeChart;
+import com.unison.monitoring.powercurve.dto.PowerCurveDto;
+import com.unison.monitoring.remarks.dto.RemarkDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 public class ReportDto {
     public final static String TYPE = "report-data";
@@ -28,44 +31,10 @@ public class ReportDto {
         private Integer totalOperatingTime;
         private Integer totalGeneratingTime;
 
-        private List<PowerCurve> referencePowerCurve;
-        private List<PowerCurve> powerCurveScatter;
+        private List<PowerCurveDto> referencePowerCurve;
+        private List<PowerCurveDto> powerCurveScatter;
         private List<TimeChart> timeChart;
-        private List<Alarm> alarms;
-        private List<Remark> eventBoxNotes;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public static class PowerCurve{
-        private String windSpeed;
-        private String activePower;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public static class TimeChart{
-        private LocalDateTime timestamp;
-        private String rotorSpeed;
-        private String windSpeed;
-        private String activePower;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public static class Alarm {
-        private LocalDateTime timestamp;
-        private Integer alarmCode;
-        private String alarmName;
-        private String remarks;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Remark{
-        private String title;
-        private String content;
-        private UUID uuid;
+        private List<AlarmDto> alarms;
+        private List<RemarkDto> eventBoxNotes;
     }
 }

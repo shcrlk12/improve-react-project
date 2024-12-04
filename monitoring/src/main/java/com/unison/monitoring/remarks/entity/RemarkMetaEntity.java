@@ -1,59 +1,55 @@
-package com.unison.monitoring.api.entity;
+package com.unison.monitoring.remarks.entity;
 
 import com.unison.monitoring.generaloverview.entity.GeneralOverviewEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.domain.Persistable;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Getter
-@Table(name = "RemarkData")
+@Table(name = "RemarkMeta")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicUpdate
-@Setter
-public class RemarkDataEntity implements Persistable<UUID> {
+public class RemarkMetaEntity {
     @Id
     UUID uuid;
 
     @Column(nullable = false)
-    private LocalDateTime timestamp;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "general_overview_uuid")
-    private GeneralOverviewEntity generalOverviewEntity;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "remark_meta_uuid")
-    private RemarkMetaEntity remarkMetaEntity;
+    Integer orderId;
 
     @Column(nullable = false)
-    private String description;
+    String title;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "general_overview_uuid", nullable = false)
+    GeneralOverviewEntity generalOverviewEntity;
 
     @Column(nullable = false)
+    String defaultDescription;
+
+    @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
+    @ColumnDefault("'System'")
     private String createdBy;
 
+    @UpdateTimestamp
     @Column(nullable = true)
     private LocalDateTime updatedAt;
 
     @Column(nullable = true)
     private String updatedBy;
-
-    @Override
-    public UUID getId() {
-        return uuid;
-    }
-
-    @Override
-    public boolean isNew() {
-        return this.updatedAt == null;
-    }
 }

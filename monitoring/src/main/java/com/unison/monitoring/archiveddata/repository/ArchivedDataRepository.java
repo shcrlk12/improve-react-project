@@ -1,6 +1,6 @@
-package com.unison.monitoring.api.repository;
+package com.unison.monitoring.archiveddata.repository;
 
-import com.unison.monitoring.api.entity.ArchivedDataEntity;
+import com.unison.monitoring.archiveddata.entity.ArchivedDataEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

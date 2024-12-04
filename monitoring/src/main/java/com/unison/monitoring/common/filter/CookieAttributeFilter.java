@@ -1,4 +1,4 @@
-package com.unison.monitoring.filter;
+package com.unison.monitoring.common.filter;
 
 
 import jakarta.servlet.*;
@@ -20,7 +20,7 @@ public class CookieAttributeFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         chain.doFilter(request, response);
         // you can use this when you use https protocol
-        addSameSite(httpServletResponse , "Lax");
+        addSameSite(httpServletResponse , "none");
     }
 
     private void addSameSite(HttpServletResponse response, String sameSite) {

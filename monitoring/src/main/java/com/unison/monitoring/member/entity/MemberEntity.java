@@ -1,4 +1,4 @@
-package com.unison.monitoring.api.entity;
+package com.unison.monitoring.member.entity;
 
 
 import jakarta.persistence.*;

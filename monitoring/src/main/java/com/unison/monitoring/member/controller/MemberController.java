@@ -1,6 +1,7 @@
-package com.unison.monitoring.api.member;
+package com.unison.monitoring.member.controller;
 
 import com.unison.common.dto.MemberDto;
+import com.unison.common.dto.UserDto;
 import com.unison.common.jsonapi.JsonApi;
 import com.unison.common.jsonapi.JsonApiOrgHttpHeaders;
 import com.unison.common.jsonapi.Links;
@@ -8,13 +9,16 @@ import com.unison.common.jsonapi.Resource;
 import com.unison.common.jsonapi.request.ApiRequest;
 import com.unison.common.jsonapi.response.ApiResponse;
 import com.unison.common.jsonapi.response.ApiResponses;
-import com.unison.monitoring.api.domain.Member;
-import com.unison.monitoring.api.mapper.MemberMapper;
-import com.unison.monitoring.api.member.service.MemberServiceImpl;
+import com.unison.monitoring.common.security.UserDetailImpl;
+import com.unison.monitoring.member.dto.Member;
+import com.unison.monitoring.member.entity.MemberEntity;
+import com.unison.monitoring.member.mapper.MemberMapper;
+import com.unison.monitoring.member.service.MemberServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,6 +52,30 @@ public class MemberController {
                 .body(apiResponse);
     }
 
+    @GetMapping("/auth")
+    public ResponseEntity<ApiResponse<UserDto.Response>> auth(HttpServletRequest httpServletRequest){
+        MemberEntity memberEntity = ((UserDetailImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMember();
+
+        JsonApiOrgHttpHeaders headers = new JsonApiOrgHttpHeaders();
+
+        Resource<UserDto.Response> resource = Resource.<UserDto.Response>builder()
+                .id(memberEntity.getId())
+                .type(UserDto.TYPE)
+                .attributes(new UserDto.Response(memberEntity.getRole(), memberEntity.getName(), "인증 성공"))
+                .build();
+
+        ApiResponse<UserDto.Response> apiResponse = ApiResponse.<UserDto.Response>builder()
+                .data(resource)
+                .links(Links.create(httpServletRequest))
+                .jsonapi(new JsonApi())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .headers(headers)
+                .body(apiResponse);
+
+    }
+
     @GetMapping()
     public ResponseEntity<ApiResponses<MemberDto.Response>> getMembers(HttpServletRequest httpServletRequest) throws Exception {
 
@@ -76,9 +104,9 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<ApiResponse<MemberDto.Response>> createMember(@RequestBody ApiRequest<MemberDto.Request> request, HttpServletRequest httpServletRequest){
 
-        Member member = MemberMapper.memberDtoToMember(request);
+        Member member = MemberMapper.toMemberDto(request);
 
-        MemberDto.Response response = MemberMapper.memberToMemberDto(member);
+        MemberDto.Response response = MemberMapper.toResponseDto(member);
 
         Resource<MemberDto.Response> resource = Resource.<MemberDto.Response>builder()
                 .type("users")
@@ -123,12 +151,12 @@ public class MemberController {
                     .body(null);
         }
 
-        Member member = MemberMapper.memberDtoToMember(request);
+        Member member = MemberMapper.toMemberDto(request);
 
         memberServiceImpl.updateMember(request);
 
         //make response
-        MemberDto.Response response = MemberMapper.memberToMemberDto(member);
+        MemberDto.Response response = MemberMapper.toResponseDto(member);
 
         Resource<MemberDto.Response> resource = Resource.<MemberDto.Response>builder()
                 .type("users")

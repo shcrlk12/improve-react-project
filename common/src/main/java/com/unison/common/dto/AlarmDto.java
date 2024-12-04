@@ -16,6 +16,18 @@ public class AlarmDto {
     @Builder
     @RequiredArgsConstructor
     @AllArgsConstructor
+    public static class Request{
+        private String alarmNumber;
+        private String alarmCode;
+        private String comment;
+        private String alarmLogTimestamp;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    @RequiredArgsConstructor
+    @AllArgsConstructor
     public static class Response{
         private String alarmNumber;
         private String alarmCode;

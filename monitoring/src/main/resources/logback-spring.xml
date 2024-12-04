@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+    <!-- 콘솔 출력 패턴 -->
+    <property name="CONSOLE_PATTERN" value="%green(%d{yyyy-MM-dd HH:mm:ss.SSS}) %magenta([%thread]) %highlight(%5level) %cyan(%logger) - %yellow(%msg%n)" />
+    <!-- 파일 출력 패턴 -->
+    <property name="FILE_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" />
+
+    <!-- 콘솔 Appender 설정 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 파일 Appender 설정 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>D:\LOGs\Monitoring\log.txt</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 날짜 형식 파일 이름 -->
+            <fileNamePattern>D:\LOGs\Monitoring\log-%d{yyyy-MM-dd}.txt</fileNamePattern>
+            <maxHistory>365</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 특정 로거 설정 -->
+    <logger name="jdbc" level="OFF" additive="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <logger name="jdbc.sqlonly" level="DEBUG" additive="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <logger name="jdbc.sqltiming" level="OFF" additive="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <logger name="com.unison.monitoring" level="DEBUG" additive="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <!-- 루트 로거 설정 -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>

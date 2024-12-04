@@ -1,5 +1,6 @@
-package com.unison.monitoring.api.entity;
+package com.unison.monitoring.data.entity;
 
+import com.unison.monitoring.generaloverview.entity.GeneralOverviewEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -7,9 +8,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.domain.Persistable;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Getter

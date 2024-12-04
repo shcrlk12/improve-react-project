@@ -37,10 +37,10 @@ const PreviewContainer = ({ key, selectedSite, selectedDate }: PreviewContainerP
   const [dailyRWPGraphProps, setDailyRWPGraphProps] = useState<DailyRWPGraphProps>({} as DailyRWPGraphProps);
   const [powerCurveGraphProps, setPowerCurveGraphProps] = useState<PowerCurveGraphProps>({} as PowerCurveGraphProps);
   const [dailyOperatingTableProps, setDailyOperatingTableProps] = useState<DailyOperatingTableProps>(
-    {} as DailyOperatingTableProps,
+    {} as DailyOperatingTableProps
   );
   const [totalOperatingTableProps, setTotalOperatingTableProps] = useState<TotalOperatingTableProps>(
-    {} as TotalOperatingTableProps,
+    {} as TotalOperatingTableProps
   );
   const [date, setDate] = useState<string>("");
   const [alarms, setAlarms] = useState<AlarmType[]>([] as AlarmType[]);
@@ -50,7 +50,7 @@ const PreviewContainer = ({ key, selectedSite, selectedDate }: PreviewContainerP
     const fetchDataAsync = async () => {
       try {
         const data = await fetchData<JsonApi<ResponseOfReportU151>>(
-          getRestApiServerUrl(`/data/report?turbineUuid=${selectedSite.uuid}&writeDate=${selectedDate.toISOString()}`),
+          getRestApiServerUrl(`/reports/${selectedSite.uuid}/daily?writeDate=${selectedDate.toISOString()}`),
           {
             mode: "cors",
             method: "GET",
@@ -62,7 +62,7 @@ const PreviewContainer = ({ key, selectedSite, selectedDate }: PreviewContainerP
               title: "데이터 에러",
               text: "서버 데이터 에러 관리자에게 문의하세요.",
               icon: "error",
-            }),
+            })
         );
 
         setDailyOperatingTableProps(data.attributes as DailyOperatingTableProps);

@@ -1,4 +1,4 @@
-package com.unison.monitoring.api.entity;
+package com.unison.monitoring.powercurve.entity;
 
 import com.unison.monitoring.generaloverview.entity.GeneralOverviewEntity;
 import jakarta.persistence.*;

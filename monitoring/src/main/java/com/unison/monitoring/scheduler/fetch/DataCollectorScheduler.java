@@ -1,91 +1,90 @@
-package com.unison.monitoring.scheduler;
+package com.unison.monitoring.scheduler.fetch;
 
 import com.unison.common.Constants;
-import com.unison.monitoring.data.service.DataManagementService;
 import com.unison.monitoring.data.mapper.DataMapper;
+import com.unison.monitoring.data.service.DataUploadService;
+import com.unison.monitoring.scheduler.fetch.service.DataCollectorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class BatchScheduler {
+public class DataCollectorScheduler {
 
-    private final BatchService batchService;
-    private final DataManagementService dataManagementService;
+    private final DataCollectorService dataCollectorService;
+    private final DataUploadService dataUploadService;
 
-    //10분 마다 실행.
-//    @Scheduled(cron = "0 0/10 * * * *")
     @Scheduled(cron = "30 * * * * *") // 0초에 가져오면 11:50분 데이터를 못가져 올 수 있음.
     public void run() throws Exception {
 
         //U113
-        batchService.retrieveDataFromU113()
-                .map(DataMapper::apiResponsesToListReportData)
+        dataCollectorService.retrieveDataFromU113()
+                .map(DataMapper::toReportDataList)
                 .doOnNext(reportDataList -> {
                     try {
-                        dataManagementService.uploadData(reportDataList, Constants.U113UUID);
+                        dataUploadService.uploadData(reportDataList, Constants.U113UUID);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 })
                 .block();
 
-        batchService.retrieveAlarmsFromU113()
-                .map(DataMapper::apiResponsesToAlarmList)
+        dataCollectorService.retrieveAlarmsFromU113()
+                .map(DataMapper::toAlarmResponseDtoList)
                 .doOnNext(alarmList -> {
                     try {
-                        dataManagementService.uploadAlarms(alarmList, Constants.U113UUID);
+                        dataUploadService.uploadAlarms(alarmList, Constants.U113UUID);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 })
-                .subscribe();
+                .block();
 
         //U151
-        batchService.retrieveDataFromU151()
-                .map(DataMapper::apiResponsesToListReportData)
+        dataCollectorService.retrieveDataFromU151()
+                .map(DataMapper::toReportDataList)
                 .doOnNext(reportDataList -> {
                     try {
-                        dataManagementService.uploadData(reportDataList, Constants.U151UUID);
+                        dataUploadService.uploadData(reportDataList, Constants.U151UUID);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 })
-                .subscribe();
+                .block();
 
-        batchService.retrieveAlarmsFromU151()
-                .map(DataMapper::apiResponsesToAlarmList)
+        dataCollectorService.retrieveAlarmsFromU151()
+                .map(DataMapper::toAlarmResponseDtoList)
                 .doOnNext(alarmList -> {
                     try {
-                        dataManagementService.uploadAlarms(alarmList, Constants.U151UUID);
+                        dataUploadService.uploadAlarms(alarmList, Constants.U151UUID);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 })
-                .subscribe();
+                .block();
 
         //U120
-        batchService.retrieveDataFromU120()
-                .map(DataMapper::apiResponsesToListReportData)
+        dataCollectorService.retrieveDataFromU120()
+                .map(DataMapper::toReportDataList)
                 .doOnNext(reportDataList -> {
                     try {
-                        dataManagementService.uploadData(reportDataList, Constants.U120UUID);
+                        dataUploadService.uploadData(reportDataList, Constants.U120UUID);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 })
-                .subscribe();
+                .block();
 
-        batchService.retrieveAlarmsFromU120()
-                .map(DataMapper::apiResponsesToAlarmList)
+        dataCollectorService.retrieveAlarmsFromU120()
+                .map(DataMapper::toAlarmResponseDtoList)
                 .doOnNext(alarmList -> {
                     try {
-                        dataManagementService.uploadAlarms(alarmList, Constants.U120UUID);
+                        dataUploadService.uploadAlarms(alarmList, Constants.U120UUID);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 })
-                .subscribe();
+                .block();
     }
 }

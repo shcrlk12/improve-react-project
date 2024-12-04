@@ -32,7 +32,7 @@ function App() {
 
   useEffect(() => {
     const fetchDataAsync = async () => {
-      const data = await fetchData<JsonApi<ResponseOfLogin>>(getRestApiServerUrl("/data/auth"), {
+      const data = await fetchData<JsonApi<ResponseOfLogin>>(getRestApiServerUrl("/users/auth"), {
         mode: "cors",
         method: "GET",
         credentials: "include",

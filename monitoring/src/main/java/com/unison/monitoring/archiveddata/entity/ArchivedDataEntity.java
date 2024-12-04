@@ -1,5 +1,6 @@
-package com.unison.monitoring.api.entity;
+package com.unison.monitoring.archiveddata.entity;
 
+import com.unison.monitoring.generaloverview.entity.GeneralOverviewEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,19 +60,4 @@ public class ArchivedDataEntity {
     @Column(nullable = false)
     @ColumnDefault("'System'")
     private String createdBy;
-
-    public int getOperatingTime(){
-        return fullPerformance
-                        + partialPerformance
-                        + outOfElectrical
-                        + outOfEnvironment
-                        + requestedShutdown
-                        + scheduledMaintenance
-                        + technicalStandby;
-    }
-
-    public int getGeneratingTime(){
-        return fullPerformance
-                        + partialPerformance;
-    }
 }

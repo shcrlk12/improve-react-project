@@ -1,6 +1,6 @@
-package com.unison.monitoring.api.repository;
+package com.unison.monitoring.remarks.repository;
 
-import com.unison.monitoring.api.entity.RemarkDataEntity;
+import com.unison.monitoring.remarks.entity.RemarkDataEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

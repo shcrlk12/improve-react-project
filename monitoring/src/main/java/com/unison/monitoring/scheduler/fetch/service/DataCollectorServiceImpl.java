@@ -1,4 +1,4 @@
-package com.unison.monitoring.scheduler;
+package com.unison.monitoring.scheduler.fetch.service;
 
 import com.unison.common.Constants;
 import com.unison.common.dto.AlarmDto;
@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class BatchServiceImpl implements BatchService{
+public class DataCollectorServiceImpl implements DataCollectorService {
 
     private final BatchServerProperties batchServerProperties;
     private final GeneralOverviewRepository generalOverviewRepository;

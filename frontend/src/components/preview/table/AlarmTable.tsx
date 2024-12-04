@@ -13,7 +13,7 @@ import { arePropsEmpty } from "@src/utils/props";
 //TData
 export type AlarmType = {
   timestamp: Date | string;
-  alarmCode: number | string;
+  alarmNumber: number | string;
   alarmName: string;
   remarks: string;
 };
@@ -35,7 +35,7 @@ const columns = [
     enableResizing: true,
     size: 200,
   }),
-  columnHelper.accessor("alarmCode", {
+  columnHelper.accessor("alarmNumber", {
     cell: (info) => <i>{info.getValue()}</i>,
     header: () => <span>에러코드</span>,
     footer: (info) => info.column.id,
@@ -67,7 +67,7 @@ const AlarmTable = React.memo(({ alarms }: AlarmTableProps) => {
 
   useEffect(() => {
     if (alarms.length === 0) {
-      alarms.push({ alarmCode: "", timestamp: "", alarmName: "", remarks: "" } as AlarmType);
+      alarms.push({ alarmNumber: "", timestamp: "", alarmName: "", remarks: "" } as AlarmType);
     }
     if (!arePropsEmpty(alarms)) setAlarmData([...alarms]);
   }, [alarms]);

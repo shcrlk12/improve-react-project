@@ -1,4 +1,4 @@
-package com.unison.monitoring.util;
+package com.unison.monitoring.common.utils;
 
 import com.unison.monitoring.common.exception.ErrorCode;
 import org.springframework.security.authentication.BadCredentialsException;

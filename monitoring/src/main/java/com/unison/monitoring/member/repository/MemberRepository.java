@@ -1,6 +1,6 @@
-package com.unison.monitoring.api.member;
+package com.unison.monitoring.member.repository;
 
-import com.unison.monitoring.api.entity.MemberEntity;
+import com.unison.monitoring.member.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

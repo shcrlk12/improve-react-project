@@ -1,4 +1,4 @@
-package com.unison.monitoring.security;
+package com.unison.monitoring.common.security;
 
 
 import com.unison.monitoring.common.properties.CorsProperties;
@@ -21,6 +21,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @RequiredArgsConstructor
@@ -39,6 +43,18 @@ public class SecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(Arrays.asList(
+                            String.format("%s://%s:%s", corsProperties.getProtocol(), corsProperties.getIp(), corsProperties.getPort()),
+                            String.format("%s://%s:%s", corsProperties.getProtocol(), corsProperties.getDomain(), corsProperties.getPort())
+                    ));
+                    config.setAllowedMethods(Collections.singletonList("*"));
+                    config.setAllowCredentials(true);
+                    config.setAllowedHeaders(Collections.singletonList("*"));
+                    config.setMaxAge(248461212L); //1시간
+                    return config;
+                }))
                 .headers((headerConfig) ->
                         headerConfig
                                 .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
@@ -46,16 +62,16 @@ public class SecurityConfig{
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/data/sites")
-                                ).permitAll()
-                                .requestMatchers(
+                                        AntPathRequestMatcher.antMatcher("/api/overview"),
                                         AntPathRequestMatcher.antMatcher("/api/users/**"),
-                                        AntPathRequestMatcher.antMatcher("/api/data/**")
+                                        AntPathRequestMatcher.antMatcher("/api/data/**"),
+                                        AntPathRequestMatcher.antMatcher("/api/reports/**"),
+                                        AntPathRequestMatcher.antMatcher("/api/docx/**")
                                 ).hasAnyRole("USER", "MANAGER", "ADMIN")
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/login/**"),
-                                        AntPathRequestMatcher.antMatcher("/api/docx/**")
+                                        AntPathRequestMatcher.antMatcher("/api/login/**")
                                 ).permitAll()
+                                .anyRequest().authenticated()
                 ).formLogin((formLogin) ->
                         formLogin
                                 .loginPage("/api/login")

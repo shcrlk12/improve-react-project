@@ -1,6 +1,6 @@
-package com.unison.monitoring.api.repository;
+package com.unison.monitoring.alarm.repository;
 
-import com.unison.monitoring.api.entity.AlarmEntity;
+import com.unison.monitoring.alarm.entity.AlarmEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,0 +1,34 @@
+c.u.m.MonitoringApplication - Starting MonitoringApplication using Java 17.0.2 with PID 39304 (C:\Users\uns\git\auto-generate-daily-report\monitoring\build\classes\java\main started by uns in C:\Users\uns\git\auto-generate-daily-report\monitoring)
+c.u.m.MonitoringApplication - Running with Spring Boot v3.3.2, Spring v6.1.11
+c.u.m.MonitoringApplication - The following 1 profile is active: "local"
+o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 540 ms. Found 8 JPA repository interfaces.
+o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 6789 (http)
+o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-6789"]
+o.a.catalina.core.StandardService - Starting service [Tomcat]
+o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.26]
+o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 4698 ms
+o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection ConnectionID:1 ClientConnectionId: faa0ef99-9851-44d6-8640-742eeb9e798a
+com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+org.hibernate.mapping.RootClass - HHH000038: Composite-id class does not override equals(): com.unison.monitoring.data.entity.DataEntity$Id
+org.hibernate.mapping.RootClass - HHH000039: Composite-id class does not override hashCode(): com.unison.monitoring.data.entity.DataEntity$Id
+org.hibernate.mapping.RootClass - HHH000038: Composite-id class does not override equals(): com.unison.monitoring.alarm.entity.AlarmEntity$Id
+org.hibernate.mapping.RootClass - HHH000039: Composite-id class does not override hashCode(): com.unison.monitoring.alarm.entity.AlarmEntity$Id
+o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+o.s.d.j.r.q.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+o.s.s.c.a.web.builders.WebSecurity - You are asking Spring Security to ignore org.springframework.boot.autoconfigure.security.servlet.StaticResourceRequest$StaticResourceRequestMatcher@3c86d979. This is not recommended -- please use permitAll via HttpSecurity#authorizeHttpRequests instead.
+o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-6789"]
+o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 6789 (http) with context path '/'
+c.u.m.MonitoringApplication - Started MonitoringApplication in 12.819 seconds (process running for 15.477)

@@ -1,4 +1,4 @@
-package com.unison.monitoring.api;
+package com.unison.monitoring.common;
 
 import com.unison.common.jsonapi.response.ApiResponse;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.unison.monitoring.api;
+package com.unison.monitoring.powercurve.repository;
 
 import com.unison.monitoring.powercurve.entity.PowerCurveEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

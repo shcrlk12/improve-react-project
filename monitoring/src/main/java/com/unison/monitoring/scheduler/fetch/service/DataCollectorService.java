@@ -1,14 +1,11 @@
-package com.unison.monitoring.scheduler;
+package com.unison.monitoring.scheduler.fetch.service;
 
 import com.unison.common.dto.AlarmDto;
 import com.unison.common.dto.ReportDataDto;
 import com.unison.common.jsonapi.response.ApiResponses;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-
-public interface BatchService{
+public interface DataCollectorService {
 
 
     Mono<ApiResponses<AlarmDto.Response>> retrieveAlarmsFromU113() throws Exception;
