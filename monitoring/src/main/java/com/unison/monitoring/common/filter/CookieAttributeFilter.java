@@ -20,7 +20,7 @@ public class CookieAttributeFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         chain.doFilter(request, response);
         // you can use this when you use https protocol
-        addSameSite(httpServletResponse , "none");
+        addSameSite(httpServletResponse , "lax");
     }
 
     private void addSameSite(HttpServletResponse response, String sameSite) {

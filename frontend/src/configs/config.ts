@@ -2,8 +2,8 @@
  * Configuration for common settings.
  */
 export const config = {
-  apiServer: {protocol: "http", ip: "127.0.0.1", port: "6789" },
-  // apiServer: { protocol: "https", ip: "172.19.102.139", port: "" },
+  // apiServer: {protocol: "http", ip: "127.0.0.1", port: "6789" }, //local
+  apiServer: { protocol: "https", ip: "172.19.102.139", port: "" }, //prod
 };
 
 export const getRestApiServerUrl = (resource: string) => {
